@@ -1,0 +1,20 @@
+language: python
+dist: xenial
+stages:
+- test
+- deploy
+jobs:
+  include:
+  - python: '3.7'
+  - python: '3.6'
+  - python: '3.5'
+  - stage: deploy
+    install: ''
+    script: ''
+    deploy:
+      provider: pypi
+      user: Madoshakalaka
+      password:
+        #secure: encrypted password
+      on:
+        tags: true
