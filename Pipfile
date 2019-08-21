@@ -1,0 +1,19 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pipenv-setup = {path = ".",editable = true}
+pytest = "*"
+black = "==19.3b0"
+# todo: clean lmao and pytest
+
+[packages]
+lmao = {git = "https://github.com/dask/distributed",editable = true}
+pipfile = "~=0.0"
+astunparse = "~=1.6"
+yapf = "~=0.28"
+
+[requires]
+python_version = "3.6"
