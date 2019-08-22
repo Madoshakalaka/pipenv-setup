@@ -1,5 +1,6 @@
 build
 dist
+.mypy_cache
 *.egg-info
 __pycache__/
 pykage-to-do.txt

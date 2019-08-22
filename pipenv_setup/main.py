@@ -2,6 +2,12 @@ import argparse
 from pathlib import Path
 from sys import stderr
 
+# noinspection Mypy
+import pipfile
+from yapf.yapflib import yapf_api
+
+from pipenv_setup.pipfile_parser import get_default_packages
+
 
 def cmd():
 
@@ -25,8 +31,13 @@ def cmd():
         print("setup.py not found under current directory")
         print("Creating boilerplate setup.py...")
         try:
+            parsed_pipfile = pipfile.load("Pipfile")
+            _, remote_packages = get_default_packages(parsed_pipfile)
+
+            reformatted_source, _ = yapf_api.FormatCode(source)
+
             with open(missing_files[0], "w") as setup_file:
-                setup_file.write("123")
+                pass
         except OSError as err:
             print(f"OS error: {err}", file=stderr)
             print("pipenv-setup failed to create setup.py", file=stderr)
