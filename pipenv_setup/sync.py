@@ -82,7 +82,6 @@ with open("setup.py") as file:
 
 tree = InstallRequiresUpdater().visit(tree)
 
-print(["a", 2, 3, 4, 5])
 
 source = astunparse.unparse(tree)
 reformatted_source, _ = yapf_api.FormatCode(source)

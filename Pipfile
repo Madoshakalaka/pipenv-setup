@@ -5,9 +5,10 @@ verify_ssl = true
 
 [dev-packages]
 pipenv-setup = {path = ".",editable = true}
-pytest = "*"
+pytest = "~=5.1"
 black = "==19.3b0"
-# todo: clean lmao and pytest
+# todo: clean lmao
+pytest-mypy = "~=0.3"
 
 [packages]
 lmao = {git = "https://github.com/dask/distributed",editable = true}
