@@ -6,12 +6,12 @@ verify_ssl = true
 [dev-packages]
 pipenv-setup = {path = ".",editable = true}
 pytest = "~=5.1"
+black = "==19.3b0"
 pytest-mypy = "~=0.3"
-pytest-cov = "~=2.7"
 
 [packages]
 pipfile = "~=0.0"
-black = "==19.3b0"
+astunparse = "~=1.6"
 
 [requires]
 python_version = "3.6"

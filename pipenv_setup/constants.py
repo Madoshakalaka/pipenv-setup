@@ -1,3 +1,4 @@
-from typing import Union
+from typing import Union, Dict, Any
 
-Config = Union[dict, str]
+PipfileConfig = Union[dict, str]
+LockConfig = Dict[str, Any]

@@ -7,7 +7,6 @@ jobs:
   include:
   - python: '3.7'
   - python: '3.6'
-  - python: '3.5'
   - stage: deploy
     install: ''
     script: ''
@@ -15,6 +14,6 @@ jobs:
       provider: pypi
       user: Madoshakalaka
       password:
-        #secure: encrypted password
+        secure: KQizTecP7oH5S1zHk2dkFGqJHilEX43yitgGR91G1vmq4BBNRShu8Oq+uRpOX3Plz/oFyelnYhF987qq3xyg1E327ozX9EoQ+iDE3AKyBIBONUCAoe8pcG4XIwFsjdmOkw9ODeKq8VU8t+KSAvIPIEd27G6N6WQ+DVOcoyIn0uJsCB0jX32wqaCQO8yTf1A/qWVzYnt8aqBXToDiC0XprrodMgvrTExyhBLW5Y7zuiNgfGb6HtRHAa9nvoO3/V8Jn2yXlv/uzE0rsVll+w0mxz/fYRkjZIfk7ju8L4b49+gu/onG827pOwQkfswUwb3QsXRR4PugmTyNGVuX5svxT22K+kYZaJn646X/nkljYJMhYNjbtuSlZcfZyg8QEJ1jNNtWW48Gt5yOTc1HPdggOig9hygj+ctc/TeIEKzaCMx9S184+Sz8LzNSiHTsmde0SxgIcS/QM8+5xdJ2yr917qhqh8iiiBeD58bISKGk+cEQNqha1aIVU4G9JhQsknaKUDUnQ7sSiO3dUGOJqGpuDQzJr5O4TEC2Rf05VzLSpkfTTjAhIVTH4gE3EcEbGQlaa3VHZvftdFmAHEu9nueC9dolSFEwqu/yf+bv3LGBskEbDUQir21RbX3axuS9NvaZX33vNlyLFmI41Or2iaOopgJeHlhlxLESTX5EhjNmpf0=
       on:
         tags: true

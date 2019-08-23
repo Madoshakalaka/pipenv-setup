@@ -2,7 +2,7 @@
 See:
 https://packaging.python.org/guides/distributing-packages-using-setuptools/
 https://github.com/pypa/sampleproject
-Modified by Madoshakalaka@Github (dependency links addition)
+Modified by Madoshakalaka@Github (dependency links added)
 """
 
 # Always prefer setuptools over distutils
@@ -140,7 +140,7 @@ setup(
     #
     # Similar to `install_requires` above, these must be valid existing
     # projects.
-    extras_require={"dev": []},  # Optional
+    # extras_require={"dev": []},  # Optional
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     #
@@ -154,13 +154,13 @@ setup(
     dependency_links=[],
     # If using Python 2.6 or earlier, then these have to be included in
     # MANIFEST.in as well.
-    package_data={"sample": ["package_data.dat"]},  # Optional
+    # package_data={"sample": ["package_data.dat"]},  # Optional
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:
     # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files
     #
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
-    data_files=[("my_data", ["data/data_file"])],  # Optional
+    # data_files=[("my_data", ["data/data_file"])],  # Optional
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # `pip` to create the appropriate form of executable for the target
@@ -168,7 +168,7 @@ setup(
     #
     # For example, the following would provide a command called `sample` which
     # executes the function `main` from this package when invoked:
-    entry_points={"console_scripts": ["sample=sample:main"]},  # Optional
+    # entry_points={"console_scripts": ["sample=sample:main"]},  # Optional
     # List additional URLs that are relevant to your project as a dict.
     #
     # This field corresponds to the "Project-URL" metadata fields:
