@@ -5,7 +5,7 @@
 
 sync dependencies in Pipfile.lock to setup.py
 
-An beautiful python package development tool.
+A beautiful python package development tool.
 
 Never need again to change dependencies manually in `setup.py` and enjoy the same dependency locking
 ### Install
