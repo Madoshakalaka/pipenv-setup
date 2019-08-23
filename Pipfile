@@ -8,6 +8,7 @@ pipenv-setup = {path = ".",editable = true}
 pytest = "~=5.1"
 pytest-mypy = "~=0.3"
 pytest-cov = "~=2.7"
+twine = "*"
 
 [packages]
 pipfile = "~=0.0"

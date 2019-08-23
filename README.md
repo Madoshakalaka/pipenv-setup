@@ -1,47 +1,47 @@
-# Not working yet
+# Pipenv-Setup
 ![travis-badge](https://travis-ci.org/Madoshakalaka/pipenv-setup.svg?branch=master)
 
-sync pipfile with setup.py
+sync dependencies in Pipfile.lock with setup.py
 
-## Showcase
+The ultimate python package development experience.
 
-<!--You picture won't show on pypi if you use relative path.-->
-<!--If you want to add any image, please add the image to readme_assets folder and add the filename as below-->
-<!--![some show case picture](https://raw.githubusercontent.com/Madoshakalaka/pipenv-setup/master/readme_assets/showcasePicture.png)-->
+Never need again to change dependencies manually to `setup.py`
 
+### Install
 
-## How to Use
+`$ pipenv install --dev pipenv-setup`
 
+### Manual Usage
 
-`pip install pipenv-setup`
+You can manually run `$ pipenv-setup` under directory that has your `Pipfile.lock` file.
 
-<!--
+If `setup.py` doesn't exist. A `setup.py` template will be created will dependencies extracted from the lock file.
 
-add some help here 
+### Travis CI
 
-```python
+What's better, add to `.travis.yml` and run before every pypi release
 
+The following yml file is an example that runs tests on python 3.6 and 3.7 and automatically syncs pipfile dependencies to setup.py before every release.
+```yml
+language: python
+dist: xenial
+
+install: 'pipenv install --dev'
+
+stages:
+- test
+- deploy
+jobs:
+  include:
+  - python: '3.7'
+  - python: '3.6'
+  - stage: deploy
+    script: 'pipenv-setup'
+    deploy:
+      provider: pypi
+      user: Madoshakalaka
+      password:
+        secure: xxxxxx
+      on:
+        tags: true
 ```
-
--->
-
-
-
-Pip creates command line executable entry point by default
-
-You should be able to run shell command `$ pipenv-setup` anywhere.
-
-<!--
-add some command help here
-
-
-- `$ pipenv-setup -i filename`
-    - output: `hello world`
-
--->
-
-- `$ pipenv-setup -h` for more help
-
-in case the command does not work (e.g. on windows when <python_dir>/Scripts is not in system path). Use the package entry:
-
-`> python -m pipenv_setup`

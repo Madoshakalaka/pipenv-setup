@@ -14,16 +14,7 @@ def cmd():
 
     parser = argparse.ArgumentParser(description="sync pipfile with setup.py")
 
-    # parser.add_argument(
-    #     "blah",
-    #     action="store",
-    #     type=str,
-    #     help="blah",
-    # )
-
-    # argv = parser.parse_args()
-
-    # add your command line program here
+    argv = parser.parse_args()
 
     pipfile_path, lock_file_path, setup_file_path = required_files = [
         Path("Pipfile"),
