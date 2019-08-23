@@ -12,41 +12,7 @@ Never need again to change dependencies manually in `setup.py` and enjoy the sam
 
 `$ pipenv install --dev pipenv-setup`
 
-### Manual Usage
-
-You can manually run `$ pipenv-setup` under directory that has your `Pipfile.lock` file.
-
-If `setup.py` doesn't exist. A `setup.py` template will be created will dependencies extracted from the lock file.
-
-### Travis CI
-
-What's better, add to `.travis.yml` and sync automatically before every pypi release
-
-The following yml file is an example that runs tests on python 3.6 and 3.7 and automatically syncs pipfile dependencies to setup.py before every release. For explanation see [this gist](https://gist.github.com/Madoshakalaka/84198d7c1b042027375481dc1b8cbae8)
-```yml
-language: python
-dist: xenial
-
-install: 'pipenv install --dev'
-script: 'pytest'
-
-stages:
-- test
-- deploy
-jobs:
-  include:
-  - python: '3.7'
-  - python: '3.6'
-  - stage: deploy
-    script: 'pipenv-setup'
-    deploy:
-      provider: pypi
-      user: Madoshakalaka
-      password:
-        secure: xxxxxxxxx
-      on:
-        tags: true
-```
+it creates command line entry `$ pipenv-setup`
 
 ## Features
 - supports assorted package configuration. You can have a pipfile as ugly as you want:
@@ -90,3 +56,39 @@ jobs:
     23 packages moved from Pipfile.lock to setup.py
     Please edit the required fields in the generated file
     ```
+
+### Manual Usage
+
+You can manually run `$ pipenv-setup` under directory that has your `Pipfile.lock` file.
+
+### Travis CI
+
+What's better, add to `.travis.yml` and sync automatically before every pypi release
+
+The following yml file is an example that runs tests on python 3.6 and 3.7 and automatically syncs pipfile dependencies to setup.py before every release. For explanation see [this gist](https://gist.github.com/Madoshakalaka/84198d7c1b042027375481dc1b8cbae8)
+```yml
+language: python
+dist: xenial
+
+install: 'pipenv install --dev'
+script: 'pytest'
+
+stages:
+- test
+- deploy
+jobs:
+  include:
+  - python: '3.7'
+  - python: '3.6'
+  - stage: deploy
+    script: 'pipenv-setup'
+    deploy:
+      provider: pypi
+      user: Madoshakalaka
+      password:
+        secure: xxxxxxxxx
+      on:
+        tags: true
+```
+
+
