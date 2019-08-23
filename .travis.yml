@@ -2,6 +2,7 @@ language: python
 dist: xenial
 
 install: 'pipenv install --dev'
+script: 'pytest'
 
 stages:
 - test
