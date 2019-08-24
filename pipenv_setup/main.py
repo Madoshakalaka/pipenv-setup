@@ -34,7 +34,7 @@ def print_help():
     )
 
 
-def cmd():
+def cmd(argv=sys.argv):
     init()
     parser = argparse.ArgumentParser(description="sync Pipfile.lock with setup.py")
 
@@ -51,30 +51,32 @@ def cmd():
         help="check whether Pipfile is consistent with setup.py. None zero exit code if there is inconsistency (package missing; version incompatible)",
     )
 
-    argv = parser.parse_args()
+    check_parser.add_argument(
+        "--ignore-local",
+        action="store_true",
+        help="allow local packages in pipfile default packages",
+    )
+
+    argv = parser.parse_args(argv[1:])
 
     if argv.command_name == "sync":
         sync()
     elif argv.command_name == "check":
-        check()
+        check(argv)
     else:
         print_help()
 
 
 def fatal_error(msg: str) -> NoReturn:
     """
-    print red text then exit with error code 1
+    print red text to stdout then exit with error code 1
     """
-    print(Fore.RED + msg + Fore.RESET, file=stderr)
+    print(Fore.RED + msg + Fore.RESET)
 
     sys.exit(1)
 
 
-def warn(msg: str):
-    print(Fore.YELLOW + "Warning: " + msg + Fore.RESET, file=stderr)
-
-
-def check():
+def check(args):
     if not Path("Pipfile").exists():
         fatal_error("Pipfile not found")
     if not Path("setup.py").exists():
@@ -85,10 +87,10 @@ def check():
         parsed_pipfile
     )
 
-    if local_packages:
+    if local_packages and not args.ignore_local:
         package_names = ", ".join(local_packages)
         fatal_error(
-            "local package found in default dependency: %s.\nDo you mean to make it dev dependency?"
+            "local package found in default dependency: %s.\nDo you mean to make it dev dependency "
             % package_names
         )
 

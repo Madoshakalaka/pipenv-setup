@@ -1,8 +1,8 @@
 language: python
 dist: xenial
 
-install: 'pipenv install --dev'
-script: 'pytest'
+install: 'pipenv install'
+script: 'pytest --cov=pipenv_setup pipenv_setup/'
 
 stages:
 - test
@@ -12,6 +12,7 @@ jobs:
   - python: '3.7'
   - python: '3.6'
   - stage: deploy
+    install: 'pipenv install pipenv-setup'
     script: 'pipenv-setup'
     deploy:
       provider: pypi

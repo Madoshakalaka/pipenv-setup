@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "954e14423ea3c48e769982b39b6261dd95c9a1ba2beeb09086acb04775cd76af"
+            "sha256": "cef592a78b45109cc5333abdcd9ceea0ff836b58040834ff8bada1142586af22"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -59,14 +59,6 @@
             ],
             "index": "pypi",
             "version": "==0.0.2"
-        },
-        "semver": {
-            "hashes": [
-                "sha256:41c9aa26c67dc16c54be13074c352ab666bce1fa219c7110e8f03374cd4206b0",
-                "sha256:5b09010a66d9a3837211bb7ae5a20d10ba88f8cb49e92cb139a69ef90d5060d8"
-            ],
-            "index": "pypi",
-            "version": "==2.8.1"
         },
         "toml": {
             "hashes": [
@@ -301,6 +293,14 @@
             ],
             "index": "pypi",
             "version": "==2.7.1"
+        },
+        "pytest-datadir": {
+            "hashes": [
+                "sha256:275f641dbb045896c7d185cfbe79afd15270eed09d334c2ceb17396e634e22dd",
+                "sha256:870511dd6bbfa1aa3b32a2e76bdd7fdb0239fac377b02c694338c6c184dd8c20"
+            ],
+            "index": "pypi",
+            "version": "==1.3.0"
         },
         "pytest-mypy": {
             "hashes": [
