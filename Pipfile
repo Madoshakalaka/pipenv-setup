@@ -14,8 +14,7 @@ twine = "*"
 pipfile = "~=0.0"
 black = "==19.3b0"
 colorama = "~=0.4"
-python-intervals = "*"
-semver = "*"
+semver = "~=2.8"
 
 [requires]
 python_version = "3.6"

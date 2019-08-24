@@ -6,6 +6,7 @@ from sys import stderr
 from typing import NoReturn
 
 import pipfile
+from colorama import Fore, init
 
 from pipenv_setup import (
     lock_file_parser,
@@ -14,10 +15,21 @@ from pipenv_setup import (
     pipfile_parser,
     setup_parser,
 )
-from colorama import Fore, init
 
 # noinspection Mypy
 from pipenv_setup.setup_updater import blacken
+
+
+def print_help():
+    print("Commands:")
+    print("  " + Fore.GREEN + "sync" + Fore.RESET + "\t\tsync pipfile with setup.py")
+    print(
+        "  "
+        + Fore.BLUE
+        + "check"
+        + Fore.RESET
+        + "\t\tcheck whether Pipfile is consistent with setup.py.\n  \t\tNone zero exit code if there is inconsistency\n  \t\t(package missing; version incompatible)"
+    )
 
 
 def cmd():
@@ -26,7 +38,7 @@ def cmd():
 
     subparsers = parser.add_subparsers(dest="command_name")
 
-    subparsers.required = True
+    # subparsers.required = True
 
     sync_parser = subparsers.add_parser(
         "sync", help="sync dependencies from Pipfile.lock to setup.py"
@@ -43,6 +55,8 @@ def cmd():
         sync()
     elif argv.command_name == "check":
         check()
+    else:
+        print_help()
 
 
 def fatal_error(msg: str) -> NoReturn:
