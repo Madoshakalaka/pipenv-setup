@@ -14,7 +14,31 @@ def cmd():
 
     parser = argparse.ArgumentParser(description="sync pipfile with setup.py")
 
+    subparsers = parser.add_subparsers(dest="command_name")
+
+    subparsers.required = True
+
+    sync_parser = subparsers.add_parser(
+        "sync", help="sync dependencies from pipfile.lock to setup.py"
+    )
+
+    check_parser = subparsers.add_parser(
+        "check", help="check whether Pipfile.lock is consistent with setup.py"
+    )
+
     argv = parser.parse_args()
+
+    if argv.command_name == "sync":
+        sync()
+    elif argv.command_name == "check":
+        check()
+
+
+def check():
+    print("all good")
+
+
+def sync():
 
     pipfile_path, lock_file_path, setup_file_path = required_files = [
         Path("Pipfile"),
