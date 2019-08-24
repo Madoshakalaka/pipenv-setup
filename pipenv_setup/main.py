@@ -22,7 +22,9 @@ from pipenv_setup.setup_updater import blacken
 
 def print_help():
     print("Commands:")
-    print("  " + Fore.GREEN + "sync" + Fore.RESET + "\t\tsync pipfile with setup.py")
+    print(
+        "  " + Fore.GREEN + "sync" + Fore.RESET + "\t\tsync Pipfile.lock with setup.py"
+    )
     print(
         "  "
         + Fore.BLUE
@@ -34,7 +36,7 @@ def print_help():
 
 def cmd():
     init()
-    parser = argparse.ArgumentParser(description="sync pipfile with setup.py")
+    parser = argparse.ArgumentParser(description="sync Pipfile.lock with setup.py")
 
     subparsers = parser.add_subparsers(dest="command_name")
 
