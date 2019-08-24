@@ -3,6 +3,7 @@ dist: xenial
 
 install: 'pipenv install --dev'
 script: 'pytest --cov=pipenv_setup pipenv_setup/'
+after_success: 'codecov'
 
 stages:
 - test
@@ -14,6 +15,7 @@ jobs:
   - stage: deploy
     install: 'pipenv install pipenv-setup'
     script: 'pipenv-setup'
+    after_success: ''
     deploy:
       provider: pypi
       user: Madoshakalaka

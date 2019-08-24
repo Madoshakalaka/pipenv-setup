@@ -10,6 +10,7 @@ pytest-mypy = "~=0.3"
 pytest-cov = "~=2.7"
 twine = "*"
 pytest-datadir = "~=1.3"
+codecov = "~=2.0"
 
 [packages]
 pipfile = "~=0.0"
