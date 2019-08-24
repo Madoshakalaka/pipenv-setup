@@ -13,6 +13,9 @@ twine = "*"
 [packages]
 pipfile = "~=0.0"
 black = "==19.3b0"
+colorama = "~=0.4"
+python-intervals = "*"
+semver = "*"
 
 [requires]
 python_version = "3.6"

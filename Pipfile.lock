@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "ed24eb6779e4134ee4cb39ef1be6648b38a828ff97c3254bb42e7607bf0b3995"
+            "sha256": "8af9dd46952218eb668d7746a2f2728d087484c524cc5c9f59cd2d36b67dc3cc"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -45,12 +45,36 @@
             ],
             "version": "==7.0"
         },
+        "colorama": {
+            "hashes": [
+                "sha256:05eed71e2e327246ad6b38c540c4a3117230b19679b875190486ddd2d721422d",
+                "sha256:f8ac84de7840f5b9c4e3347b3c1eaa50f7e49c2b07596221daec5edaabbd7c48"
+            ],
+            "index": "pypi",
+            "version": "==0.4.1"
+        },
         "pipfile": {
             "hashes": [
                 "sha256:f7d9f15de8b660986557eb3cc5391aa1a16207ac41bc378d03f414762d36c984"
             ],
             "index": "pypi",
             "version": "==0.0.2"
+        },
+        "python-intervals": {
+            "hashes": [
+                "sha256:1d3de06b01517548b4a8d5137dfba5c2514780ec9b99778d5ed7920ee10ee22b",
+                "sha256:b55406c44136ca03a9f49d82b466e30824cb7c501614989b23809442d01ebcb0"
+            ],
+            "index": "pypi",
+            "version": "==1.8.0"
+        },
+        "semver": {
+            "hashes": [
+                "sha256:41c9aa26c67dc16c54be13074c352ab666bce1fa219c7110e8f03374cd4206b0",
+                "sha256:5b09010a66d9a3837211bb7ae5a20d10ba88f8cb49e92cb139a69ef90d5060d8"
+            ],
+            "index": "pypi",
+            "version": "==2.8.1"
         },
         "toml": {
             "hashes": [

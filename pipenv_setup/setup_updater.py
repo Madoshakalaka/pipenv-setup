@@ -6,7 +6,9 @@ from pathlib import Path
 from subprocess import Popen, PIPE
 from sys import stderr
 from tokenize import OP
-from typing import Optional, Tuple, List
+from typing import Tuple, List
+
+from pipenv_setup.setup_parser import get_setup_call_node, get_kw_list_node
 
 
 def update_setup(dependency_arguments, filename: Path):
@@ -107,23 +109,6 @@ def insert_at_lineno_col_offset(
     lines[lineno - 1] = the_line[:col_offset] + content + the_line[col_offset:]
 
 
-def get_kw_list_node(root_node, kw: str) -> Optional[ast.List]:
-    """
-    :raise ValueError: When the keyword argument is not a list or when can not get the list
-    :return: a list node, or None if it does not exist
-    """
-    setup_call_node = get_setup_call_node(root_node)
-    if setup_call_node is None:
-        raise ValueError("Can not find keyword argument %s" % kw)
-    for keyword in setup_call_node.keywords:
-        if keyword.arg == kw:
-            node = keyword.value
-            if not isinstance(node, ast.List):
-                raise ValueError("Error parsing setup.py: %s is not a list" % kw)
-            return node
-    return None
-
-
 def clear_kw_list(kw: str, file_bytes: bytes, file_lines: List[str]):
     """
     clear a list without moving number of lines in a file
@@ -187,16 +172,3 @@ def get_list_closing_bracket_lineno_offset(
         ):
             list_met = True
     raise ValueError("can not locate closing bracket ast list node %s" % ast_list_node)
-
-
-def get_setup_call_node(root_node) -> Optional[ast.Call]:
-
-    for node in ast.walk(root_node):
-
-        if (
-            hasattr(node, "func")
-            and hasattr(node.func, "id")  # type: ignore
-            and node.func.id == "setup"  # type: ignore
-        ):
-            return node  # type: ignore
-    return None

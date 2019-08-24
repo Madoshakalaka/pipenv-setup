@@ -9,6 +9,8 @@ from pipenv_setup.constants import PipfileConfig
 def is_remote_package(config: PipfileConfig) -> bool:
     if isinstance(config, dict) and "path" not in config:
         return True
+    if isinstance(config, str):
+        return True
     return False
 
 
