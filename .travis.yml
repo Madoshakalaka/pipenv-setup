@@ -1,7 +1,7 @@
 language: python
 dist: xenial
 
-install: 'pipenv install'
+install: 'pipenv install --dev'
 script: 'pytest --cov=pipenv_setup pipenv_setup/'
 
 stages:
