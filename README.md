@@ -72,7 +72,7 @@ it creates command line entry `$ pipenv-setup`
     ```
 ##### Check `Pipfile` and `setup.py`
 run `$ pipenv check`
-- checks five items
+- checks four items
     - local package in default pipfile packages
     - Package version requirements in `install_requires` in setup.py potentially violates that in Pipfile
     - Package version requirements in `dependency_links` in setup.py potentially violates that in Pipfile
