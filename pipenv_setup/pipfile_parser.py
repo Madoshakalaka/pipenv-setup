@@ -3,7 +3,37 @@ from typing import Tuple, Dict
 # noinspection Mypy
 from pipfile import Pipfile
 
-from pipenv_setup.constants import PipfileConfig
+from pipenv_setup.constants import PipfileConfig, vcs_list
+
+
+def is_vcs_package(config: PipfileConfig):
+    """
+    >>> is_vcs_package('==1.6.2')
+    False
+    >>> is_vcs_package({"git": "https://github.com/django/django.git","editable": True})
+    True
+    >>> is_vcs_package({'file': "https://www.a.com/b/c.zip"})
+    False
+    >>> is_vcs_package({'path': "/home/weeb27/phubscraper"})
+    False
+    """
+    if isinstance(config, dict):
+        return any(filter(config.__contains__, vcs_list))
+    return False
+
+
+def is_pypi_package(config: PipfileConfig) -> bool:
+    # fixme: uh.. I guess there are special cases
+    if isinstance(config, str):
+        return True
+    elif (
+        isinstance(config, dict)
+        and not is_vcs_package(config)
+        and "file" not in config
+        and "path" not in config
+    ):
+        return True
+    return False
 
 
 def is_remote_package(config: PipfileConfig) -> bool:

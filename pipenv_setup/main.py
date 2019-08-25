@@ -17,6 +17,7 @@ from pipenv_setup import (
 )
 
 # noinspection Mypy
+from pipenv_setup.inconsistency_checker import InconsistencyChecker
 from pipenv_setup.setup_updater import blacken
 
 
@@ -60,11 +61,18 @@ def cmd(argv=sys.argv):
     argv = parser.parse_args(argv[1:])
 
     if argv.command_name == "sync":
-        sync()
+        sync(argv)
     elif argv.command_name == "check":
         check(argv)
     else:
         print_help()
+
+
+def congratulate(msg: str):
+    """
+    print green text to stdout
+    """
+    print(Fore.GREEN + msg + Fore.RESET)
 
 
 def fatal_error(msg: str) -> NoReturn:
@@ -105,14 +113,30 @@ def check(args):
 
     # fatal_error is a NoReturn function, pycharm gets confused
     # noinspection PyUnboundLocalVariable
-    for install_requires_element in install_requires:
-        pass
+    checker = InconsistencyChecker(install_requires, dependency_links, remote_packages)
 
-    for package, package_config in remote_packages.items():
-        pass
+    reports = []
+    checks = (
+        checker.check_install_requires_conflict,
+        checker.check_dependency_links_conflict,
+        checker.check_lacking_install_requires,
+        checker.check_lacking_dependency_links,
+    )
+    for check_item in checks:
+        try:
+            reports += check_item()
+        except ValueError as e:
+            print(e, file=stderr)
+            fatal_error("dependency check failed")
+    if len(reports) == 0:
+        congratulate(
+            "No version conflict or missing packages/dependencies found in setup.py!"
+        )
+    else:
+        fatal_error("\n".join(reports))
 
 
-def sync():
+def sync(args):
 
     pipfile_path, lock_file_path, setup_file_path = required_files = [
         Path("Pipfile"),

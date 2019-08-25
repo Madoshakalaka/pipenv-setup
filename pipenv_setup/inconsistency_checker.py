@@ -2,11 +2,12 @@
 check inconsistency between Pipfile and setup.py
 """
 from string import digits
-from typing import List, Dict, Tuple, Iterable, Optional
+from typing import List, Dict, Tuple, Iterable, Optional, Set
 
 import packaging.version
 from packaging.version import Version
 
+from pipenv_setup import pipfile_parser
 from pipenv_setup.constants import PipfileConfig
 from pipenv_setup.constants import vcs_list
 
@@ -166,6 +167,9 @@ class InconsistencyChecker:
         self._install_requires_version_reqs = self._parse_install_requires(
             install_requires
         )
+        self._install_requires_package_names = (
+            self._install_requires_version_reqs.keys()
+        )
         self._dependency_links = dependency_links
         self._pipfile_packages = pipfile_packages
 
@@ -217,25 +221,46 @@ class InconsistencyChecker:
             res[name] = _VersionReqs(version_req_string)
         return res
 
-    def check_install_requires_conflict(self) -> List[Tuple[str, str, str]]:
+    def check_install_requires_conflict(self) -> List[str]:
+        """
+        :raise ValueError: if some package in install_requires is not a pypi package in pipfile
+        :return: string reports. Can be empty if there is no conflict
+        """
+        report = []
+        for (
+            name,
+            setup_config,
+            pipfile_config,
+        ) in self._check_install_requires_conflict():
+            report.append(
+                "package %s has version string: %s in setup.py, which can violate %s in pipfile"
+                % (name, setup_config, pipfile_config)
+            )
+        return report
+
+    def _check_install_requires_conflict(self) -> List[Tuple[str, str, str]]:
         """
         :return: A list of conflicts in the form of (package_name, setup_config, pipfile_config), empty for no conflict
-
-        :raise ValueError: if some package in install_requires is not a pypi package in pipfile
         """
 
         conflicts = []  # type: List[Tuple[str, str, str]]
         for name, vr in self._install_requires_version_reqs.items():
             if name in self._pipfile_packages:
                 pipfile_config = self._pipfile_packages[name]
-                if not isinstance(pipfile_config, str):
+                if not pipfile_parser.is_pypi_package(pipfile_config):
                     raise ValueError(
                         "package %s in install_requires is not a pypi package in pipfile"
                         % name
                     )
-                pipfile_config = pipfile_config.replace(" ", "")
-                if not vr.check_compatibility(pipfile_config):
-                    conflicts.append((name, str(vr), pipfile_config))
+                version_string = ""
+                if isinstance(pipfile_config, str):
+                    version_string = pipfile_config
+                else:  # dict
+                    if "version" in pipfile_config:
+                        version_string = pipfile_config["version"]
+                version_string = version_string.replace(" ", "")
+                if not vr.check_compatibility(version_string):
+                    conflicts.append((name, str(vr), version_string))
 
         return conflicts
 
@@ -258,12 +283,14 @@ class InconsistencyChecker:
         """
         :param link: a setup.py dependency_links style vcs link
         :return: vcs_name, url_stripped_of_ref_egg, ref(version/branch), package name
-        # todo: tests
         :raise ValueError: if can not understand link
-        # >>> InconsistencyChecker._parse_vcs_link('git+https://github.com/requests/requests.git@v2.20.1#egg=requests')
-        ('git, 'https://github.com/requests/requests.git', 'v2.20.1', 'requests')
+
+        >>> InconsistencyChecker._parse_vcs_link('git+https://github.com/requests/requests.git@v2.20.1#egg=requests')
+        ('git', 'https://github.com/requests/requests.git', 'v2.20.1', 'requests')
+        >>> InconsistencyChecker._parse_vcs_link('git+https://github.com/requests/requests.git#egg=requests')
+        ('git', 'https://github.com/requests/requests.git', None, 'requests')
         """
-        # todo: be less cringy
+        # todo: be less cringy (use some url parsing library?)
         # https://pipenv-fork.readthedocs.io/en/latest/basics.html#a-note-about-vcs-dependencies
         vcs = ""
         url = ""
@@ -287,19 +314,29 @@ class InconsistencyChecker:
             else:
                 name = c + name
         if not name.startswith("egg="):
-            raise ValueError("Can not find egg=")
+            raise ValueError("Can not find egg= in link  %s" % link)
+        else:
+            name = name[4:]
         if plus_ind == -1:
             raise ValueError("link %s does not have <vcs_name>+" % link)
 
+        at_ind = -1
         for i in range(hash_ind - 1, plus_ind - 1, -1):
             c = link[i]
             if c == "/":
                 ref = None
                 break
             elif c == "@":
+                at_ind = i
                 break
             else:
                 ref = c + ref  # type: ignore
+
+        if at_ind != -1:
+            url = link[plus_ind + 1 : at_ind]
+        else:
+            url = link[plus_ind + 1 : hash_ind]
+
         if vcs == "" or url == "" or name == "":
             raise ValueError("Can not understand link %s" % link)
 
@@ -307,10 +344,102 @@ class InconsistencyChecker:
 
     def check_dependency_links_conflict(self) -> List[str]:
         """
-        :return A list of conflicts, can be empty.
+        :return A list of conflicts formatted as strings, can be empty when there's no conflict
+        :raise ValueError: if check fails (e.g. can not parse dependency_links in setup.py)
         """
+        msgs = []
         for link in self._dependency_links:
-            # todo: fill this
             if self._is_vcs_link(link):
-                pass
-        return []
+                # raises value error
+                vcs, url, ref, name = self._parse_vcs_link(link)
+                if name in self._pipfile_packages:
+                    config_in_pipfile = self._pipfile_packages[name]
+                    if isinstance(config_in_pipfile, str):
+                        msgs.append(
+                            "%s package %s specified in dependency_links is not a vcs package in pipfile"
+                            % (vcs, name)
+                        )
+                        continue
+                    if vcs not in config_in_pipfile:
+                        msgs.append(
+                            "pipfile lacks '%s' key for package %s" % (vcs, name)
+                        )
+                    elif url != config_in_pipfile[vcs]:
+                        msgs.append(
+                            "pipfile url %s is different than %s in dependency links for package %s"
+                            % (config_in_pipfile[vcs], url, name)
+                        )
+                    if ref is None and "ref" in config_in_pipfile:
+                        msgs.append(
+                            "branch/version %s listed in pipfile but not specified in dependency_links for package %s"
+                            % (config_in_pipfile["ref"], name)
+                        )
+                    if ref is not None and "ref" not in config_in_pipfile:
+                        msgs.append(
+                            "branch/version %s listed in dependency_links but not in pipfile for package %s"
+                            % (ref, name)
+                        )
+                    if (
+                        ref is not None
+                        and "ref" in config_in_pipfile
+                        and config_in_pipfile["ref"] != ref
+                    ):
+                        msgs.append(
+                            "branch/version %s listed in dependency_links is different "
+                            "than %s listed in pipfile for package %s"
+                            % (ref, config_in_pipfile["ref"], name)
+                        )
+
+        return msgs
+
+    def check_lacking_install_requires(self) -> List[str]:
+        """
+        report pypi packages that are in pipfile default package but not in install_requires
+        """
+        reports = []
+        for name, config in self._pipfile_packages.items():
+            if pipfile_parser.is_pypi_package(config):
+                if name not in self._install_requires_package_names:
+                    reports.append(
+                        "package %s in pipfile but not in install_requires" % name
+                    )
+        return reports
+
+    def check_lacking_dependency_links(self) -> List[str]:
+        """
+        report vcs/url packages that are in pipfile default package but not in dependency_links
+
+        :raise ValueError: if dependency_links can not be recognized
+        """
+        # parse dependency_links
+        # name: vcs, url, ref
+        vcs_dependency_names = set()  # type: Set[str]
+        file_dependency_links = set()  # type: Set[str]
+
+        # raises ValueError
+        for link in self._dependency_links:
+            if self._is_vcs_link(link):
+                _, _, _, name = self._parse_vcs_link(link)
+                vcs_dependency_names.add(name)
+            else:
+                file_dependency_links.add(link)
+        reports = []
+        for name, config in self._pipfile_packages.items():
+            if pipfile_parser.is_remote_package(
+                config
+            ) and not pipfile_parser.is_pypi_package(config):
+                if pipfile_parser.is_vcs_package(config):
+                    if name not in vcs_dependency_names:
+                        reports.append(
+                            "vcs package %s in pipfile but not in dependency_links"
+                            % name
+                        )
+                elif "file" in config:
+                    assert isinstance(config, dict)
+                    if config["file"] not in file_dependency_links:
+                        reports.append(
+                            "the link of package %s is in pipfile but not in dependency_links"
+                            % name
+                        )
+
+        return reports
