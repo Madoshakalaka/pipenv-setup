@@ -31,7 +31,7 @@ def print_help():
         + Fore.BLUE
         + "check"
         + Fore.RESET
-        + "\t\tcheck whether Pipfile is consistent with setup.py.\n  \t\tNone zero exit code if there is inconsistency\n  \t\t(package missing; version incompatible)"
+        + "\t\tcheck whether Pipfile is consistent with setup.py.\n  \t\tNon-zero exit code if there is inconsistency\n  \t\t(package missing; version incompatible)"
     )
 
 
