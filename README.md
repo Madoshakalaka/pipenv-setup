@@ -3,11 +3,15 @@
 [![PyPI version](https://badge.fury.io/py/pipenv-setup.svg)](https://badge.fury.io/py/pipenv-setup)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/pipenv-setup.svg)](https://pypi.python.org/pypi/pipenv-setup/)
 
-sync dependencies in Pipfile.lock to setup.py
+Sync dependencies in Pipfile.lock to setup.py
 
 A beautiful python package development tool.
 
-Never need again to change dependencies manually in `setup.py` and enjoy the same dependency locking
+Never need again to change dependencies 
+manually in `setup.py` and enjoy the same
+ dependency locking
+ 
+ Or just check whether setup.py and pipfile are consistent and sync dependency when necessary
 ### Install
 
 `$ pipenv install --dev pipenv-setup`
@@ -15,6 +19,10 @@ Never need again to change dependencies manually in `setup.py` and enjoy the sam
 it creates command line entry `$ pipenv-setup`
 
 ## Features
+##### Beautiful pipenv flavored help
+![hello](https://raw.githubusercontent.com/Madoshakalaka/pipenv-setup/master/readme_assets/help.png)
+
+##### Sync `Pipfile.lock` to `setup.py`
 - supports assorted package configuration. You can have a pipfile as ugly as you want:
     ```Pipfile
     [package]
