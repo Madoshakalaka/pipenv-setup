@@ -16,6 +16,11 @@ codecov = "~=2.0"
 pipfile = "~=0.0"
 black = "==19.3b0"
 colorama = "~=0.4"
+packaging = "~=19.1"
+
+[scripts]
+build = 'python setup.py sdist'
+release = 'python -m twine upload dist/*'
 
 [requires]
 python_version = "3.6"

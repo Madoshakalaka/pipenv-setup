@@ -43,7 +43,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="2.0.2",  # Required
+    version="2.0.3",  # Required
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
@@ -133,7 +133,11 @@ setup(
         "attrs==19.1.0",
         "black==19.3b0",
         "click==7.0",
+        "colorama==0.4.1",
+        "packaging==19.1",
         "pipfile==0.0.2",
+        "pyparsing==2.4.2",
+        "six==1.12.0",
         "toml==0.10.0",
     ],  # Optional
     # List additional groups of dependencies here (e.g. development
