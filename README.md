@@ -71,7 +71,7 @@ it creates command line entry `$ pipenv-setup`
     Please edit the required fields in the generated file
     ```
 ##### Check `Pipfile` and `setup.py`
-run `$ pipenv check`
+run `$ pipenv-setup check`
 - checks four items
     - local package in default pipfile packages
     - Package version requirements in `install_requires` in setup.py potentially violates that in Pipfile
