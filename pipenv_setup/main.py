@@ -75,9 +75,9 @@ def congratulate(msg: str):
     print(Fore.GREEN + msg + Fore.RESET)
 
 
-def fatal_error(msg: str) -> NoReturn:
+def fatal_error(msg: str, exit: bool = True) -> NoReturn:
     """
-    print red text to stdout then exit with error code 1
+    print red text to stdout then optionally exit with error code 1
     """
     print(Fore.RED + msg + Fore.RESET)
 

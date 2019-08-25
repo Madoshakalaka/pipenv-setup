@@ -18,9 +18,11 @@ manually in `setup.py` and enjoy the same
 
 it creates command line entry `$ pipenv-setup`
 
-## Features
+### Features
 ##### Beautiful pipenv flavored help
-![hello](https://raw.githubusercontent.com/Madoshakalaka/pipenv-setup/master/readme_assets/help.png)
+    `$ pipenv-setup`
+
+   ![help](https://raw.githubusercontent.com/Madoshakalaka/pipenv-setup/master/readme_assets/help.PNG)
 
 ##### Sync `Pipfile.lock` to `setup.py`
 - supports assorted package configuration. You can have a pipfile as ugly as you want:
@@ -34,6 +36,8 @@ it creates command line entry `$ pipenv-setup`
     pywinusb = { version = "*", os_name = "=='nt'", index="pypi"}
     ```
     `pipenv-setup` will still figure things out:
+    
+    `$ pipenv-setup sync`
     ```
     package e1839a8 is local, omitted in setup.py
     setup.py successfully updated
@@ -57,6 +61,8 @@ it creates command line entry `$ pipenv-setup`
     ```
 - [Blackened](https://github.com/psf/black) setup.py file.
 - [Template](https://github.com/pypa/sampleproject/blob/master/setup.py) generation with filled dependencies in the absence of a setup file.
+
+    `$ pipenv-setup sync`
     ```
     setup.py not found under current directory
     Creating boilerplate setup.py...
@@ -64,14 +70,25 @@ it creates command line entry `$ pipenv-setup`
     23 packages moved from Pipfile.lock to setup.py
     Please edit the required fields in the generated file
     ```
+##### Check `Pipfile` and `setup.py`
+run `$ pipenv check`
+- checks five items
+    - local package in default pipfile packages
+    - Package version requirements in `install_requires` in setup.py potentially violates that in Pipfile
+    - Package version requirements in `dependency_links` in setup.py potentially violates that in Pipfile
+    - Default package in pipfile missing in `install_requires` or `dependency_links` in setup.py
+- exits with non-zero code when conflict found (for use in travis-ci)
+- here is a somewhat extreme example
 
-### Manual Usage
+    ![extreme](https://raw.githubusercontent.com/Madoshakalaka/pipenv-setup/master/readme_assets/extreme_errors.png)
 
-You can manually run `$ pipenv-setup` under directory that has your `Pipfile.lock` file.
+- provide `--ignore-local` flag to allow local packages in pipfile
+
+    ![ignore-local](https://raw.githubusercontent.com/Madoshakalaka/pipenv-setup/master/readme_assets/ignore_local.PNG)
 
 ### Travis CI
 
-What's better, add to `.travis.yml` and sync automatically before every pypi release
+You can add `pipenv-setup` to `.travis.yml` and sync automatically before every pypi release. Or just check consistency and fail the build to remind manual modification.
 
 The following yml file is an example that runs tests on python 3.6 and 3.7 and automatically syncs pipfile dependencies to setup.py before every release. For explanation see [this gist](https://gist.github.com/Madoshakalaka/84198d7c1b042027375481dc1b8cbae8)
 ```yml
@@ -99,4 +116,14 @@ jobs:
         tags: true
 ```
 
+### Note
+`$ pipenv-setup sync` command syncs `Pipfile.lock` to `setup.py`
 
+While `$ pipenv-setup check` checks conflicts between `Pipfile` and `setup.py` (not `Pipfile.lock`!) 
+
+
+This means `sync` will copy pinned versions from `Pipfile.lock`. This ensures the releases runs with almost exact the same dependencies as the dev environment.
+
+While `check` allows more relaxed constraints (when you have semantic versioning in pipfile)
+
+There is no philosophy behind this asymmetry and it makes a lot of sense to allow more user choice: add `sync --pipfile` and `check --lock` functionality. I welcome a feature request or PR :)
