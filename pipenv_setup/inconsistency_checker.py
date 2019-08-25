@@ -205,6 +205,10 @@ class InconsistencyChecker:
         return res
 
     def check_install_requires_conflict(self):
-        for string in self._install_requires:
-            name = ""
-            version_requirements: List[str] = []
+
+        no_conflict = False
+        for name, vr in self._install_requires_version_reqs.items():
+            if name in self._pipfile_packages:
+                pipfile_config = self._pipfile_packages[name]
+                if vr.check_compatibility(pipfile_config):
+                    pass
