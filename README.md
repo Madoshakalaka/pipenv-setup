@@ -106,7 +106,7 @@ jobs:
   - python: '3.7'
   - python: '3.6'
   - stage: deploy
-    script: 'pipenv-setup'
+    script: 'pipenv-setup sync'
     deploy:
       provider: pypi
       user: Madoshakalaka

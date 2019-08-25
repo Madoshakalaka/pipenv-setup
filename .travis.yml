@@ -14,7 +14,7 @@ jobs:
   - python: '3.6'
   - stage: deploy
     install: 'pipenv install pipenv-setup'
-    script: 'pipenv-setup'
+    script: 'pipenv-setup sync'
     after_success: ''
     deploy:
       provider: pypi
