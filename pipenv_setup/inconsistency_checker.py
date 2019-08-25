@@ -220,12 +220,20 @@ class InconsistencyChecker:
     def check_install_requires_conflict(self) -> List[Tuple[str, str, str]]:
         """
         :return: A list of conflicts in the form of (package_name, setup_config, pipfile_config), empty for no conflict
+
+        :raise ValueError: if some package in install_requires is not a pypi package in pipfile
         """
 
         conflicts = []  # type: List[Tuple[str, str, str]]
         for name, vr in self._install_requires_version_reqs.items():
             if name in self._pipfile_packages:
-                pipfile_config = self._pipfile_packages[name].replace(" ", "")
+                pipfile_config = self._pipfile_packages[name]
+                if not isinstance(pipfile_config, str):
+                    raise ValueError(
+                        "package %s in install_requires is not a pypi package in pipfile"
+                        % name
+                    )
+                pipfile_config = pipfile_config.replace(" ", "")
                 if not vr.check_compatibility(pipfile_config):
                     conflicts.append((name, str(vr), pipfile_config))
 
@@ -252,14 +260,14 @@ class InconsistencyChecker:
         :return: vcs_name, url_stripped_of_ref_egg, ref(version/branch), package name
         # todo: tests
         :raise ValueError: if can not understand link
-        >>> InconsistencyChecker._parse_vcs_link('git+https://github.com/requests/requests.git@v2.20.1#egg=requests')
+        # >>> InconsistencyChecker._parse_vcs_link('git+https://github.com/requests/requests.git@v2.20.1#egg=requests')
         ('git, 'https://github.com/requests/requests.git', 'v2.20.1', 'requests')
         """
         # todo: be less cringy
         # https://pipenv-fork.readthedocs.io/en/latest/basics.html#a-note-about-vcs-dependencies
         vcs = ""
         url = ""
-        ref = ""
+        ref = ""  # type: Optional[str]
         name = ""
 
         plus_ind = -1
@@ -291,7 +299,7 @@ class InconsistencyChecker:
             elif c == "@":
                 break
             else:
-                ref = c + ref
+                ref = c + ref  # type: ignore
         if vcs == "" or url == "" or name == "":
             raise ValueError("Can not understand link %s" % link)
 
@@ -302,5 +310,7 @@ class InconsistencyChecker:
         :return A list of conflicts, can be empty.
         """
         for link in self._dependency_links:
+            # todo: fill this
             if self._is_vcs_link(link):
                 pass
+        return []
