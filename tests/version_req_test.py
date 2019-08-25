@@ -30,6 +30,8 @@ from pipenv_setup.inconsistency_checker import _VersionReqs
         [">=1.2, !=1.3, <2.0", "~=1.3, != 1.9", False],
         [">=1.2, <2", "~=1.2", True],
         [">=1.2, <1.5", "~=1.2", True],
+        ["", "~=1.2", False],
+        ["", "*", True],
     ],
 )
 def test_check_compatibility(setup_version: str, pipfile_version: str, expected: bool):

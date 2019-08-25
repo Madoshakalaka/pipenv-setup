@@ -2,12 +2,13 @@
 check inconsistency between Pipfile and setup.py
 """
 from string import digits
-from typing import List, Dict, Tuple, Iterable
+from typing import List, Dict, Tuple, Iterable, Optional
 
 import packaging.version
 from packaging.version import Version
 
 from pipenv_setup.constants import PipfileConfig
+from pipenv_setup.constants import vcs_list
 
 
 class _VersionReqs:
@@ -146,6 +147,9 @@ class _VersionReqs:
             mapping[v] = 2 * i - 1
         return mapping
 
+    def __str__(self):
+        return self._string
+
 
 class InconsistencyChecker:
     def __init__(
@@ -164,6 +168,15 @@ class InconsistencyChecker:
         )
         self._dependency_links = dependency_links
         self._pipfile_packages = pipfile_packages
+
+    # @staticmethod
+    # def _parse_dependency_links(link) -> Tuple[str, str, str, str]:
+    #     """
+    #
+    #     :param link:
+    #     :return:
+    #     """
+    #     pass
 
     @staticmethod
     def _separate_name_version(package_string: str) -> Tuple[str, str]:
@@ -188,11 +201,11 @@ class InconsistencyChecker:
                 met_comp_ops = True
             elif c == ";":  # met other markers, which we ignore
                 break
-
-            if met_comp_ops:
-                version_reqs_string += c
-            else:
-                name += c
+            if c != " ":
+                if met_comp_ops:
+                    version_reqs_string += c
+                else:
+                    name += c
         return name.replace(" ", ""), version_reqs_string.replace(" ", "")
 
     def _parse_install_requires(
@@ -204,11 +217,90 @@ class InconsistencyChecker:
             res[name] = _VersionReqs(version_req_string)
         return res
 
-    def check_install_requires_conflict(self):
+    def check_install_requires_conflict(self) -> List[Tuple[str, str, str]]:
+        """
+        :return: A list of conflicts in the form of (package_name, setup_config, pipfile_config), empty for no conflict
+        """
 
-        no_conflict = False
+        conflicts = []  # type: List[Tuple[str, str, str]]
         for name, vr in self._install_requires_version_reqs.items():
             if name in self._pipfile_packages:
-                pipfile_config = self._pipfile_packages[name]
-                if vr.check_compatibility(pipfile_config):
-                    pass
+                pipfile_config = self._pipfile_packages[name].replace(" ", "")
+                if not vr.check_compatibility(pipfile_config):
+                    conflicts.append((name, str(vr), pipfile_config))
+
+        return conflicts
+
+    @staticmethod
+    def _is_vcs_link(link: str):
+        """
+        :param link: setup.py dependency_link style string
+
+        >>> InconsistencyChecker._is_vcs_link("git+https://github.com/django/django.git@1.11.4#egg=django")
+        True
+        >>> InconsistencyChecker._is_vcs_link("https://github.com/divio/django-cms/archive/release/3.4.x.zip")
+        False
+        >>> InconsistencyChecker._is_vcs_link("svn+https://svn.com/have/no/idea/how/svn/link/looks/like")
+        True
+        """
+        return any([link.startswith(vcs) for vcs in vcs_list])
+
+    @staticmethod
+    def _parse_vcs_link(link: str) -> Tuple[str, str, Optional[str], str]:
+        """
+        :param link: a setup.py dependency_links style vcs link
+        :return: vcs_name, url_stripped_of_ref_egg, ref(version/branch), package name
+        # todo: tests
+        :raise ValueError: if can not understand link
+        >>> InconsistencyChecker._parse_vcs_link('git+https://github.com/requests/requests.git@v2.20.1#egg=requests')
+        ('git, 'https://github.com/requests/requests.git', 'v2.20.1', 'requests')
+        """
+        # todo: be less cringy
+        # https://pipenv-fork.readthedocs.io/en/latest/basics.html#a-note-about-vcs-dependencies
+        vcs = ""
+        url = ""
+        ref = ""
+        name = ""
+
+        plus_ind = -1
+        for i, c in enumerate(link):
+            if c == "+":
+                plus_ind = i
+                break
+            else:
+                vcs += c
+
+        hash_ind = -1
+        for i in range(len(link) - 1, -1, -1):
+            c = link[i]
+            if c == "#":
+                hash_ind = i
+                break
+            else:
+                name = c + name
+        if not name.startswith("egg="):
+            raise ValueError("Can not find egg=")
+        if plus_ind == -1:
+            raise ValueError("link %s does not have <vcs_name>+" % link)
+
+        for i in range(hash_ind - 1, plus_ind - 1, -1):
+            c = link[i]
+            if c == "/":
+                ref = None
+                break
+            elif c == "@":
+                break
+            else:
+                ref = c + ref
+        if vcs == "" or url == "" or name == "":
+            raise ValueError("Can not understand link %s" % link)
+
+        return vcs, url, ref, name
+
+    def check_dependency_links_conflict(self) -> List[str]:
+        """
+        :return A list of conflicts, can be empty.
+        """
+        for link in self._dependency_links:
+            if self._is_vcs_link(link):
+                pass
