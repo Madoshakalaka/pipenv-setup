@@ -3,6 +3,7 @@ import json
 import sys
 from pathlib import Path
 from sys import stderr
+from typing import List, Union, NoReturn, Iterable
 
 import pipfile
 from colorama import Fore, init
@@ -68,20 +69,38 @@ def cmd(argv=sys.argv):
         print_help()
 
 
-def congratulate(msg: str):
+def congratulate(msg: Union[str, Iterable[str]]):
     """
     print green text to stdout
+
+    :raise TypeError: if `msg` is of wrong type
     """
-    print(Fore.GREEN + msg + Fore.RESET)
+    msgs = []  # type: List[str]
+    if isinstance(msg, str):
+        msgs = [msg]
+    elif hasattr(msg, "__iter__"):
+        for m in msg:
+            msgs.append(m)
+    else:
+        raise TypeError()
+    for m in msgs:
+        print(Fore.GREEN + m + Fore.RESET)
 
 
-def fatal_error(msg: str, exit: bool = True):
+def fatal_error(msg: Union[str, List[str]]) -> NoReturn:
     """
-    print red text to stdout then optionally exit with error code 1
+    print text or a list of text to stderr then exit with error code 1
+
+    :raise TypeError: if msg is of wrong type
     """
-    print(Fore.RED + msg + Fore.RESET)
-    if exit:
-        sys.exit(1)
+    if isinstance(msg, str):
+        print(msg, file=stderr)
+    elif isinstance(msg, list):
+        for m in msg:
+            print(m, file=stderr)
+    else:
+        raise TypeError()
+    sys.exit(1)
 
 
 def check(args):
@@ -108,7 +127,7 @@ def check(args):
         install_requires, dependency_links = setup_parser.get_install_requires_dependency_links(
             setup_code
         )
-    except ValueError as e:
+    except (ValueError, SyntaxError) as e:
         fatal_error(str(e))
 
     # fatal_error is a NoReturn function, pycharm gets confused
@@ -129,15 +148,12 @@ def check(args):
             print(e, file=stderr)
             fatal_error("dependency check failed")
     if len(reports) == 0:
-        congratulate(
-            "No version conflict or missing packages/dependencies found in setup.py!"
-        )
+        congratulate(msg_formatter.checked_no_problem())
     else:
-        fatal_error("\n".join(reports))
+        fatal_error(reports)
 
 
 def sync(args):
-
     pipfile_path, lock_file_path, setup_file_path = required_files = [
         Path("Pipfile"),
         Path("Pipfile.lock"),
@@ -165,12 +181,12 @@ def sync(args):
                     remote_package_name, remote_package_config
                 )
             except ValueError as e:
-                print(e, file=stderr)
-                print(
-                    "package %s is not synced to setup.py" % remote_package_name,
-                    file=stderr,
+                fatal_error(
+                    [
+                        str(e),
+                        "package %s is not synced to setup.py" % remote_package_name,
+                    ]
                 )
-                sys.exit(1)
             else:
                 success_count += 1
                 dependency_arguments[destination_kw].append(value)
@@ -179,19 +195,22 @@ def sync(args):
             print("Creating boilerplate setup.py...")
             setup_code = setup_filler.fill_boilerplate(dependency_arguments)
             if setup_code is None:
-                print("Can not find read setup.py template file", file=stderr)
-                sys.exit(1)
+                fatal_error("Can not find setup.py template file")
             try:
                 with open(setup_file_path, "w") as new_setup_file:
                     new_setup_file.write(setup_code)
                 blacken(str(setup_file_path))
             except OSError as e:
-                fatal_error(str(e), False)
-                fatal_error("failed to write setup.py file")
+                fatal_error([str(e), "failed to write setup.py file"])
             else:
-                print("setup.py generated")
-                print("%d packages moved from Pipfile.lock to setup.py" % success_count)
-                print("Please edit the required fields in the generated file")
+                congratulate(
+                    [
+                        "setup.py generated",
+                        "%d packages moved from Pipfile.lock to setup.py"
+                        % success_count,
+                        "Please edit the required fields in the generated file",
+                    ]
+                )
 
         else:  # all files exist. Update setup.py
             setup_updater.update_setup(dependency_arguments, setup_file_path)
@@ -199,6 +218,7 @@ def sync(args):
             print("%d packages from Pipfile.lock synced to setup.py" % success_count)
 
     else:
+        msgs = []
         for file in missing_files:
-            fatal_error(msg_formatter.missing_pipfile(file), exit=False)
-        fatal_error(msg_formatter.no_sync_performed())
+            msgs.append(msg_formatter.missing_file(file))
+        fatal_error(msgs + [msg_formatter.no_sync_performed()])

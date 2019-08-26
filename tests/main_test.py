@@ -3,11 +3,11 @@ import os
 import shutil
 from os.path import dirname
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 import pytest
 
-from pipenv_setup import setup_parser, msg_formatter
+from pipenv_setup import setup_parser, msg_formatter, main
 from pipenv_setup.main import cmd
 
 data_path = Path(dirname(__file__)) / "data"
@@ -101,24 +101,55 @@ def test_update(tmp_path, shared_datadir, source_pipfile_dirname: str):
 
 
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("nasty_0",)])
-def test_sync_file_missing(
-    capsys, tmp_path, shared_datadir, source_pipfile_dirname: str
+@pytest.mark.parametrize(
+    ("missing_filenames",),
+    [
+        [["Pipfile"]],
+        [["Pipfile", "Pipfile.lock"]],
+        [["Pipfile.lock", "setup.py"]],
+        [["Pipfile", "setup.py"]],
+    ],
+)
+def test_sync_file_missing_exit_code(
+    capfd,
+    tmp_path,
+    shared_datadir,
+    source_pipfile_dirname: str,
+    missing_filenames: List[str],
 ):
     """
-    test updating setup.py (when it already exists)
+    when Pipfile.lock is missing, return code should be one
     """
     pipfile_dir = shared_datadir / source_pipfile_dirname
-    copy_file(pipfile_dir / "Pipfile", tmp_path)
+    for filename in ["Pipfile", "Pipfile.lock", "setup.py"]:
+        file = pipfile_dir / filename
+        if filename not in missing_filenames:
+            copy_file(file, tmp_path)
     # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
     with working_directory(tmp_path):
         with pytest.raises(SystemExit) as e:
             cmd(argv=[..., "sync"])
         assert e.value.code == 1
-        captured = capsys.readouterr()
 
-        assert msg_formatter.missing_pipfile(Path("Pipfile.lock")) in captured.out
 
-        assert msg_formatter.no_sync_performed() in captured.out
+# fixme: capfd can not capture stderr on windows. How?? stderr is always empty for me
+@pytest.mark.xfail
+@pytest.mark.parametrize(("source_pipfile_dirname",), [("nasty_0",)])
+def test_sync_lock_file_missing_messages(
+    capfd, tmp_path, shared_datadir, source_pipfile_dirname: str
+):
+    """
+    when pipfile is missing, there should be error msgs
+    """
+    pipfile_dir = shared_datadir / source_pipfile_dirname
+    copy_file(pipfile_dir / "Pipfile", tmp_path)
+    # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
+    with working_directory(tmp_path):
+        with pytest.raises(SystemExit):
+            cmd(argv=[..., "sync"])
+    captured = capfd.readouterr()
+    assert msg_formatter.no_sync_performed() in captured.err
+    assert msg_formatter.missing_file(Path("Pipfile.lock")) in captured.err
 
 
 def test_help_text(capsys):
@@ -128,3 +159,121 @@ def test_help_text(capsys):
     assert "sync" in captured.out
     assert "check" in captured.out
     assert captured.err == ""
+
+
+@pytest.mark.parametrize(("source_pipfile_dirname",), [("nasty_0",)])
+@pytest.mark.parametrize(
+    ("missing_filenames",),
+    [
+        [["Pipfile"]],
+        [["Pipfile", "Pipfile.lock"]],
+        [["Pipfile.lock", "setup.py"]],
+        [["Pipfile", "setup.py"]],
+        [["Pipfile", "setup.py", "Pipfile.Lock"]],
+        [["setup.py"]],
+    ],
+)
+def test_check_file_missing_exit_code(
+    capfd,
+    tmp_path,
+    shared_datadir,
+    source_pipfile_dirname: str,
+    missing_filenames: List[str],
+):
+    """
+    when Pipfile.lock is missing, return code should be one
+    """
+    pipfile_dir = shared_datadir / source_pipfile_dirname
+    for filename in ["Pipfile", "Pipfile.lock", "setup.py"]:
+        file = pipfile_dir / filename
+        if filename not in missing_filenames:
+            copy_file(file, tmp_path)
+    # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
+    with working_directory(tmp_path):
+        with pytest.raises(SystemExit) as e:
+            cmd(argv=[..., "check"])
+        assert e.value.code == 1
+
+
+@pytest.mark.parametrize(("source_pipfile_dirname",), [("nasty_0",)])
+def test_check_file_ignore_local(
+    capsys, tmp_path, shared_datadir, source_pipfile_dirname: str
+):
+    """
+    when Pipfile.lock is missing, return code should be one
+    """
+    pipfile_dir = shared_datadir / source_pipfile_dirname
+    for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
+        copy_file(pipfile_dir / filename, tmp_path)
+    # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
+    with working_directory(tmp_path):
+        with pytest.raises(SystemExit) as e:
+            cmd(argv=[..., "check"])
+        assert e.value.code == 1
+
+        cmd(argv=[..., "check", "--ignore-local"])
+        captured = capsys.readouterr()
+        assert msg_formatter.checked_no_problem() in captured.out
+
+
+@pytest.mark.parametrize(("source_pipfile_dirname",), [("broken_0",), ("broken_1",)])
+def test_check_file_broken_setup(
+    capsys, tmp_path, shared_datadir, source_pipfile_dirname: str
+):
+    """
+    when Pipfile.lock is missing, return code should be one
+    """
+    pipfile_dir = shared_datadir / source_pipfile_dirname
+    for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
+        copy_file(pipfile_dir / filename, tmp_path)
+    # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
+    with working_directory(tmp_path):
+        with pytest.raises(SystemExit) as e:
+            cmd(argv=[..., "check", "--ignore-local"])
+        assert e.value.code == 1
+
+
+@pytest.mark.parametrize(("source_pipfile_dirname",), [("install_requires_missing_0",)])
+def test_check_file_install_requires_missing(
+    capsys, tmp_path, shared_datadir, source_pipfile_dirname: str
+):
+    """
+    when Pipfile.lock is missing, return code should be one
+    """
+    pipfile_dir = shared_datadir / source_pipfile_dirname
+    for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
+        copy_file(pipfile_dir / filename, tmp_path)
+    # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
+    with working_directory(tmp_path):
+        with pytest.raises(SystemExit) as e:
+            cmd(argv=[..., "check"])
+        assert e.value.code == 1
+
+
+@pytest.mark.parametrize(("source_pipfile_dirname",), [("lock_package_broken_0",)])
+def test_sync_lock_file_package_broken(
+    tmp_path, shared_datadir, source_pipfile_dirname: str
+):
+    """
+    when Pipfile.lock is missing, return code should be one
+    """
+    pipfile_dir = shared_datadir / source_pipfile_dirname
+    for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
+        copy_file(pipfile_dir / filename, tmp_path)
+    # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
+    with working_directory(tmp_path):
+        with pytest.raises(SystemExit) as e:
+            cmd(argv=[..., "sync"])
+        assert e.value.code == 1
+
+
+def test_wrong_use_of_congratulate():
+    with pytest.raises(TypeError):
+        # noinspection PyTypeChecker
+        main.congratulate(123)  # type: ignore
+
+
+def test_wrong_use_of_fatal_error():
+    with pytest.raises(TypeError):
+        # noinspection PyTypeChecker
+        main.fatal_error(123)  # type: ignore

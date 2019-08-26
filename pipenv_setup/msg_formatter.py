@@ -1,8 +1,8 @@
 from pathlib import Path
 
 
-def missing_pipfile(file: Path):
-    return "%s not found under current directory" % file.name
+def missing_file(file: Path):
+    return "file %s not found" % file.name
 
 
 def setup_not_found():
@@ -11,3 +11,7 @@ def setup_not_found():
 
 def no_sync_performed():
     return "can not perform sync"
+
+
+def checked_no_problem():
+    return "No version conflict or missing packages/dependencies found in setup.py!"

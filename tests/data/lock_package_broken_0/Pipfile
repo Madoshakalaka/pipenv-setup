@@ -1,5 +1,5 @@
 # https://github.com/pypa/pipfile/blob/master/examples/Pipfile
-# a nasty pipfile with assorted stuff
+# django in pipfile.lock has 'git' changed to lmfao
 
 [[source]]
 url = 'https://pypi.python.org/simple'

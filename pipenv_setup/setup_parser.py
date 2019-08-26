@@ -39,12 +39,12 @@ def get_install_requires_dependency_links(
     setup_code: str
 ) -> Tuple[List[str], List[str]]:
     """
-    :raise ValueError: if can not get 'install_requires' or 'dependency_links' keyword list in the file
+    :raise ValueError SyntaxError: if can not get 'install_requires' or 'dependency_links' keyword list in the file
 
     :param setup_code: path for setup file
     """
+    # raises syntax error
     root_node = ast.parse(setup_code)
-
     install_requires_node = get_kw_list_node(root_node, "install_requires")
     if install_requires_node is None:
         raise ValueError("keyword install_requires is not found")
