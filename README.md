@@ -75,8 +75,8 @@ it creates command line entry `$ pipenv-setup`
 run `$ pipenv-setup check`
 - checks four items
     - local package in default pipfile packages
-    - Package version requirements in `install_requires` in setup.py potentially violates that in Pipfile
-    - Package version requirements in `dependency_links` in setup.py potentially violates that in Pipfile
+    - Package version requirements in `install_requires` in setup.py that potentially violates Pipfile
+    - Package version requirements in `dependency_links` in setup.py that potentially violates Pipfile
     - Default package in pipfile missing in `install_requires` or `dependency_links` in setup.py
 - exits with non-zero code when conflict found (for use in travis-ci)
 - here is a somewhat extreme example
