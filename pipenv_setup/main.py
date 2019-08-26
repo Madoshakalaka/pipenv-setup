@@ -214,9 +214,7 @@ def sync(args):
 
         else:  # all files exist. Update setup.py
             setup_updater.update_setup(dependency_arguments, setup_file_path)
-            print("setup.py successfully updated")
-            print("%d packages from Pipfile.lock synced to setup.py" % success_count)
-
+            congratulate(msg_formatter.update_success(success_count))
     else:
         msgs = []
         for file in missing_files:

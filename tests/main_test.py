@@ -76,13 +76,16 @@ def test_generation(tmp_path, shared_datadir, source_pipfile_dirname: str):
         )
 
 
-@pytest.mark.parametrize(("source_pipfile_dirname",), [("nasty_0",)])
-def test_update(tmp_path, shared_datadir, source_pipfile_dirname: str):
+@pytest.mark.parametrize(("source_pipfile_dirname", "update_count"), [("nasty_0", 23)])
+def test_update(
+    capsys, tmp_path, shared_datadir, source_pipfile_dirname: str, update_count
+):
     """
     test updating setup.py (when it already exists)
     """
     pipfile_dir = shared_datadir / source_pipfile_dirname
-    copy_pipfiles(pipfile_dir, tmp_path)
+    for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
+        copy_file(pipfile_dir / filename, tmp_path)
     copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
     with working_directory(tmp_path):
         cmd(argv=[..., "sync"])
@@ -98,6 +101,8 @@ def test_update(tmp_path, shared_datadir, source_pipfile_dirname: str):
             kw_arg_names,
             ordering_matters=False,
         )
+    captured = capsys.readouterr()
+    assert msg_formatter.update_success(update_count) in captured.out
 
 
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("nasty_0",)])

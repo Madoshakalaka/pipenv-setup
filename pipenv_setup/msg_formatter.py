@@ -15,3 +15,13 @@ def no_sync_performed():
 
 def checked_no_problem():
     return "No version conflict or missing packages/dependencies found in setup.py!"
+
+
+def update_success(package_count: int):
+    """
+    :param package_count: The number of updated packages
+    """
+    return (
+        "setup.py successfully updated"
+        + "\n%d packages from Pipfile.lock synced to setup.py" % package_count
+    )
