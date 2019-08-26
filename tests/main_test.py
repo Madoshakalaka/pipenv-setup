@@ -76,7 +76,10 @@ def test_generation(tmp_path, shared_datadir, source_pipfile_dirname: str):
         )
 
 
-@pytest.mark.parametrize(("source_pipfile_dirname", "update_count"), [("nasty_0", 23)])
+@pytest.mark.parametrize(
+    ("source_pipfile_dirname", "update_count"),
+    [("nasty_0", 23), ("no_original_kws_0", 23)],
+)
 def test_update(
     capsys, tmp_path, shared_datadir, source_pipfile_dirname: str, update_count
 ):
@@ -86,13 +89,12 @@ def test_update(
     pipfile_dir = shared_datadir / source_pipfile_dirname
     for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
         copy_file(pipfile_dir / filename, tmp_path)
-    copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
     with working_directory(tmp_path):
         cmd(argv=[..., "sync"])
     generated_setup = tmp_path / "setup.py"
     assert generated_setup.exists()
     generated_setup_text = generated_setup.read_text()
-    expected_setup_text = (pipfile_dir / "setup.py").read_text()
+    expected_setup_text = (shared_datadir / "setup.py").read_text()
     for kw_arg_names in ("install_requires", "dependency_links"):
 
         assert compare_list_of_string_kw_arg(
@@ -137,7 +139,7 @@ def test_sync_file_missing_exit_code(
         assert e.value.code == 1
 
 
-# fixme: capfd can not capture stderr on windows. How?? stderr is always empty for me
+# fixme: capfd can not capture stderr on windows or ubuntu. How?? stderr is always empty for me
 @pytest.mark.xfail
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("nasty_0",)])
 def test_sync_lock_file_missing_messages(
@@ -265,7 +267,21 @@ def test_sync_lock_file_package_broken(
     pipfile_dir = shared_datadir / source_pipfile_dirname
     for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
         copy_file(pipfile_dir / filename, tmp_path)
-    # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
+
+    with working_directory(tmp_path):
+        with pytest.raises(SystemExit) as e:
+            cmd(argv=[..., "sync"])
+        assert e.value.code == 1
+
+
+@pytest.mark.parametrize(("source_pipfile_dirname",), [("broken_no_setup_call_0",)])
+def test_sync_no_setup_call(tmp_path, shared_datadir, source_pipfile_dirname: str):
+    """
+    when Pipfile.lock is missing, return code should be one
+    """
+    pipfile_dir = shared_datadir / source_pipfile_dirname
+    for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
+        copy_file(pipfile_dir / filename, tmp_path)
     with working_directory(tmp_path):
         with pytest.raises(SystemExit) as e:
             cmd(argv=[..., "sync"])

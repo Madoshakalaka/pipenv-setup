@@ -15,7 +15,7 @@ def update_setup(dependency_arguments, filename: Path):
     """
     Clear install_requires and dependency_links argument and fill new ones. Format the code.
 
-    :raise ValueError: when setup.py is not recognized
+    :raise ValueError: when setup.py is not recognized (malformed)
     """
     with open(str(filename), "rb") as setup_file:
         setup_bytes = setup_file.read()
@@ -25,16 +25,11 @@ def update_setup(dependency_arguments, filename: Path):
 
     setup_call_node = get_setup_call_node(root_node)
     if setup_call_node is None:
-        print("can not locate setup() function call in setup.py", file=stderr)
-        print("no dependency synced", file=stderr)
-        sys.exit()
+        raise ValueError("No setup() call found in setup.py")
     setup_call_lineno, setup_call_col_offset = (
         setup_call_node.lineno,
         setup_call_node.col_offset,
     )
-
-    if setup_call_node is None:
-        raise ValueError("can not locate setup() function call in setup.py")
 
     install_requires_lineno = -1
     install_requires_col_offset = -1
@@ -42,12 +37,8 @@ def update_setup(dependency_arguments, filename: Path):
     dependency_links_col_offset = -1
 
     for kw in ["install_requires", "dependency_links"]:
-        try:
-            setup_bytes, setup_lines = clear_kw_list(kw, setup_bytes, setup_lines)
-        except ValueError as e:
-            print(e, file=stderr)
-            print("setup.py not synced", file=stderr)
-            sys.exit()
+
+        setup_bytes, setup_lines = clear_kw_list(kw, setup_bytes, setup_lines)
 
     root_node = ast.parse("\n".join(setup_lines))
 
@@ -60,7 +51,6 @@ def update_setup(dependency_arguments, filename: Path):
         dependency_links_lineno = node.lineno
         dependency_links_col_offset = node.col_offset
 
-    # print("\n".join(setup_lines))
     if install_requires_lineno != -1:
         insert_at_lineno_col_offset(
             setup_lines,
@@ -97,8 +87,10 @@ def update_setup(dependency_arguments, filename: Path):
 
 
 def blacken(filename: str):
-    with Popen([sys.executable, "-m", "black", filename], stdout=PIPE, stderr=PIPE):
-        pass
+    with Popen(
+        [sys.executable, "-m", "black", filename], stdout=PIPE, stderr=PIPE
+    ) as p:
+        p.communicate()
 
 
 def insert_at_lineno_col_offset(

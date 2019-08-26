@@ -2,6 +2,7 @@
 See:
 https://packaging.python.org/guides/distributing-packages-using-setuptools/
 https://github.com/pypa/sampleproject
+Modified by Madoshakalaka@Github (dependency links added)
 """
 
 # io.open is needed for projects that support Python 2.7
@@ -24,7 +25,6 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 # Fields marked as "Optional" may be commented out.
 
 setup(
-    dependency_links=[],
     # This is the name of your project. The first time you publish this
     # package, this name will be registered for you. It will determine how
     # users can install this project, e.g.:
@@ -36,18 +36,18 @@ setup(
     # There are some restrictions on what makes a valid project name
     # specification here:
     # https://packaging.python.org/specifications/core-metadata/#name
-    name="pipenv-setup",  # Required
+    name="sampleproject",  # Required
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
     #
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="2.0.5",  # Required
+    version="0.0.0",  # Required
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
-    description="sync pipfile.lock to setup.py",
+    description="A sample Python project",  # Optional
     # This is an optional longer description of your project that represents
     # the body of text which users will see when they visit PyPI.
     #
@@ -72,13 +72,13 @@ setup(
     #
     # This field corresponds to the "Home-Page" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#home-page-optional
-    url="https://github.com/Madoshakalaka/pipenv-setup",  # Optional
+    url="https://github.com/pypa/sampleproject",  # Optional
     # This should be your name or the name of the organization which owns the
     # project.
-    author="Matt Yan",  # Optional
+    author="The Python Packaging Authority",  # Optional
     # This should be a valid email address corresponding to the author listed
     # above.
-    author_email="syan4@ualberta.ca",  # Optional
+    author_email="pypa-dev@googlegroups.com",  # Optional
     # Classifiers help users find your project by categorizing it.
     #
     # For a list of valid classifiers, see https://pypi.org/classifiers/
@@ -87,7 +87,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        "Development Status :: 4 - Beta",
+        "Development Status :: 3 - Alpha",
         # Indicate who your project is intended for
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Build Tools",
@@ -97,7 +97,10 @@ setup(
         # that you indicate whether you support Python 2, Python 3 or both.
         # These classifiers are *not* checked by 'pip install'. See instead
         # 'python_requires' below.
-        # "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
     ],
@@ -105,7 +108,7 @@ setup(
     # project page. What does your project relate to?
     #
     # Note that this is a string of words separated by whitespace, not a list.
-    # keywords="computer vision",  # Optional
+    keywords="sample setuptools development",  # Optional
     # You can just specify package directories manually here if your project is
     # simple. Or you can use find_packages().
     #
@@ -121,25 +124,13 @@ setup(
     # and refuse to install the project if the version does not match. If you
     # do not support Python 2, you can simplify this to '>=3.5' or similar, see
     # https://packaging.python.org/guides/distributing-packages-using-setuptools/#python-requires
-    python_requires=">=3.6",
+    python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4",
     # This field lists other packages that your project depends on to run.
     # Any package you put here will be installed by pip when your project is
     # installed, so they must be valid existing projects.
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=[
-        "appdirs==1.4.3",
-        "attrs==19.1.0",
-        "black==19.3b0",
-        "click==7.0",
-        "colorama==0.4.1",
-        "packaging==19.1",
-        "pipfile==0.0.2",
-        "pyparsing==2.4.2",
-        "six==1.12.0",
-        "toml==0.10.0",
-    ],  # Optional
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
     # syntax, for example:
@@ -148,25 +139,26 @@ setup(
     #
     # Similar to `install_requires` above, these must be valid existing
     # projects.
-    #
-    # extras_require={"dev": ["check-manifest"], "test": ["coverage"]},  # Optional
-    #
+    # extras_require={"dev": []},  # Optional
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     #
+    # Sometimes you’ll want to use packages that are properly arranged with
+    # setuptools, but are not published to PyPI. In those cases, you can specify
+    # a list of one or more dependency_links URLs where the package can
+    # be downloaded, along with some additional hints, and setuptools
+    # will find and install the package correctly.
+    # see https://python-packaging.readthedocs.io/en/latest/dependencies.html#packages-not-on-pypi
+    #
     # If using Python 2.6 or earlier, then these have to be included in
     # MANIFEST.in as well.
-    #
     # package_data={"sample": ["package_data.dat"]},  # Optional
-    #
-    #
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:
     # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files
     #
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
     # data_files=[("my_data", ["data/data_file"])],  # Optional
-    #
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # `pip` to create the appropriate form of executable for the target
@@ -174,9 +166,7 @@ setup(
     #
     # For example, the following would provide a command called `sample` which
     # executes the function `main` from this package when invoked:
-    entry_points={
-        "console_scripts": ["pipenv-setup=pipenv_setup.main:cmd"]
-    },  # Optional
+    # entry_points={"console_scripts": ["sample=sample:main"]},  # Optional
     # List additional URLs that are relevant to your project as a dict.
     #
     # This field corresponds to the "Project-URL" metadata fields:
@@ -187,9 +177,9 @@ setup(
     # maintainers, and where to support the project financially. The key is
     # what's used to render the link text on PyPI.
     project_urls={  # Optional
-        "Bug Reports": "https://github.com/Madoshakalaka/pipenv-setup/issues",
-        "Funding": "https://github.com/Madoshakalaka/pipenv-setup",
-        "Say Thanks!": "https://github.com/Madoshakalaka/pipenv-setup",
-        "Source": "https://github.com/Madoshakalaka/pipenv-setup",
+        "Bug Reports": "https://github.com/pypa/sampleproject/issues",
+        "Funding": "https://donate.pypi.org",
+        "Say Thanks!": "http://saythanks.io/to/example",
+        "Source": "https://github.com/pypa/sampleproject/",
     },
 )

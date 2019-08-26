@@ -213,7 +213,10 @@ def sync(args):
                 )
 
         else:  # all files exist. Update setup.py
-            setup_updater.update_setup(dependency_arguments, setup_file_path)
+            try:
+                setup_updater.update_setup(dependency_arguments, setup_file_path)
+            except ValueError as e:
+                fatal_error([str(e), msg_formatter.no_sync_performed()])
             congratulate(msg_formatter.update_success(success_count))
     else:
         msgs = []

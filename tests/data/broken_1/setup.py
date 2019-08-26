@@ -25,17 +25,11 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 # Fields marked as "Optional" may be commented out.
 
 setup(
-
     name="sampleproject",  # Required
-
     version="0.0.0",  # Required
-
     description="A sample Python project",  # Optional
-
     packages=find_packages(exclude=["contrib", "docs", "tests"]),  # Required
-
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4",
-
     install_requires=[
         "certifi==2017.7.27.1",
         "chardet==3.0.4",
@@ -59,11 +53,9 @@ setup(
         "xlrd==1.1.0",
         "xlwt==1.3.0",
     ],  # Optional
-
     # the first link is messed up
     dependency_links=[
         "git+https://github.com/djagg=dango",
         "https://github.com/divio/django-cms/archive/release/3.4.x.zip",
     ],
-
 )
