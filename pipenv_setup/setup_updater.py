@@ -90,7 +90,6 @@ def update_setup(dependency_arguments, filename: Path):
             setup_call_col_offset + len("setup("),
             "dependency_links=" + str(dependency_arguments["dependency_links"]) + ",",
         )
-    # print("\n".join(setup_lines))
     with open("setup.py", "w+") as file:
         file.write("\n".join(setup_lines))
 

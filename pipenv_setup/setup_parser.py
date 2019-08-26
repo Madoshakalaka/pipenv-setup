@@ -1,10 +1,19 @@
-from os.path import dirname
-from pathlib import Path
-from typing import List, Optional, Union, Tuple
 import ast
+from typing import List, Optional, Tuple
 
 
-def _parse_list_of_string(node: ast.List) -> List[str]:
+def get_kw_list_of_string_arg(setup_text: str, kw_name: str) -> List[str]:
+    """
+    :raise TypeError ValueError: when failed to get a list of strings
+    """
+    root_node = ast.parse(setup_text)
+    kw_list_node = get_kw_list_node(root_node, kw_name)
+    if kw_list_node is None:
+        raise ValueError("keyword argument %s not found" % kw_name)
+    return parse_list_of_string(kw_list_node)
+
+
+def parse_list_of_string(node: ast.List) -> List[str]:
     """
     raise: TypeError: when node is not a `ast.List`
     raise: ValueError: when node has non-string element
@@ -45,8 +54,8 @@ def get_install_requires_dependency_links(
         raise ValueError("keyword dependency_links is not found")
 
     return (
-        _parse_list_of_string(install_requires_node),
-        _parse_list_of_string(dependency_links_node),
+        parse_list_of_string(install_requires_node),
+        parse_list_of_string(dependency_links_node),
     )
 
 

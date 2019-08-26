@@ -3,7 +3,6 @@ import json
 import sys
 from pathlib import Path
 from sys import stderr
-from typing import NoReturn
 
 import pipfile
 from colorama import Fore, init
@@ -14,6 +13,7 @@ from pipenv_setup import (
     setup_updater,
     pipfile_parser,
     setup_parser,
+    msg_formatter,
 )
 
 # noinspection Mypy
@@ -75,13 +75,13 @@ def congratulate(msg: str):
     print(Fore.GREEN + msg + Fore.RESET)
 
 
-def fatal_error(msg: str, exit: bool = True) -> NoReturn:
+def fatal_error(msg: str, exit: bool = True):
     """
     print red text to stdout then optionally exit with error code 1
     """
     print(Fore.RED + msg + Fore.RESET)
-
-    sys.exit(1)
+    if exit:
+        sys.exit(1)
 
 
 def check(args):
@@ -175,7 +175,7 @@ def sync(args):
                 success_count += 1
                 dependency_arguments[destination_kw].append(value)
         if only_setup_missing:
-            print("setup.py not found under current directory")
+            print(msg_formatter.setup_not_found())
             print("Creating boilerplate setup.py...")
             setup_code = setup_filler.fill_boilerplate(dependency_arguments)
             if setup_code is None:
@@ -186,11 +186,10 @@ def sync(args):
                     new_setup_file.write(setup_code)
                 blacken(str(setup_file_path))
             except OSError as e:
-                print(e, file=stderr)
-                print("failed to write setup.py file", file=stderr)
-                sys.exit(1)
+                fatal_error(str(e), False)
+                fatal_error("failed to write setup.py file")
             else:
-                print("setup.py successfully generated under current directory")
+                print("setup.py generated")
                 print("%d packages moved from Pipfile.lock to setup.py" % success_count)
                 print("Please edit the required fields in the generated file")
 
@@ -201,6 +200,5 @@ def sync(args):
 
     else:
         for file in missing_files:
-            print("%s not found under current directory" % file, file=stderr)
-        print("can not perform sync", file=stderr)
-        sys.exit(1)
+            fatal_error(msg_formatter.missing_pipfile(file), exit=False)
+        fatal_error(msg_formatter.no_sync_performed())
