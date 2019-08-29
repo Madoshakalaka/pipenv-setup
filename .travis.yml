@@ -15,22 +15,44 @@ jobs:
 #  - python: '3.6'
 
   # osx
+#  - os: osx
+#    osx_image: xcode11
+#    language: shell
+#    before_install: python3 -m pip install pipenv
+#    install: pipenv install --dev
+#    script: pipenv run pytest --cov=pipenv_setup
+
   - os: osx
     osx_image: xcode11
     language: shell
-    before_install: python3 -m pip install pipenv
-    install: pipenv install --dev
+    addons:
+      homebrew:
+        update: true
+        packages: python3.6
+    before_install: python3.6 -m pip install pipenv
+    install: pipenv install --dev --python 3.6
     script: pipenv run pytest --cov=pipenv_setup
+
+
+#  - os: windows
+#    language: shell
+#    before_install:
+#      - choco install python
+#      - python -m pip install --upgrade pip
+#      - python -m pip install pipenv
+#    install: pipenv install --dev
+#    script: pipenv run pytest --cov=pipenv_setup
+#    env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
   - os: windows
     language: shell
     before_install:
-      - choco install python
+      - choco install python --version 3.6.8
       - python -m pip install --upgrade pip
       - python -m pip install pipenv
     install: pipenv install --dev
     script: pipenv run pytest --cov=pipenv_setup
-    env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+    env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
 
   - stage: deploy
     install: 'pipenv install --dev pipenv-setup'
