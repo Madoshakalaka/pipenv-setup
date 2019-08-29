@@ -11,6 +11,7 @@ stages:
 jobs:
   include:
   - python: '3.7'
+    after_script: echo "nice"
   - python: '3.6'
   - stage: deploy
     install: 'pipenv install --dev pipenv-setup'
