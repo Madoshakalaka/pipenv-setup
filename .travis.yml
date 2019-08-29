@@ -18,7 +18,7 @@ jobs:
   - os: osx
     osx_image: xcode11
     language: shell
-    before_install: python -m pip install --user pipenv
+    before_install: python3 -m pip install --user pipenv
 
   - os: windows
     language: shell
