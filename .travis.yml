@@ -11,21 +11,21 @@ stages:
 jobs:
   include:
   # linux
-  - python: '3.7'
-  - python: '3.6'
+#  - python: '3.7'
+#  - python: '3.6'
 
   # osx
   - os: osx
     osx_image: xcode11
     language: shell
-    before_install: python3 -m pip install --user pipenv
+    before_install: python3 -m pip install pipenv
 
   - os: windows
     language: shell
     before_install:
       - choco install python
       - python -m pip install --upgrade pip
-      - python -m pip install --user pipenv
+      - python -m pip install pipenv
     env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
   - stage: deploy
