@@ -28,8 +28,10 @@ jobs:
     addons:
       homebrew:
         update: true
-        packages: python3.6
-    before_install: python3.6 -m pip install pipenv
+    before_install:
+      - brew unlink python
+      - brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/f2a764ef944b1080be64bd88dca9a1d80130c558/Formula/python.rb
+      - python3.6 -m pip install pipenv
     install: pipenv install --dev --python 3.6
     script: pipenv run pytest --cov=pipenv_setup
 
@@ -44,15 +46,15 @@ jobs:
 #    script: pipenv run pytest --cov=pipenv_setup
 #    env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
-  - os: windows
-    language: shell
-    before_install:
-      - choco install python --version 3.6.8
-      - python -m pip install --upgrade pip
-      - python -m pip install pipenv
-    install: pipenv install --dev
-    script: pipenv run pytest --cov=pipenv_setup
-    env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
+#  - os: windows
+#    language: shell
+#    before_install:
+#      - choco install python --version 3.6.8
+#      - python -m pip install --upgrade pip
+#      - python -m pip install pipenv
+#    install: pipenv install --dev
+#    script: pipenv run pytest --cov=pipenv_setup
+#    env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
 
   - stage: deploy
     install: 'pipenv install --dev pipenv-setup'
