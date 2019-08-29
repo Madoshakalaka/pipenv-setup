@@ -19,7 +19,9 @@ jobs:
     osx_image: xcode11
     language: shell
     before_install: python3 -m pip install pipenv
-    install: 'pipenv install --dev'
+    install:
+      - pipenv install --dev
+      - pipenv shell
 
   - os: windows
     language: shell
@@ -27,7 +29,9 @@ jobs:
       - choco install python
       - python -m pip install --upgrade pip
       - python -m pip install pipenv
-    install: 'pipenv install --dev'
+    install:
+      - pipenv install --dev
+      - pipenv shell
     env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
   - stage: deploy
