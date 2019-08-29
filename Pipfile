@@ -23,6 +23,3 @@ packaging = "~=19.1"
 [scripts]
 build = 'python setup.py sdist'
 release = 'python -m twine upload dist/*'
-
-[requires]
-python_version = "3.6"
