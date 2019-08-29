@@ -11,17 +11,18 @@ stages:
 jobs:
   include:
   # linux
-#  - python: '3.7'
-#  - python: '3.6'
+  - python: '3.7'
+  - python: '3.6'
 
-  # osx
-#  - os: osx
-#    osx_image: xcode11
-#    language: shell
-#    before_install: python3 -m pip install pipenv
-#    install: pipenv install --dev
-#    script: pipenv run pytest --cov=pipenv_setup
+  # osx python 3.7
+  - os: osx
+    osx_image: xcode11
+    language: shell
+    before_install: python3 -m pip install pipenv
+    install: pipenv install --dev
+    script: pipenv run pytest --cov=pipenv_setup
 
+  # osx python 3.6
   - os: osx
     osx_image: xcode11
     language: shell
@@ -36,26 +37,27 @@ jobs:
     install: pipenv install --dev
     script: pipenv run pytest --cov=pipenv_setup
 
+  # windows python 3.7
+  - os: windows
+    language: shell
+    before_install:
+      - choco install python
+      - python -m pip install --upgrade pip
+      - python -m pip install pipenv
+    install: pipenv install --dev
+    script: pipenv run pytest --cov=pipenv_setup
+    env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
-#  - os: windows
-#    language: shell
-#    before_install:
-#      - choco install python
-#      - python -m pip install --upgrade pip
-#      - python -m pip install pipenv
-#    install: pipenv install --dev
-#    script: pipenv run pytest --cov=pipenv_setup
-#    env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
-
-#  - os: windows
-#    language: shell
-#    before_install:
-#      - choco install python --version 3.6.8
-#      - python -m pip install --upgrade pip
-#      - python -m pip install pipenv
-#    install: pipenv install --dev
-#    script: pipenv run pytest --cov=pipenv_setup
-#    env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
+  # windows python 3.6
+  - os: windows
+    language: shell
+    before_install:
+      - choco install python --version 3.6.8
+      - python -m pip install --upgrade pip
+      - python -m pip install pipenv
+    install: pipenv install --dev
+    script: pipenv run pytest --cov=pipenv_setup
+    env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
 
   - stage: deploy
     install: 'pipenv install --dev pipenv-setup'
