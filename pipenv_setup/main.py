@@ -22,6 +22,10 @@ from pipenv_setup.inconsistency_checker import InconsistencyChecker
 from pipenv_setup.setup_updater import blacken
 
 
+# todo: fix version conflict report: "is a subset of {empty string} in pipfile"
+# should report empty requirement as an asterisk
+
+
 def print_help(parser):
     parser.print_help()
     print()
