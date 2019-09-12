@@ -88,7 +88,7 @@ run `$ pipenv-setup check`
     package 'django' has branch/version 1.11.5 in dependency_links which is different than 1.11.4 listed in pipfile
     package 'requests' in pipfile but not in install_requires
     package 'e682b37' has a url in pipfile but not in dependency_links
-    
+    (exits with 1)
     ```
 
 
