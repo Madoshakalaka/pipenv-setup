@@ -80,11 +80,18 @@ run `$ pipenv-setup check`
 - exits with non-zero code when conflict found (for use in travis-ci)
 - here is a somewhat extreme example
 
+
+
     ![extreme](https://raw.githubusercontent.com/Madoshakalaka/pipenv-setup/master/readme_assets/extreme_errors.png)
 
 - provide `--ignore-local` flag to allow local packages in pipfile
 
     ![ignore-local](https://raw.githubusercontent.com/Madoshakalaka/pipenv-setup/master/readme_assets/ignore_local.PNG)
+
+```diff
+! dfsd
+# rerw
+```
 
 ### Travis CI
 

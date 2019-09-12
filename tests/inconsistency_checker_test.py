@@ -4,18 +4,35 @@ import pytest
 
 from pipenv_setup.constants import PipfileConfig
 from pipenv_setup.inconsistency_checker import InconsistencyChecker
+from pipenv_setup.inconsistency_checker import VersionConflict as VC
 
 
 @pytest.mark.parametrize(
     ("install_requires", "pipfile_packages", "actual_conflicts"),
     [
         [["numpy"], {"numpy": "*"}, []],
-        [["numpy> = 1.3"], {"numpy": "*"}, []],
-        [["numpy > = 1.3"], {"numpy": "!=1.3"}, [("numpy", ">=1.3", "!=1.3")]],
-        [["numpy==1.3", "pandas"], {"numpy": "~=1.2"}, []],
-        [["numpy==2.0.1"], {"numpy": "~=1.2"}, [("numpy", "==2.0.1", "~=1.2")]],
+        [["numpy> = 1.3"], {"numpy": "*"}, [("numpy", ">=1.3", "*", VC.COMPATIBLE)]],
+        [
+            ["numpy > = 1.3"],
+            {"numpy": "!=1.3"},
+            [("numpy", ">=1.3", "!=1.3", VC.POTENTIAL)],
+        ],
+        [
+            ["numpy==1.3", "pandas"],
+            {"numpy": "~=1.2"},
+            [("numpy", "==1.3", "~=1.2", VC.COMPATIBLE)],
+        ],
+        [
+            ["numpy==2.0.1"],
+            {"numpy": "~=1.2"},
+            [("numpy", "==2.0.1", "~=1.2", VC.DISJOINT)],
+        ],
         [["numpy>=2.0, <3.0"], {"numpy": "~=2.0"}, []],
-        [["numpy==2.1.2"], {"numpy": "~=2.0.2"}, [("numpy", "==2.1.2", "~=2.0.2")]],
+        [
+            ["numpy==2.1.2"],
+            {"numpy": "~=2.0.2"},
+            [("numpy", "==2.1.2", "~=2.0.2", VC.DISJOINT)],
+        ],
         [
             ["numpy>=2.0, <3.0; os_name='nt'", "python-opencv<2.0"],
             {"numpy": "~=2.0"},
@@ -25,8 +42,8 @@ from pipenv_setup.inconsistency_checker import InconsistencyChecker
             ["numpy>=2.0, <3.0; os_name='nt'", "python-opencv<2.0"],
             {"numpy": ">=2.0, !=2.5, <3.0", "python-opencv": "==2.3"},
             [
-                ("numpy", ">=2.0,<3.0", ">=2.0,!=2.5,<3.0"),
-                ("python-opencv", "<2.0", "==2.3"),
+                ("numpy", ">=2.0,<3.0", ">=2.0,!=2.5,<3.0", VC.POTENTIAL),
+                ("python-opencv", "<2.0", "==2.3", VC.DISJOINT),
             ],
         ],
     ],
@@ -35,7 +52,7 @@ def test__check_install_requires_conflicts(
     install_requires, pipfile_packages: Dict[str, PipfileConfig], actual_conflicts
 ):
     # noinspection PyTypeChecker
-    checker = InconsistencyChecker(install_requires, [], pipfile_packages)
+    checker = InconsistencyChecker(install_requires, [], pipfile_packages, False)
     assert checker._check_install_requires_conflict() == actual_conflicts
 
 
@@ -45,7 +62,7 @@ def test__check_install_requires_conflicts(
         [
             ["git+https://github.com/django/django.git@1.11.4#egg=django"],
             {"django": {"ref": "1.11.4", "editable": True}},
-            ["pipfile lacks 'git' key for package django"],
+            ["package 'django' lacks 'git' key in pipfile"],
         ],
         [
             ["git+https://github.com/django/django.git@1.11.4#egg=django"],
@@ -68,8 +85,8 @@ def test__check_install_requires_conflicts(
                 }
             },
             [
-                "pipfile url https://github.com/django/django.git is "
-                "different than https://github.com/dgo/dgo.git in dependency links for package django"
+                "package 'django' has url https://github.com/django/django.git in pipfile, "
+                "which is different than https://github.com/dgo/dgo.git in dependency links"
             ],
         ],
         [
@@ -82,7 +99,7 @@ def test__check_install_requires_conflicts(
                 }
             },
             [
-                "branch/version 1.11.4 listed in pipfile but not specified in dependency_links for package django"
+                "package 'django' has branch/version 1.11.4 in pipfile but it's not specified in dependency_links"
             ],
         ],
         [
@@ -94,7 +111,7 @@ def test__check_install_requires_conflicts(
                 }
             },
             [
-                "branch/version 1.11.4 listed in dependency_links but not in pipfile for package django"
+                "package 'django' has branch/version 1.11.4 in dependency_links but not in pipfile"
             ],
         ],
         [
@@ -107,15 +124,15 @@ def test__check_install_requires_conflicts(
                 }
             },
             [
-                "branch/version 1.11.4 listed in dependency_links is different "
-                "than 1.11.5 listed in pipfile for package django"
+                "package 'django' has branch/version 1.11.4 in dependency_links, which is different "
+                "than 1.11.5 listed in pipfile"
             ],
         ],
         [
             ["git+https://github.com/django/django.git@1.11.4#egg=django"],
             {"django": "==1.11.4"},
             [
-                "git package django specified in dependency_links is not a vcs package in pipfile"
+                "git package 'django' specified in dependency_links is not a vcs package in pipfile"
             ],
         ],
     ],
@@ -125,7 +142,7 @@ def test_check_dependency_links(
 ):
 
     # noinspection PyTypeChecker
-    checker = InconsistencyChecker([], dependency_links, pipfile_packages)
+    checker = InconsistencyChecker([], dependency_links, pipfile_packages, False)
     assert checker.check_dependency_links_conflict() == actual_conflicts
 
 
@@ -136,16 +153,16 @@ def test_check_dependency_links(
             ["colorama"],
             {"django": "*", "colorama": "*", "black": "==19.2b0"},
             [
-                "package django in pipfile but not in install_requires",
-                "package black in pipfile but not in install_requires",
+                "package 'django' in pipfile but not in install_requires",
+                "package 'black' in pipfile but not in install_requires",
             ],
         ],
         [
             ["colorama==1.0.1"],
             {"django": "*", "colorama": "*", "black": "==19.2b0"},
             [
-                "package django in pipfile but not in install_requires",
-                "package black in pipfile but not in install_requires",
+                "package 'django' in pipfile but not in install_requires",
+                "package 'black' in pipfile but not in install_requires",
             ],
         ],
         [
@@ -159,7 +176,7 @@ def test_check_dependency_links(
                 "colorama": "*",
                 "black": "==19.2b0",
             },
-            ["package black in pipfile but not in install_requires"],
+            ["package 'black' in pipfile but not in install_requires"],
         ],
         [
             ["black==1.0.1"],
@@ -171,7 +188,7 @@ def test_check_dependency_links(
                 "colorama": "*",
                 "black": "==19.2b0",
             },
-            ["package colorama in pipfile but not in install_requires"],
+            ["package 'colorama' in pipfile but not in install_requires"],
         ],
         [
             ["black==1.0.1", "colorama"],
@@ -191,7 +208,7 @@ def test_check_lacking_install_requires(
     install_requires, pipfile_packages: Dict[str, PipfileConfig], actual_conflicts
 ):
     # noinspection PyTypeChecker
-    checker = InconsistencyChecker(install_requires, [], pipfile_packages)
+    checker = InconsistencyChecker(install_requires, [], pipfile_packages, False)
     assert checker.check_lacking_install_requires() == actual_conflicts
 
 
@@ -207,7 +224,7 @@ def test_check_lacking_install_requires(
                     "editable": True,
                 }
             },
-            ["vcs package some-git-package in pipfile but not in dependency_links"],
+            ["vcs package 'some-git-package' in pipfile but not in dependency_links"],
         ],
         [
             ["git+https://github.com/django/django.git@1.11.4#egg=django"],
@@ -216,7 +233,7 @@ def test_check_lacking_install_requires(
                     "file": "https://github.com/divio/django-cms/archive/release/3.4.x.zip"
                 }
             },
-            ["the link of package e682b37 is in pipfile but not in dependency_links"],
+            ["package 'e682b37' has a url in pipfile but not in dependency_links"],
         ],
     ],
 )
@@ -225,5 +242,5 @@ def test_check_lacking_dependency_links(
 ):
 
     # noinspection PyTypeChecker
-    checker = InconsistencyChecker([], dependency_links, pipfile_packages)
+    checker = InconsistencyChecker([], dependency_links, pipfile_packages, False)
     assert checker.check_lacking_dependency_links() == actual_conflicts

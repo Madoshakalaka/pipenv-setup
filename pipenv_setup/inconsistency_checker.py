@@ -9,6 +9,7 @@ from packaging.version import Version
 
 from pipenv_setup import pipfile_parser
 from pipenv_setup.constants import PipfileConfig
+from pipenv_setup.constants import VersionConflict
 from pipenv_setup.constants import vcs_list
 
 
@@ -68,9 +69,10 @@ class _VersionReqs:
                     reqs.append((op_string, packaging.version.parse(ver_string)))
         return reqs
 
-    def check_compatibility(self, pipfile_reqs: str):
+    def analyze_compatibility(self, pipfile_reqs: str) -> Optional[VersionConflict]:
         """
         :param pipfile_reqs: pipfile style version string
+        :return: conflicts or None when there's no conflicts
         """
         pipfile_op_versions = self._parse_reqs(pipfile_reqs)
         mapping = self._get_version_metric_mapping(
@@ -87,8 +89,18 @@ class _VersionReqs:
             pipfile_filtered = list(
                 self._filter_metric_by_op(op, mapping[version], pipfile_filtered)
             )
-
-        return set(setup_filtered) <= set(pipfile_filtered)
+        setup_filtered_set = set(setup_filtered)
+        pipfile_filtered_set = set(pipfile_filtered)
+        if setup_filtered_set == pipfile_filtered_set:
+            return None
+        elif setup_filtered_set < pipfile_filtered_set:
+            return VersionConflict.COMPATIBLE
+        else:
+            intersection = setup_filtered_set & pipfile_filtered_set
+            if intersection:
+                return VersionConflict.POTENTIAL
+            else:
+                return VersionConflict.DISJOINT
 
     @staticmethod
     def _filter_metric_by_op(
@@ -158,11 +170,15 @@ class InconsistencyChecker:
         install_requires: List[str],
         dependency_links: List[str],
         pipfile_packages: Dict[str, PipfileConfig],
+        strict: bool,
     ):
         """
+        :param strict: whether to report compatible but not identical version requirements.
+        If strict is True. Then "==1.3" and "~=1.2" will be a failing instance
         :param pipfile_packages: default packages
         """
 
+        self._strict = strict
         self._install_requires = install_requires
         self._install_requires_version_reqs = self._parse_install_requires(
             install_requires
@@ -221,6 +237,24 @@ class InconsistencyChecker:
             res[name] = _VersionReqs(version_req_string)
         return res
 
+    @staticmethod
+    def format_version_report(
+        name: str, setup_config, pipfile_config, conflict: VersionConflict
+    ):
+        """
+        :raise ValueError when `conflict` is not recognized
+        """
+        args = (name, setup_config, pipfile_config)
+        if conflict is VersionConflict.COMPATIBLE:
+            report = "package '%s' has version string: %s in setup.py, which specifies a subset of %s in pipfile"
+        elif conflict is VersionConflict.DISJOINT:
+            report = "package '%s' has version string: %s in setup.py, which is disjoint from %s in pipfile"
+        elif conflict is VersionConflict.POTENTIAL:
+            report = "package '%s' has version string: %s in setup.py, which potentially violates %s in pipfile"
+        else:
+            raise ValueError()
+        return report % args
+
     def check_install_requires_conflict(self) -> List[str]:
         """
         :raise ValueError: if some package in install_requires is not a pypi package in pipfile
@@ -231,11 +265,21 @@ class InconsistencyChecker:
             name,
             setup_config,
             pipfile_config,
+            conflict,
         ) in self._check_install_requires_conflict():
-            report.append(
-                "package %s has version string: %s in setup.py, which can violate %s in pipfile"
-                % (name, setup_config, pipfile_config)
-            )
+            if self._strict:
+
+                report.append(
+                    self.format_version_report(
+                        name, setup_config, pipfile_config, conflict
+                    )
+                )
+            elif conflict is not VersionConflict.COMPATIBLE:
+                report.append(
+                    self.format_version_report(
+                        name, setup_config, pipfile_config, conflict
+                    )
+                )
         return report
 
     def _check_install_requires_conflict(self) -> List[Tuple[str, str, str]]:
@@ -249,7 +293,7 @@ class InconsistencyChecker:
                 pipfile_config = self._pipfile_packages[name]
                 if not pipfile_parser.is_pypi_package(pipfile_config):
                     raise ValueError(
-                        "package %s in install_requires is not a pypi package in pipfile"
+                        "package '%s' in install_requires is not a pypi package in pipfile"
                         % name
                     )
                 version_string = ""
@@ -259,8 +303,9 @@ class InconsistencyChecker:
                     if "version" in pipfile_config:
                         version_string = pipfile_config["version"]
                 version_string = version_string.replace(" ", "")
-                if not vr.check_compatibility(version_string):
-                    conflicts.append((name, str(vr), version_string))
+                conflict = vr.analyze_compatibility(version_string)
+                if conflict:
+                    conflicts.append((name, str(vr), version_string, conflict))
 
         return conflicts
 
@@ -356,28 +401,28 @@ class InconsistencyChecker:
                     config_in_pipfile = self._pipfile_packages[name]
                     if isinstance(config_in_pipfile, str):
                         msgs.append(
-                            "%s package %s specified in dependency_links is not a vcs package in pipfile"
+                            "%s package '%s' specified in dependency_links is not a vcs package in pipfile"
                             % (vcs, name)
                         )
                         continue
                     if vcs not in config_in_pipfile:
                         msgs.append(
-                            "pipfile lacks '%s' key for package %s" % (vcs, name)
+                            "package '%s' lacks '%s' key in pipfile" % (name, vcs)
                         )
                     elif url != config_in_pipfile[vcs]:
                         msgs.append(
-                            "pipfile url %s is different than %s in dependency links for package %s"
-                            % (config_in_pipfile[vcs], url, name)
+                            "package '%s' has url %s in pipfile, which is different than %s in dependency links"
+                            % (name, config_in_pipfile[vcs], url)
                         )
                     if ref is None and "ref" in config_in_pipfile:
                         msgs.append(
-                            "branch/version %s listed in pipfile but not specified in dependency_links for package %s"
-                            % (config_in_pipfile["ref"], name)
+                            "package '%s' has branch/version %s in pipfile but it's not specified in dependency_links"
+                            % (name, config_in_pipfile["ref"])
                         )
                     if ref is not None and "ref" not in config_in_pipfile:
                         msgs.append(
-                            "branch/version %s listed in dependency_links but not in pipfile for package %s"
-                            % (ref, name)
+                            "package '%s' has branch/version %s in dependency_links but not in pipfile"
+                            % (name, ref)
                         )
                     if (
                         ref is not None
@@ -385,9 +430,9 @@ class InconsistencyChecker:
                         and config_in_pipfile["ref"] != ref
                     ):
                         msgs.append(
-                            "branch/version %s listed in dependency_links is different "
-                            "than %s listed in pipfile for package %s"
-                            % (ref, config_in_pipfile["ref"], name)
+                            "package '%s' has branch/version %s in dependency_links, which is different "
+                            "than %s listed in pipfile"
+                            % (name, ref, config_in_pipfile["ref"])
                         )
 
         return msgs
@@ -401,7 +446,7 @@ class InconsistencyChecker:
             if pipfile_parser.is_pypi_package(config):
                 if name not in self._install_requires_package_names:
                     reports.append(
-                        "package %s in pipfile but not in install_requires" % name
+                        "package '%s' in pipfile but not in install_requires" % name
                     )
         return reports
 
@@ -431,14 +476,14 @@ class InconsistencyChecker:
                 if pipfile_parser.is_vcs_package(config):
                     if name not in vcs_dependency_names:
                         reports.append(
-                            "vcs package %s in pipfile but not in dependency_links"
+                            "vcs package '%s' in pipfile but not in dependency_links"
                             % name
                         )
                 elif "file" in config:
                     assert isinstance(config, dict)
                     if config["file"] not in file_dependency_links:
                         reports.append(
-                            "the link of package %s is in pipfile but not in dependency_links"
+                            "package '%s' has a url in pipfile but not in dependency_links"
                             % name
                         )
 

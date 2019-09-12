@@ -1,0 +1,19 @@
+# https://github.com/pypa/pipfile/blob/master/examples/Pipfile
+# pipenv-setup check should pass
+# while pipenv-setup check --strict fails
+
+[[source]]
+url = 'https://pypi.python.org/simple'
+verify_ssl = true
+name = 'pypi'
+
+[requires]
+python_version = '2.7'
+
+[packages]
+records = '>0.5.0'
+
+
+[dev-packages]
+nose = '*'
+unittest2 = {version = ">=1.0,<3.0", markers="python_version < '2.7.9' or (python_version >= '3.0' and python_version < '3.4')"}

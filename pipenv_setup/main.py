@@ -22,7 +22,9 @@ from pipenv_setup.inconsistency_checker import InconsistencyChecker
 from pipenv_setup.setup_updater import blacken
 
 
-def print_help():
+def print_help(parser):
+    parser.print_help()
+    print()
     print("Commands:")
     print(
         "  " + Fore.GREEN + "sync" + Fore.RESET + "\t\tsync Pipfile.lock with setup.py"
@@ -54,6 +56,12 @@ def cmd(argv=sys.argv):
     )
 
     check_parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="provide this flag to make check fail when pipfile is not identical with setup.py. By default, compatible but not identical version configs will pass. e.g. ==1.1 is compatible with ~=1.0",
+    )
+
+    check_parser.add_argument(
         "--ignore-local",
         action="store_true",
         help="allow local packages in pipfile default packages",
@@ -66,7 +74,7 @@ def cmd(argv=sys.argv):
     elif argv.command_name == "check":
         check(argv)
     else:
-        print_help()
+        print_help(parser)
 
 
 def congratulate(msg: Union[str, Iterable[str]]):
@@ -132,7 +140,9 @@ def check(args):
 
     # fatal_error is a NoReturn function, pycharm gets confused
     # noinspection PyUnboundLocalVariable
-    checker = InconsistencyChecker(install_requires, dependency_links, remote_packages)
+    checker = InconsistencyChecker(
+        install_requires, dependency_links, remote_packages, args.strict
+    )
 
     reports = []
     checks = (

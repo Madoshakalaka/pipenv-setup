@@ -223,6 +223,43 @@ def test_check_file_ignore_local(
         assert msg_formatter.checked_no_problem() in captured.out
 
 
+@pytest.mark.parametrize(("source_pipfile_dirname",), [("loose_pass_strict_fail_0",)])
+def test_check_file_strict(
+    capsys, tmp_path, shared_datadir, source_pipfile_dirname: str
+):
+    """
+    when --strict flag is passed. compatible but not identical versioning should fail
+    """
+    pipfile_dir = shared_datadir / source_pipfile_dirname
+    for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
+        copy_file(pipfile_dir / filename, tmp_path)
+    with working_directory(tmp_path):
+        with pytest.raises(SystemExit) as e:
+            cmd(argv=[..., "check", "--strict"])
+        assert e.value.code == 1
+
+        cmd(argv=[..., "check"])
+        captured = capsys.readouterr()
+        assert msg_formatter.checked_no_problem() in captured.out
+
+
+@pytest.mark.parametrize(("source_pipfile_dirname",), [("many_conflicts_0",)])
+def test_check_file_many_conflicts(
+    capsys, tmp_path, shared_datadir, source_pipfile_dirname: str
+):
+    """
+    many conflicts, return code should be one
+    """
+    pipfile_dir = shared_datadir / source_pipfile_dirname
+    for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
+        copy_file(pipfile_dir / filename, tmp_path)
+
+    with working_directory(tmp_path):
+        with pytest.raises(SystemExit) as e:
+            cmd(argv=[..., "check"])
+        assert e.value.code == 1
+
+
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("broken_0",), ("broken_1",)])
 def test_check_file_broken_setup(
     capsys, tmp_path, shared_datadir, source_pipfile_dirname: str
