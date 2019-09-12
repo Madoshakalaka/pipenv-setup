@@ -20,7 +20,8 @@ it creates command line entry `$ pipenv-setup`
 
 ## Features
 ### Beautiful pipenv flavored help
-    `$ pipenv-setup`
+
+`$ pipenv-setup`
 
    ![help](https://raw.githubusercontent.com/Madoshakalaka/pipenv-setup/master/readme_assets/help.PNG)
 
