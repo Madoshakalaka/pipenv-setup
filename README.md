@@ -115,13 +115,13 @@ run `$ pipenv-setup check`
 
     For example, `pipenv-setup check` exits with zero for the following cases
 
-    `pipfile`: `django~=1.1` `setup.py`: `django==1.2`.
+    `pipfile`: django~=1.1 `setup.py`: django==1.2.
     
-    `pipfile`: `django>1.1` `setup.py`: `django>=1.2, django<1.5`
+    `pipfile`: django>1.1 `setup.py`: django>=1.2, django<1.5
     
     Providing `--strict` allows identical requirements only, e.g.
     
-    `pipfile`: `django~=1.1` `setup.py`: `django>=1.1, django<2.0`.
+    `pipfile`: django~=1.1 `setup.py`: django>=1.1, django<2.0.
     
     Example output:
     ```
