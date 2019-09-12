@@ -83,9 +83,10 @@ run `$ pipenv-setup check`
     ```
     $ pipenv-setup check
     
+    package 'numpy' has version string: >=1.2 in setup.py, which potentially violates >=1.5 in pipfile
     package 'pywinusb' has version string: ==0.4.2 in setup.py, which is disjoint from ~=0.3.0 in pipfile
     package 'records' has version string: >=0.4.2,<0.5 in setup.py, which is disjoint from >0.5.0 in pipfile
-    package 'django' has branch/version 1.11.5 in dependency_links which is different than 1.11.4 listed in pipfile
+    package 'django' has branch/version 1.11.5 in dependency_links, which is different than 1.11.4 listed in pipfile
     package 'requests' in pipfile but not in install_requires
     package 'e682b37' has a url in pipfile but not in dependency_links
     (exits with 1)

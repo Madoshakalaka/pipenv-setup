@@ -132,6 +132,7 @@ setup(
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
+        "numpy>=1.2",
         "certifi==2017.7.27.1",
         "chardet==3.0.4",
         "docopt==0.6.2",
