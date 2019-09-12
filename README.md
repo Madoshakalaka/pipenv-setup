@@ -18,13 +18,13 @@ manually in `setup.py` and enjoy the same
 
 it creates command line entry `$ pipenv-setup`
 
-### Features
-##### Beautiful pipenv flavored help
+## Features
+### Beautiful pipenv flavored help
     `$ pipenv-setup`
 
    ![help](https://raw.githubusercontent.com/Madoshakalaka/pipenv-setup/master/readme_assets/help.PNG)
 
-##### Sync `Pipfile.lock` to `setup.py`
+### Sync `Pipfile.lock` to `setup.py`
 - supports assorted package configuration. You can have a pipfile as ugly as you want:
     ```Pipfile
     [package]
@@ -70,30 +70,70 @@ it creates command line entry `$ pipenv-setup`
     23 packages moved from Pipfile.lock to setup.py
     Please edit the required fields in the generated file
     ```
-##### Check `Pipfile` and `setup.py`
+### Checks Only
 run `$ pipenv-setup check`
 - checks four items
     - local package in default pipfile packages
     - Package version requirements in `install_requires` in setup.py that potentially violates Pipfile
-    - Package version requirements in `dependency_links` in setup.py that potentially violates Pipfile
+    - Package version requirements in `dependency_links` in setup.py that differs from Pipfile
     - Default package in pipfile missing in `install_requires` or `dependency_links` in setup.py
 - exits with non-zero code when conflict found (for use in travis-ci)
 - here is a somewhat extreme example
+    
+    ```
+    $ pipenv-setup check
+    
+    package 'pywinusb' has version string: ==0.4.2 in setup.py, which is disjoint from ~=0.3.0 in pipfile
+    package 'records' has version string: >=0.4.2,<0.5 in setup.py, which is disjoint from >0.5.0 in pipfile
+    package 'django' has branch/version 1.11.5 in dependency_links which is different than 1.11.4 listed in pipfile
+    package 'requests' in pipfile but not in install_requires
+    package 'e682b37' has a url in pipfile but not in dependency_links
+    
+    ```
 
-
-
-    ![extreme](https://raw.githubusercontent.com/Madoshakalaka/pipenv-setup/master/readme_assets/extreme_errors.png)
 
 - provide `--ignore-local` flag to allow local packages in pipfile
+    
+    ```
+    $ pipenv-setup check
+  
+    local package found in default dependency: e1839a8.
+    Do you mean to make it dev dependency    
+    (exits with 1)
+    ```
 
-    ![ignore-local](https://raw.githubusercontent.com/Madoshakalaka/pipenv-setup/master/readme_assets/ignore_local.PNG)
+    ```
+    $ pipenv-setup check --ignore-local
 
-```diff
-! dfsd
-# rerw
-```
+    No version conflict or missing packages/dependencies found in setup.py!
+    (exits with 0)
+    ```
 
-### Travis CI
+- provide `--strict` flag to only pass identical version requirements
+
+    By default `pipenv-setup check` passes when the version `setup.py` specifies is "compatible" with `Pipfile`, i.e. is a subset of it.
+
+    For example, `pipenv-setup check` exits with zero for the following cases
+
+    `pipfile`: `django~=1.1` `setup.py`: `django==1.2`.
+    
+    `pipfile`: `django>1.1` `setup.py`: `django>=1.2, django<1.5`
+    
+    Providing `--strict` allows identical requirements only, e.g.
+    
+    `pipfile`: `django~=1.1` `setup.py`: `django>=1.1, django<2.0`.
+    
+    Example output:
+    ```
+    pipenv-setup check --strict
+    
+    package pywinusb has version string: ==0.4.2 in setup.py, which specifies a subset of * in pipfile
+    package records has version string: ==0.5.2 in setup.py, which specifies a subset of >0.5.0 in pipfile
+    package requests has version string: ==2.18.4 in setup.py, which specifies a subset of  in pipfile
+    (exits with 1)
+    ```
+    
+## Travis CI
 
 You can add `pipenv-setup` to `.travis.yml` and sync automatically before every pypi release. Or just check consistency and fail the build to remind manual modification.
 
@@ -123,7 +163,7 @@ jobs:
         tags: true
 ```
 
-### Note
+## Note
 `$ pipenv-setup sync` command syncs `Pipfile.lock` to `setup.py`
 
 While `$ pipenv-setup check` checks conflicts between `Pipfile` and `setup.py` (not `Pipfile.lock`!) 

@@ -282,12 +282,14 @@ class InconsistencyChecker:
                 )
         return report
 
-    def _check_install_requires_conflict(self) -> List[Tuple[str, str, str]]:
+    def _check_install_requires_conflict(
+        self
+    ) -> List[Tuple[str, str, str, VersionConflict]]:
         """
         :return: A list of conflicts in the form of (package_name, setup_config, pipfile_config), empty for no conflict
         """
 
-        conflicts = []  # type: List[Tuple[str, str, str]]
+        conflicts = []  # type: List[Tuple[str, str, str, VersionConflict]]
         for name, vr in self._install_requires_version_reqs.items():
             if name in self._pipfile_packages:
                 pipfile_config = self._pipfile_packages[name]
