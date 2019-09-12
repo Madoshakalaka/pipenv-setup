@@ -124,9 +124,9 @@ run `$ pipenv-setup check`
     pipenv-setup check --strict
     
     package 'pywinusb' has version string: ==0.4.2 in setup.py, which specifies a subset of * in pipfile
-    package 'django' has version string: ==0.4.1 in setup.py, which is disjoint from ~=0.3.0 in pipfile
+    package 'django' has version string: >=0.5 in setup.py, which is disjoint from ~=0.3.0 in pipfile
     package 'records' has version string: ==0.5.2 in setup.py, which specifies a subset of >0.5.0 in pipfile
-    package 'requests' has version string: ==2.18.4 in setup.py, which specifies a subset of  in pipfile
+    package 'requests' has version string: ==2.18.4 in setup.py, which specifies a subset of * in pipfile
     (exits with 1)
     ```
     
