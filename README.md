@@ -114,15 +114,9 @@ run `$ pipenv-setup check`
 
     By default `pipenv-setup check` passes when the version `setup.py` specifies is "compatible" with `Pipfile`, i.e. is a subset of it.
 
-    For example, `pipenv-setup check` exits with zero for the following cases
-
-    `pipfile`: django~=1.1 `setup.py`: django==1.2.
+    For example, `pipfile`: django~=1.1 `setup.py`: django==1.2 is such a case.
     
-    `pipfile`: django>1.1 `setup.py`: django>=1.2, django<1.5
-    
-    Providing `--strict` allows identical requirements only, e.g.
-    
-    `pipfile`: django~=1.1 `setup.py`: django>=1.1, django<2.0.
+    provide `--strict` to allow only identical requirements such as `pipfile`: django~=1.1 `setup.py`: django>=1.1,<2.0
     
     Example output:
     ```
