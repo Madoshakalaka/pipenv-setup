@@ -6,6 +6,10 @@ install: python3 -m pip install .[dev]
 # only intended for Linux and Mac jobs. Windows will overwrite
 script: python3 -m tox
 
+
+before_cache:
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew cleanup; fi
+
 stages:
 - test
 - name: "PYPI release"
@@ -23,12 +27,11 @@ jobs:
   - name: "Python: 3.8"
     os: osx
     osx_image: xcode11
+    language: shell
     cache:
       directories:
         - $HOME/Library/Caches/Homebrew
-    before_cache:
-      - brew cleanup
-    language: shell
+        - /usr/local/Homebrew
     # switch to python 3.8
     addons:
       homebrew:
@@ -47,8 +50,7 @@ jobs:
     cache:
       directories:
         - $HOME/Library/Caches/Homebrew
-    before_cache:
-      - brew cleanup
+        - /usr/local/Homebrew
     # language: python will error
     language: shell
     addons:
@@ -63,8 +65,7 @@ jobs:
     cache:
       directories:
         - $HOME/Library/Caches/Homebrew
-    before_cache:
-      - brew cleanup
+        - /usr/local/Homebrew
     osx_image: xcode11
     language: shell
     addons:
@@ -84,8 +85,7 @@ jobs:
 #    cache:
 #      directories:
 #        - $HOME/Library/Caches/Homebrew
-#    before_cache:
-#      - brew cleanup
+#        - /usr/local/Homebrew
 #    language: shell
 #    # switch to python 3.5
 #    addons:
