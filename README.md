@@ -78,7 +78,7 @@ run `$ pipenv-setup check`
     - Package version requirements in `install_requires` in setup.py that potentially violates Pipfile
     - Package version requirements in `dependency_links` in setup.py that differs from Pipfile
     - Default package in pipfile missing in `install_requires` or `dependency_links` in setup.py
-- exits with non-zero code when conflict found (for use in travis-ci)
+- exits with non-zero code when conflict found (can be used in travis-ci)
 - here is a somewhat extreme example
     
     ```
@@ -129,36 +129,6 @@ run `$ pipenv-setup check`
     package 'requests' has version string: ==2.18.4 in setup.py, which specifies a subset of * in pipfile
     (exits with 1)
     ```
-    
-## Travis CI
-
-You can add `pipenv-setup` to `.travis.yml` and sync automatically before every pypi release. Or just check consistency and fail the build to remind manual modification.
-
-The following yml file is an example that runs tests on python 3.6 and 3.7 and automatically syncs pipfile dependencies to setup.py before every release. For explanation see [this gist](https://gist.github.com/Madoshakalaka/84198d7c1b042027375481dc1b8cbae8)
-```yml
-language: python
-dist: xenial
-
-install: 'pipenv install --dev'
-script: 'pytest'
-
-stages:
-- test
-- deploy
-jobs:
-  include:
-  - python: '3.7'
-  - python: '3.6'
-  - stage: deploy
-    script: 'pipenv-setup sync'
-    deploy:
-      provider: pypi
-      user: Madoshakalaka
-      password:
-        secure: xxxxxxxxx
-      on:
-        tags: true
-```
 
 ## Note
 `$ pipenv-setup sync` command syncs `Pipfile.lock` to `setup.py`
