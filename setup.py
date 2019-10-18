@@ -135,15 +135,15 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     extras_require={
         "dev": [
-            "pytest",
-            "pytest-cov",
-            "pytest-datadir",
-            "pytest-xdist",
-            "codecov",
-            "pytest-black; python_version>='3.6'",
-            "pytest-mypy",
-            "tox",
-            "tox-travis",
+            "pytest==5.2.1",
+            "pytest-cov==2.8.1",
+            "pytest-datadir==1.3.0",
+            "pytest-xdist==1.30.0",
+            "codecov==2.0.15",
+            "pytest-black==0.3.7; python_version>='3.6'",
+            "pytest-mypy==0.4.1",
+            "tox==3.14.0",
+            "tox-travis==0.12",
         ]
     },
     install_requires=[
