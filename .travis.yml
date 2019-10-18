@@ -14,29 +14,63 @@ stages:
 jobs:
   include:
   # linux
+  - python: '3.8'
   - python: '3.7'
   - python: '3.6'
 #  - python: '3.5'
+
+  # osx python 3.8
+  - name: "Python: 3.8"
+    os: osx
+    osx_image: xcode11
+    cache:
+      directories:
+        - $HOME/Library/Caches/Homebrew
+    before_cache:
+      - brew cleanup
+    language: shell
+    # switch to python 3.8
+    addons:
+      homebrew:
+        update: true
+    before_install:
+      - pyenv install 3.8-dev
+      - pyenv global 3.8-dev
+    install: python3 -m pip install --user .[dev]
+    # end switch
 
   # osx python 3.7
   - name: "Python: 3.7"
     os: osx
     # xcode 11 image comes with python 3.7
     osx_image: xcode11
+    cache:
+      directories:
+        - $HOME/Library/Caches/Homebrew
+    before_cache:
+      - brew cleanup
     # language: python will error
     language: shell
+    addons:
+      homebrew:
+        update: true
     # weird permission error without --user
     install: python3 -m pip install --user .[dev]
 
   # osx python 3.6
   - name: "Python: 3.6"
     os: osx
+    cache:
+      directories:
+        - $HOME/Library/Caches/Homebrew
+    before_cache:
+      - brew cleanup
     osx_image: xcode11
     language: shell
-    # switch to python 3.6
     addons:
       homebrew:
         update: true
+    # switch to python 3.6
     before_install:
       - pyenv install 3.6.5
       - pyenv global 3.6.5
@@ -47,6 +81,11 @@ jobs:
 #  - name: "Python: 3.5"
 #    os: osx
 #    osx_image: xcode11
+#    cache:
+#      directories:
+#        - $HOME/Library/Caches/Homebrew
+#    before_cache:
+#      - brew cleanup
 #    language: shell
 #    # switch to python 3.5
 #    addons:
@@ -57,6 +96,20 @@ jobs:
 #      - pyenv global 3.5.2
 #    install: python3 -m pip install --user .[dev]
 #    # end switch
+
+  # windows python 3.8
+  - name: "Python: 3.8"
+    os: windows
+    # language: python will error
+    language: shell
+    # install python 3.8
+    before_install:
+      - choco install python --version 3.8.0
+      - python -m pip install --upgrade pip
+    install: python -m pip install .[dev]
+    # On Windows, python3 does not exist
+    script: python -m tox
+    env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
 
   # windows python 3.7
   - name: "Python: 3.7"
