@@ -100,6 +100,7 @@ setup(
         # "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
     ],
     # This field adds keywords for your project which will appear on the
     # project page. What does your project relate to?
@@ -199,7 +200,6 @@ setup(
     # what's used to render the link text on PyPI.
     project_urls={  # Optional
         "Bug Reports": "https://github.com/Madoshakalaka/pipenv-setup/issues",
-        "Funding": "https://github.com/Madoshakalaka/pipenv-setup",
         "Say Thanks!": "https://github.com/Madoshakalaka/pipenv-setup",
         "Source": "https://github.com/Madoshakalaka/pipenv-setup",
     },
