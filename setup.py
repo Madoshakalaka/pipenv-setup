@@ -128,10 +128,21 @@ setup(
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
+    extra_requires={
+        "dev": [
+            "pytest",
+            "pytest-cov",
+            "pytest-datadir",
+            "pytest-xdist",
+            "codecov",
+            "pytest-black; python_version>='3.6'",
+            "pytest-mypy",
+        ]
+    },
     install_requires=[
         "appdirs==1.4.3",
         "attrs==19.1.0",
-        "black==19.3b0",
+        "black==19.3b0; python_version>='3.6'",
         "click==7.0",
         "colorama==0.4.1",
         "packaging==19.1",

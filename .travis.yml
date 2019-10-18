@@ -1,67 +1,98 @@
 language: python
 dist: xenial
 
-install: 'pipenv install --dev'
-script: 'python -m pytest --cov=pipenv_setup'
-after_success: 'codecov'
+# only intended for Linux and Mac jobs. Windows will overwrite install and script
+install: python3 -m pip install tox
+script: python3 -m tox
 
 stages:
 - test
-- deploy
+- "PYPI release"
+
 jobs:
   include:
   # linux
   - python: '3.7'
   - python: '3.6'
+#  - python: '3.5'
 
   # osx python 3.7
-  - os: osx
+  - name: "Python: 3.7"
+    os: osx
+    # xcode 11 image comes with python 3.7
     osx_image: xcode11
+    # language: python will error
     language: shell
-    before_install: python3 -m pip install pipenv
-    install: pipenv install --dev
-    script: pipenv run pytest --cov=pipenv_setup
 
   # osx python 3.6
-  - os: osx
+  - name: "Python: 3.6"
+    os: osx
     osx_image: xcode11
     language: shell
+    # switch to python 3.6
     addons:
       homebrew:
         update: true
     before_install:
-      - brew unlink python
-      - brew install --ignore-dependencies https://raw.githubusercontent.com/Homebrew/homebrew-core/f2a764ef944b1080be64bd88dca9a1d80130c558/Formula/python.rb
-      - brew switch python 3.6.5_1
-      - python3 -m pip install pipenv
-    install: pipenv install --dev
-    script: pipenv run pytest --cov=pipenv_setup
+      - pyenv install 3.6.5
+      - pyenv global 3.6.5
+    # end switch
+
+#  # osx python 3.5
+#  - name: "Python: 3.5"
+#    os: osx
+#    osx_image: xcode11
+#    language: shell
+#    # switch to python 3.5
+#    addons:
+#      homebrew:
+#        update: true
+#    before_install:
+#      - pyenv install 3.5.2
+#      - pyenv global 3.5.2
+#    # end switch
 
   # windows python 3.7
-  - os: windows
+  - name: "Python: 3.7"
+    os: windows
+    # language: python will error
     language: shell
+    # install python 3.7
     before_install:
-      - choco install python
+      - choco install python --version 3.7.4
       - python -m pip install --upgrade pip
-      - python -m pip install pipenv
-    install: pipenv install --dev
-    script: pipenv run pytest --cov=pipenv_setup
+    install: python -m pip install tox
+    # On Windows, python3 does not exist
+    script: python -m tox
     env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
   # windows python 3.6
-  - os: windows
+  - name: "Python: 3.6"
+    os: windows
     language: shell
     before_install:
       - choco install python --version 3.6.8
       - python -m pip install --upgrade pip
       - python -m pip install pipenv
-    install: pipenv install --dev
-    script: pipenv run pytest --cov=pipenv_setup
+    install: python -m pip install tox
+    script: python -m tox
     env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
 
-  - stage: deploy
+#  # windows python 3.5
+#  - name: "Python: 3.5"
+#    os: windows
+#    language: shell
+#    before_install:
+#      - choco install python --version 3.5.4
+#      - python -m pip install --upgrade pip
+#      - python -m pip install pipenv
+#    install: python -m pip install tox
+#    script: python -m tox
+#    env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
+
+  - stage: "PYPI release"
     install: 'pipenv install --dev pipenv-setup'
-    script: 'pipenv-setup sync'
+    script: 'pipenv-setup check'
     after_success: ''
     deploy:
       provider: pypi
