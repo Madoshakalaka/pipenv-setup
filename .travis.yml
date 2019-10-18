@@ -152,7 +152,7 @@ jobs:
   - stage: "PYPI release"
     install: 'pipenv install --dev pipenv-setup'
     #    meta problem: can not simply use pipenv-setup here
-    script: 'pipenv run update-deps'
+    script: 'pipenv run update-deps && pipenv-setup check'
     after_success: ''
     deploy:
       provider: pypi
