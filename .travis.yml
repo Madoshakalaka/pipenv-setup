@@ -1,8 +1,9 @@
+sudo: true
 language: python
 dist: xenial
 
 # only intended for Linux and Mac jobs. Windows will overwrite install and script
-install: python3 -m pip install .[dev]
+install: python3 -m pip install --user .[dev]
 script: python3 -m tox
 
 stages:
