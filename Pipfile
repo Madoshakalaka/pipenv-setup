@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pipenv-setup = {path = ".",editable = true}
+pipenv-setup = {editable = true,path = "."}
 pytest = "~=5.1"
 pytest-mypy = "~=0.3"
 pytest-cov = "~=2.7"
@@ -23,5 +23,9 @@ colorama = "~=0.4"
 packaging = "~=19.1"
 
 [scripts]
+# can not use pipenv-setup sync directly
+# really meta: if dependency is changed in pipfile.lock, pipenv-setup won't even start because of wrong version of
+# dependencies
+update-deps = './update-deps.sh'
 build = 'python setup.py sdist'
 release = 'python -m twine upload dist/*'
