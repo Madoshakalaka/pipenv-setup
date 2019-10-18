@@ -133,7 +133,7 @@ setup(
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    extra_requires={
+    extras_require={
         "dev": [
             "pytest",
             "pytest-cov",
