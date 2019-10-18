@@ -7,8 +7,8 @@ script: python3 -m tox
 
 stages:
 - test
-- "PYPI release"
-  if: branch = master AND type = push
+- name: "PYPI release"
+  if: branch = master && type = push
 
 jobs:
   include:
