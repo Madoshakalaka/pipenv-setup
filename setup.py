@@ -142,6 +142,7 @@ setup(
             "codecov",
             "pytest-black; python_version>='3.6'",
             "pytest-mypy",
+            "tox",
             "tox-travis",
         ]
     },
