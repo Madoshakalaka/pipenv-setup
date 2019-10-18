@@ -1,8 +1,9 @@
 language: python
 dist: xenial
 
-# only intended for Linux and Mac jobs. Windows will overwrite install and script
-install: python3 -m pip install --user .[dev]
+# only intended for Linux jobs. Windows and Mac will overwrite
+install: python3 -m pip install .[dev]
+# only intended for Linux and Mac jobs. Windows will overwrite
 script: python3 -m tox
 
 stages:
@@ -24,6 +25,8 @@ jobs:
     osx_image: xcode11
     # language: python will error
     language: shell
+    # weird permission error without --user
+    install: python3 -m pip install --user .[dev]
 
   # osx python 3.6
   - name: "Python: 3.6"
@@ -37,6 +40,7 @@ jobs:
     before_install:
       - pyenv install 3.6.5
       - pyenv global 3.6.5
+    install: python3 -m pip install --user .[dev]
     # end switch
 
 #  # osx python 3.5
@@ -51,6 +55,7 @@ jobs:
 #    before_install:
 #      - pyenv install 3.5.2
 #      - pyenv global 3.5.2
+#    install: python3 -m pip install --user .[dev]
 #    # end switch
 
   # windows python 3.7
