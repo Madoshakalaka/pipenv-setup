@@ -2,7 +2,7 @@ language: python
 dist: xenial
 
 # only intended for Linux and Mac jobs. Windows will overwrite install and script
-install: python3 -m pip install tox
+install: python3 -m pip install .[dev]
 script: python3 -m tox
 
 stages:
@@ -62,7 +62,7 @@ jobs:
     before_install:
       - choco install python --version 3.7.4
       - python -m pip install --upgrade pip
-    install: python -m pip install tox
+    install: python -m pip install .[dev]
     # On Windows, python3 does not exist
     script: python -m tox
     env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
@@ -75,7 +75,7 @@ jobs:
       - choco install python --version 3.6.8
       - python -m pip install --upgrade pip
       - python -m pip install pipenv
-    install: python -m pip install tox
+    install: python -m pip install .[dev]
     script: python -m tox
     env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
 
@@ -87,7 +87,7 @@ jobs:
 #      - choco install python --version 3.5.4
 #      - python -m pip install --upgrade pip
 #      - python -m pip install pipenv
-#    install: python -m pip install tox
+#    install: python -m pip install .[dev]
 #    script: python -m tox
 #    env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
 
