@@ -1,6 +1,7 @@
 build
 dist
 .mypy_cache/**
-*.egg-info
+*.egg-info/
 __pycache__/
-.tox
+.tox/
+.coverage
