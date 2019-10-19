@@ -61,7 +61,7 @@ def test_generation(tmp_path, shared_datadir, source_pipfile_dirname: str):
     pipfile_dir = shared_datadir / source_pipfile_dirname
     copy_pipfiles(pipfile_dir, tmp_path)
     with working_directory(tmp_path):
-        cmd(argv=[..., "sync"])
+        cmd(argv=["", "sync"])
     generated_setup = tmp_path / "setup.py"
     assert generated_setup.exists()
     generated_setup_text = generated_setup.read_text()
@@ -273,7 +273,7 @@ def test_check_file_broken_setup(
     # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
     with working_directory(tmp_path):
         with pytest.raises(SystemExit) as e:
-            cmd(argv=[..., "check", "--ignore-local"])
+            cmd(argv=["", "check", "--ignore-local"])
         assert e.value.code == 1
 
 
@@ -314,14 +314,14 @@ def test_sync_lock_file_package_broken(
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("broken_no_setup_call_0",)])
 def test_sync_no_setup_call(tmp_path, shared_datadir, source_pipfile_dirname: str):
     """
-    when Pipfile.lock is missing, return code should be one
+    when setup call is not found, return code should be one
     """
     pipfile_dir = shared_datadir / source_pipfile_dirname
     for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
         copy_file(pipfile_dir / filename, tmp_path)
     with working_directory(tmp_path):
         with pytest.raises(SystemExit) as e:
-            cmd(argv=[..., "sync"])
+            cmd(argv=["", "sync"])
         assert e.value.code == 1
 
 

@@ -1,0 +1,10 @@
+# https://github.com/pypa/pipfile/blob/master/examples/Pipfile
+# a nasty pipfile with assorted stuff
+
+[[source]]
+url = 'https://pypi.python.org/simple'
+verify_ssl = true
+name = 'pypi'
+
+[packages]
+requests = { extras = ['socks'] }

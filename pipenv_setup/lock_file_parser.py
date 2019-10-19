@@ -1,4 +1,6 @@
 from typing import Tuple, Dict
+from vistir.compat import Path
+from requirementslib import Lockfile, Requirement
 
 from pipenv_setup.constants import LockConfig
 
@@ -16,8 +18,10 @@ def is_remote_package(config: LockConfig) -> bool:
 
 def format_remote_package(package_name: str, config: LockConfig) -> Tuple[str, str]:
     """
-    format and return a string that can be put into the square brackets
+    format and return a string that can be put into either install_requires or dependency_links
 
+    :param package_name:
+    :param config:
     :return: Tuple[keyword_target, list_argument]
     :raise ValueError: if a package config is not understood
     """
@@ -26,10 +30,12 @@ def format_remote_package(package_name: str, config: LockConfig) -> Tuple[str, s
     if "file" in config:  # remote built distribution '.zip' file for example
         return "dependency_links", config["file"]
     if "version" in config:  # pypi package
-        dependency_string = package_name + config["version"]
-        if "markers" in config:
-            dependency_string += "; " + config["markers"]
-        return "install_requires", dependency_string
+        return (
+            "install_requires",
+            Requirement.from_pipfile(package_name, config).as_line(
+                include_hashes=False
+            ),
+        )
     else:  # vcs
         if "git" in config:
             vcs = "git"
@@ -51,14 +57,16 @@ def format_remote_package(package_name: str, config: LockConfig) -> Tuple[str, s
 
 
 def get_default_packages(
-    lock_data: dict
+    lockfile_path: Path
 ) -> Tuple[Dict[str, LockConfig], Dict[str, LockConfig]]:
     """
     return local packages and remote packages in default packages (not dev)
     """
     local_packages: Dict[str, LockConfig] = {}
     remote_packages: Dict[str, LockConfig] = {}
-    for package_name, config in lock_data["default"].items():
+    for package_name, config in (
+        Lockfile.create(lockfile_path.parent).get_deps().items()
+    ):
         if is_remote_package(config):
             remote_packages[package_name] = config
         else:

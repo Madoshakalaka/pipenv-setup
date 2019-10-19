@@ -18,9 +18,11 @@ tox-travis = "*"
 
 [packages]
 pipfile = "~=0.0"
-black = "==19.3b0"
+black = {markers = "python_version>='3.6'",version = "==19.3b0"}
 colorama = "~=0.4"
 packaging = "~=19.1"
+requirementslib = "~=1.5"
+vistir = "~=0.4"
 
 [scripts]
 # can not use pipenv-setup sync directly

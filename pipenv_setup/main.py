@@ -1,7 +1,7 @@
 import argparse
 import json
 import sys
-from pathlib import Path
+from vistir.compat import Path
 from sys import stderr
 from typing import List, Union, NoReturn, Iterable
 
@@ -38,7 +38,8 @@ def print_help(parser):
         + Fore.BLUE
         + "check"
         + Fore.RESET
-        + "\t\tcheck whether Pipfile is consistent with setup.py.\n  \t\tNon-zero exit code if there is inconsistency\n  \t\t(package missing; version incompatible)"
+        + "\t\tcheck whether Pipfile is consistent with setup.py.\n  \t\tNon-zero exit code"
+        " if there is inconsistency\n  \t\t(package missing; version incompatible)"
     )
 
 
@@ -56,13 +57,15 @@ def cmd(argv=sys.argv):
 
     check_parser = subparsers.add_parser(
         "check",
-        help="check whether Pipfile is consistent with setup.py. None zero exit code if there is inconsistency (package missing; version incompatible)",
+        help="check whether Pipfile is consistent with setup.py."
+        " None zero exit code if there is inconsistency (package missing; version incompatible)",
     )
 
     check_parser.add_argument(
         "--strict",
         action="store_true",
-        help="provide this flag to make check fail when pipfile is not identical with setup.py. By default, compatible but not identical version configs will pass. e.g. ==1.1 is compatible with ~=1.0",
+        help="provide this flag to make check fail when pipfile is not identical with setup.py."
+        " By default, compatible but not identical version configs will pass. e.g. ==1.1 is compatible with ~=1.0",
     )
 
     check_parser.add_argument(
@@ -168,22 +171,19 @@ def check(args):
 
 
 def sync(args):
-    pipfile_path, lock_file_path, setup_file_path = required_files = [
+    pipfile_path, lockfile_path, setup_file_path = required_files = [
         Path("Pipfile"),
         Path("Pipfile.lock"),
         Path("setup.py"),
     ]
 
-    # found_files = tuple(filter(Path.exists, required_files))
     missing_files = tuple(filter(lambda x: not x.exists(), required_files))
     only_setup_missing = len(missing_files) == 1 and not setup_file_path.exists()
 
     if not missing_files or only_setup_missing:
         dependency_arguments = {"dependency_links": [], "install_requires": []}
-        with open(lock_file_path) as lock_file:
-            lock_file_data = json.load(lock_file)
         local_packages, remote_packages = lock_file_parser.get_default_packages(
-            lock_file_data
+            lockfile_path
         )
         for local_package in local_packages:
             print("package %s is local, omitted in setup.py" % local_package)
