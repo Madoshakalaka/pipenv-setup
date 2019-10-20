@@ -1,7 +1,8 @@
 from typing import Tuple, Dict
 
-# noinspection Mypy
-from pipfile import Pipfile
+import pipfile
+from vistir.compat import Path
+from requirementslib import Pipfile
 
 from pipenv_setup.constants import PipfileConfig, vcs_list
 
@@ -45,14 +46,14 @@ def is_remote_package(config: PipfileConfig) -> bool:
 
 
 def get_default_packages(
-    parsed_pipfile: Pipfile
-) -> Tuple[Dict[str, PipfileConfig], Dict[str, PipfileConfig]]:
+    pipfile_path
+):  # type: (Path) -> Tuple[Dict[str, PipfileConfig], Dict[str, PipfileConfig]]
     """
     return local packages and remote packages in default packages (not dev)
     """
     local_packages: Dict[str, PipfileConfig] = {}
     remote_packages: Dict[str, PipfileConfig] = {}
-    for package_name, config in parsed_pipfile.data["default"].items():
+    for package_name, config in pipfile.load(pipfile_path).data["default"].items():
         if is_remote_package(config):
             remote_packages[package_name] = config
         else:

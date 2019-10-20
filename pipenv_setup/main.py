@@ -124,9 +124,8 @@ def check(args):
     if not Path("setup.py").exists():
         fatal_error("setup.py not found")
 
-    parsed_pipfile = pipfile.load(Path("Pipfile"))
     local_packages, remote_packages = pipfile_parser.get_default_packages(
-        parsed_pipfile
+        Path("Pipfile")
     )
 
     if local_packages and not args.ignore_local:
