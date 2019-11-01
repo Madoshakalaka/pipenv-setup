@@ -18,7 +18,7 @@ autopep8 = "~=1.4"
 
 [packages]
 pipfile = "~=0.0"
-black = {markers = "python_version>='3.6'",version = "==19.10b0"}
+black = {markers = "python_version>='3.6'",version = ">=19.3b0"}
 colorama = "~=0.4"
 packaging = "~=19.1"
 requirementslib = "~=1.5"
@@ -35,3 +35,6 @@ six = "~=1.12"
 update-deps = './update-deps.sh'
 build = 'python setup.py sdist'
 release = 'python -m twine upload dist/*'
+
+[pipenv]
+allow_prereleases = true

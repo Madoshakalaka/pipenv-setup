@@ -37,7 +37,7 @@ def parse_list_of_string(node):  # type: (ast.List) -> List[str]
 
 def get_install_requires_dependency_links(
     setup_code,
-):  # type: (str) -> Tuple[List[str], List[str]]
+): # type: (str) -> Tuple[List[str], List[str]]
     """
     :raise ValueError SyntaxError: if can not get 'install_requires' or 'dependency_links' keyword list in the file
 
