@@ -22,4 +22,4 @@ Do not manually change dependencies or use `$ pipenv-setup sync` directly to cha
 
 Run `$ pipenv run update-deps` instead
 
-It installs old dependencies first just to run `pipenv-setup`
+It installs old dependencies first just to run `$ pipenv-setup sync` and installs back new dependencies
