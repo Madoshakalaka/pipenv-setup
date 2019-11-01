@@ -145,4 +145,4 @@ There is no philosophy behind this asymmetry and it makes a lot of sense to allo
 
 ## Contributing
 
-If you'd like to contribute to `pipenv-setup`. See [contribution Guide](CONTRIBUTING.md)
+If you'd like to contribute to `pipenv-setup`. See [Contribution Guide](CONTRIBUTING.md)
