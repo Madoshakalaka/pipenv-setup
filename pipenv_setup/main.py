@@ -1,12 +1,10 @@
 import argparse
-import json
 import sys
-from vistir.compat import Path
 from sys import stderr
 from typing import List, Union, NoReturn, Iterable
 
-import pipfile
 from colorama import Fore, init
+from vistir.compat import Path
 
 from pipenv_setup import (
     lock_file_parser,
@@ -18,34 +16,21 @@ from pipenv_setup import (
 )
 
 # noinspection Mypy
-from pipenv_setup.inconsistency_checker import InconsistencyChecker
-from pipenv_setup.setup_updater import blacken
-
+from .inconsistency_checker import InconsistencyChecker
+from .setup_updater import blacken
+from . import msg_formatter
 
 # todo: fix version conflict report: "is a subset of {empty string} in pipfile"
 # should report empty requirement as an asterisk
 
 
-def print_help(parser):
-    parser.print_help()
-    print()
-    print("Commands:")
-    print(
-        "  " + Fore.GREEN + "sync" + Fore.RESET + "\t\tsync Pipfile.lock with setup.py"
-    )
-    print(
-        "  "
-        + Fore.BLUE
-        + "check"
-        + Fore.RESET
-        + "\t\tcheck whether Pipfile is consistent with setup.py.\n  \t\tNon-zero exit code"
-        " if there is inconsistency\n  \t\t(package missing; version incompatible)"
-    )
-
-
 def cmd(argv=sys.argv):
     init()
-    parser = argparse.ArgumentParser(description="sync Pipfile.lock with setup.py")
+    parser = argparse.ArgumentParser(
+        description="sync Pipfile.lock with setup.py",
+        formatter_class=argparse.RawTextHelpFormatter,
+        epilog=msg_formatter.colorful_help(),
+    )
 
     subparsers = parser.add_subparsers(dest="command_name")
 
@@ -57,8 +42,8 @@ def cmd(argv=sys.argv):
 
     check_parser = subparsers.add_parser(
         "check",
-        help="check whether Pipfile is consistent with setup.py."
-        " None zero exit code if there is inconsistency (package missing; version incompatible)",
+        help="check whether Pipfile is consistent with setup.py.\n"
+        " None zero exit code if there is inconsistency\n (package missing; version incompatible)",
     )
 
     check_parser.add_argument(
@@ -81,7 +66,7 @@ def cmd(argv=sys.argv):
     elif argv.command_name == "check":
         check(argv)
     else:
-        print_help(parser)
+        parser.print_help()
 
 
 def congratulate(msg: Union[str, Iterable[str]]):

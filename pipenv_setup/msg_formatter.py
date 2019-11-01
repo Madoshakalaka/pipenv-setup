@@ -1,4 +1,30 @@
+"""
+All kinds of messages pipenv-setup prints to console
+"""
+
 from pathlib import Path
+from colorama import Fore
+
+
+def colorful_help():
+    string = ""
+    string += "Commands:\n"
+    string += (
+        "  "
+        + Fore.GREEN
+        + "sync"
+        + Fore.RESET
+        + "\t\tsync Pipfile.lock with setup.py\n"
+    )
+    string += (
+        "  "
+        + Fore.BLUE
+        + "check"
+        + Fore.RESET
+        + "\t\tcheck whether Pipfile is consistent with setup.py.\n  \t\tNon-zero exit code"
+        " if there is inconsistency\n  \t\t(package missing; version incompatible)\n"
+    )
+    return string
 
 
 def missing_file(file: Path):
