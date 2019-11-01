@@ -13,7 +13,7 @@ before_cache:
 stages:
 - test
 - name: "PYPI release"
-  if: branch = master
+  if: branch = master && type = push
 
 jobs:
   include:
