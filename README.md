@@ -142,3 +142,7 @@ This means `sync` will copy pinned versions from `Pipfile.lock`. This ensures th
 While `check` allows more relaxed constraints (when you have semantic versioning in pipfile)
 
 There is no philosophy behind this asymmetry and it makes a lot of sense to allow more user choice: add `sync --pipfile` and `check --lock` functionality. I welcome a feature request or PR :)
+
+## Contributing
+
+If you'd like to contribute to `pipenv-setup`. See [contribution Guide](CONTRIBUTING.md)
