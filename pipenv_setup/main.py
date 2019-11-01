@@ -138,9 +138,10 @@ def check(args):
     with open("setup.py") as setup_file:
         setup_code = setup_file.read()
     try:
-        install_requires, dependency_links = setup_parser.get_install_requires_dependency_links(
-            setup_code
-        )
+        (
+            install_requires,
+            dependency_links,
+        ) = setup_parser.get_install_requires_dependency_links(setup_code)
     except (ValueError, SyntaxError) as e:
         fatal_error(str(e))
 

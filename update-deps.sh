@@ -3,4 +3,4 @@
 pip install -e .
 pipenv-setup sync
 # switch back
-pipenv update
+pipenv install --dev

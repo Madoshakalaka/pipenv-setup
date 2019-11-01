@@ -46,7 +46,7 @@ def is_remote_package(config: PipfileConfig) -> bool:
 
 
 def get_default_packages(
-    pipfile_path
+    pipfile_path,
 ):  # type: (Path) -> Tuple[Dict[str, PipfileConfig], Dict[str, PipfileConfig]]
     """
     return local packages and remote packages in default packages (not dev)
