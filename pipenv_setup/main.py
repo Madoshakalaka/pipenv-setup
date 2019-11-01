@@ -18,7 +18,6 @@ from pipenv_setup import (
 # noinspection Mypy
 from .inconsistency_checker import InconsistencyChecker
 from .setup_updater import blacken
-from . import msg_formatter
 
 # todo: fix version conflict report: "is a subset of {empty string} in pipfile"
 # should report empty requirement as an asterisk
@@ -34,10 +33,15 @@ def cmd(argv=sys.argv):
 
     subparsers = parser.add_subparsers(dest="command_name")
 
-    # subparsers.required = True
-
     sync_parser = subparsers.add_parser(
         "sync", help="sync dependencies from Pipfile.lock to setup.py"
+    )
+
+    sync_parser.add_argument(
+        "-d",
+        "--dev",
+        action="store_true",
+        help="provide this flag to also sync development packages to extras [dev] in setup.py",
     )
 
     check_parser = subparsers.add_parser(
@@ -47,6 +51,7 @@ def cmd(argv=sys.argv):
     )
 
     check_parser.add_argument(
+        "-s",
         "--strict",
         action="store_true",
         help="provide this flag to make check fail when pipfile is not identical with setup.py."
@@ -54,6 +59,7 @@ def cmd(argv=sys.argv):
     )
 
     check_parser.add_argument(
+        "-i",
         "--ignore-local",
         action="store_true",
         help="allow local packages in pipfile default packages",

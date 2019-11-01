@@ -57,13 +57,13 @@ def format_remote_package(package_name: str, config: LockConfig) -> Tuple[str, s
 
 
 def get_default_packages(
-    lockfile_path: Path,
-) -> Tuple[Dict[str, LockConfig], Dict[str, LockConfig]]:
+    lockfile_path,
+):  # type: (Path) -> Tuple[Dict[str, LockConfig], Dict[str, LockConfig]]
     """
     return local packages and remote packages in default packages (not dev)
     """
-    local_packages: Dict[str, LockConfig] = {}
-    remote_packages: Dict[str, LockConfig] = {}
+    local_packages = {}  # type: Dict[str, LockConfig]
+    remote_packages = {}  # type: Dict[str, LockConfig]
     for package_name, config in (
         Lockfile.create(lockfile_path.parent).get_deps().items()
     ):

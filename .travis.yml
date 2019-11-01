@@ -152,6 +152,7 @@ jobs:
   - stage: "PYPI release"
     install: 'pip install pipenv-setup'
     after_success: ''
+    script: ""
     before_deploy: 'pipenv-setup sync && pipenv-setup check'
     deploy:
       provider: pypi
