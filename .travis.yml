@@ -150,9 +150,8 @@ jobs:
 #    env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
 
   - stage: "PYPI release"
-    install: 'pipenv install --dev pipenv-setup'
-    #    meta problem: can not simply use pipenv-setup here
-    script: 'pipenv run update-deps && pipenv-setup check'
+    install: 'pip install pipenv-setup'
+    script: 'pipenv-setup sync && pipenv-setup check'
     after_success: ''
     deploy:
       provider: pypi

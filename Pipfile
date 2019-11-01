@@ -24,9 +24,5 @@ requirementslib = "~=1.5"
 vistir = "~=0.4"
 
 [scripts]
-# can not use pipenv-setup sync directly
-# really meta: if dependency is changed in pipfile.lock, pipenv-setup won't even start because of wrong version of
-# dependencies
-update-deps = './update-deps.sh'
 build = 'python setup.py sdist'
 release = 'python -m twine upload dist/*'

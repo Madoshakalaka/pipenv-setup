@@ -14,4 +14,6 @@ Optionally, if you have python 3.6, python 3.7, python 3.8 installed
 
 # Pull Request
 
-Upon pull request, travis will run tests on python 3.6/3.7/3.8 across 3 Operating Systems. (9 tests in total)
+Upon pull request, travis will run tox tests on python 3.6/3.7/3.8 across 3 Operating Systems.(9 tests in total)
+
+Tox also tests packaging from `setup.py`. Be sure to run `pipenv-setup sync` to update `setup.py` before a pull request.
