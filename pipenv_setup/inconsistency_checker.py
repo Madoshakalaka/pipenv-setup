@@ -154,7 +154,7 @@ class _VersionReqs:
         """
 
         mapping = dict()  # type: Dict[Version, int]
-        for i, v in enumerate([...] + sorted(list(set(versions)))):
+        for i, v in enumerate([""] + sorted(list(set(versions)))):
             if i == 0:
                 continue
             mapping[v] = 2 * i - 1

@@ -3,6 +3,7 @@
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/pipenv-setup.svg)](https://pypi.python.org/pypi/pipenv-setup/)
 [![codecov](https://codecov.io/gh/Madoshakalaka/pipenv-setup/branch/master/graph/badge.svg)](https://codecov.io/gh/Madoshakalaka/pipenv-setup)
 [![PyPI version](https://badge.fury.io/py/pipenv-setup.svg)](https://badge.fury.io/py/pipenv-setup)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Sync dependencies in Pipfile.lock to setup.py
 
@@ -61,6 +62,21 @@ it creates command line entry `$ pipenv-setup`
             "https://github.com/divio/django-cms/archive/release/3.4.x.zip",
         ],
     ```
+- provide `--dev` flag to sync development packages to `extras_require`
+    ```
+    $ pipenv-setup sync --dev
+    
+    setup.py successfully updated
+    1 default packages from Pipfile.lock synced to setup.py
+    1 dev packages from Pipfile.lock synced to setup.py
+    ```
+    ```
+    # produced setup.py
+
+    extras_require={"dev": ["pytest==1.1.3",]},
+    install_requires=["xml-subsetter==0.0.1"],
+    ```
+  
 - [Blackened](https://github.com/psf/black) setup.py file.
 - [Template](https://github.com/pypa/sampleproject/blob/master/setup.py) generation with filled dependencies in the absence of a setup file.
 

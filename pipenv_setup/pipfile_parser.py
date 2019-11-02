@@ -2,7 +2,6 @@ from typing import Tuple, Dict
 
 import pipfile
 from vistir.compat import Path
-from requirementslib import Pipfile
 
 from pipenv_setup.constants import PipfileConfig, vcs_list
 
@@ -51,8 +50,8 @@ def get_default_packages(
     """
     return local packages and remote packages in default packages (not dev)
     """
-    local_packages: Dict[str, PipfileConfig] = {}
-    remote_packages: Dict[str, PipfileConfig] = {}
+    local_packages = {}  # type: Dict[str, PipfileConfig]
+    remote_packages = {}  # type: Dict[str, PipfileConfig]
     for package_name, config in pipfile.load(pipfile_path).data["default"].items():
         if is_remote_package(config):
             remote_packages[package_name] = config

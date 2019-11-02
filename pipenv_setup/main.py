@@ -7,7 +7,7 @@ from colorama import Fore, init
 from vistir.compat import Path
 
 from pipenv_setup import (
-    lock_file_parser,
+    lockfile_parser,
     setup_filler,
     setup_updater,
     pipfile_parser,
@@ -17,7 +17,7 @@ from pipenv_setup import (
 
 # noinspection Mypy
 from .inconsistency_checker import InconsistencyChecker
-from .setup_updater import blacken
+from .setup_updater import format_file
 
 # todo: fix version conflict report: "is a subset of {empty string} in pipfile"
 # should report empty requirement as an asterisk
@@ -161,7 +161,7 @@ def check(args):
         fatal_error(reports)
 
 
-def sync(args):
+def sync(argv):
     pipfile_path, lockfile_path, setup_file_path = required_files = [
         Path("Pipfile"),
         Path("Pipfile.lock"),
@@ -172,17 +172,33 @@ def sync(args):
     only_setup_missing = len(missing_files) == 1 and not setup_file_path.exists()
 
     if not missing_files or only_setup_missing:
-        dependency_arguments = {"dependency_links": [], "install_requires": []}
-        local_packages, remote_packages = lock_file_parser.get_default_packages(
+        dependency_arguments = {
+            "dependency_links": [],
+            "install_requires": [],
+            "extras_require": [],
+        }
+        local_packages, remote_packages = lockfile_parser.get_default_packages(
             lockfile_path
         )
+        if argv.dev:
+            # parse development package in lockfile
+            dev_local_packages, dev_remote_packages = lockfile_parser.get_dev_packages(
+                lockfile_path
+            )
+            for dev_local_package in dev_local_packages:
+                print(
+                    "Development package %s is local, omitted in setup.py"
+                    % dev_local_package
+                )
+
         for local_package in local_packages:
             print("package %s is local, omitted in setup.py" % local_package)
 
-        success_count = 0
+        default_package_success_count = 0
+        # format default packages
         for remote_package_name, remote_package_config in remote_packages.items():
             try:
-                destination_kw, value = lock_file_parser.format_remote_package(
+                destination_kw, value = lockfile_parser.format_remote_package(
                     remote_package_name, remote_package_config
                 )
             except ValueError as e:
@@ -193,8 +209,24 @@ def sync(args):
                     ]
                 )
             else:
-                success_count += 1
+                default_package_success_count += 1
                 dependency_arguments[destination_kw].append(value)
+
+        dev_package_success_count = 0
+        if argv.dev:
+            # format dev packages
+            # noinspection PyUnboundLocalVariable
+            for (
+                remote_package_name,
+                remote_package_config,
+            ) in dev_remote_packages.items():
+
+                destination_kw, value = lockfile_parser.format_remote_package(
+                    remote_package_name, remote_package_config, dev=True
+                )
+                dev_package_success_count += 1
+                dependency_arguments[destination_kw].append(value)
+
         if only_setup_missing:
             print(msg_formatter.setup_not_found())
             print("Creating boilerplate setup.py...")
@@ -204,7 +236,7 @@ def sync(args):
             try:
                 with open(setup_file_path, "w") as new_setup_file:
                     new_setup_file.write(setup_code)
-                blacken(str(setup_file_path))
+                format_file(setup_file_path)
             except OSError as e:
                 fatal_error([str(e), "failed to write setup.py file"])
             else:
@@ -212,7 +244,7 @@ def sync(args):
                     [
                         "setup.py generated",
                         "%d packages moved from Pipfile.lock to setup.py"
-                        % success_count,
+                        % default_package_success_count,
                         "Please edit the required fields in the generated file",
                     ]
                 )
@@ -222,7 +254,7 @@ def sync(args):
                 setup_updater.update_setup(dependency_arguments, setup_file_path)
             except ValueError as e:
                 fatal_error([str(e), msg_formatter.no_sync_performed()])
-            congratulate(msg_formatter.update_success(success_count))
+            congratulate(msg_formatter.update_success(default_package_success_count, dev_package_success_count))
     else:
         msgs = []
         for file in missing_files:

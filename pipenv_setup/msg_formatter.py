@@ -2,7 +2,7 @@
 All kinds of messages pipenv-setup prints to console
 """
 
-from pathlib import Path
+from vistir.compat import Path
 from colorama import Fore
 
 
@@ -43,11 +43,21 @@ def checked_no_problem():
     return "No version conflict or missing packages/dependencies found in setup.py!"
 
 
-def update_success(package_count: int):
+def update_success(
+    default_package_count, dev_package_count=0
+):  # type: (int, int) -> str
     """
-    :param package_count: The number of updated packages
+    :param default_package_count: The number of updated default packages
+    :param dev_package_count: The number of updated dev packages
     """
-    return (
+    string = (
         "setup.py successfully updated"
-        + "\n%d packages from Pipfile.lock synced to setup.py" % package_count
+        + "\n%d default packages from Pipfile.lock synced to setup.py"
+        % default_package_count
     )
+    if dev_package_count != 0:
+        string += (
+            "\n%d dev packages from Pipfile.lock synced to setup.py"
+            % default_package_count
+        )
+    return string

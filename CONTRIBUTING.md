@@ -8,15 +8,15 @@ is all you need
 
 `$ pytest` runs all the tests on 3.7
 
-Optionally, if you have python 3.6, python 3.7, python 3.8 installed
+Optionally, if you have python 2.7/3.4/3.5/3.6/3.7/3.8 installed
 
-`$ tox` will run tests on python 3.6 3.7 3.8
+`$ tox` will run tests on 6 python versions
 
 # Pull Request
 
-Upon pull request, travis will run tox tests on python 3.6/3.7/3.8 across 3 Operating Systems.(9 tests in total)
+Upon pull request, travis will run tox tests on python 2.7/3.4/3.5/3.6/3.7/3.8 across 3 Operating Systems.(yep, 18 tests in total)
 
-Tox also tests packaging from `setup.py`. Be sure to run `pipenv-setup sync` to update `setup.py` before a pull request.
+Tox also tests packaging from `setup.py`. Be sure to run `pipenv-setup sync --dev` to update `setup.py` before a pull request.
 
 # Test Data Creation
 

@@ -43,7 +43,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="2.1.8",  # Required
+    version="2.2.0",  # Required
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
@@ -97,7 +97,9 @@ setup(
         # that you indicate whether you support Python 2, Python 3 or both.
         # These classifiers are *not* checked by 'pip install'. See instead
         # 'python_requires' below.
-        # "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
@@ -126,7 +128,7 @@ setup(
     # and refuse to install the project if the version does not match. If you
     # do not support Python 2, you can simplify this to '>=3.5' or similar, see
     # https://packaging.python.org/guides/distributing-packages-using-setuptools/#python-requires
-    python_requires=">=3.6",
+    python_requires=">=2.6, !=3.0.*, !=3.1.*, !=3.2.*, <4",
     # This field lists other packages that your project depends on to run.
     # Any package you put here will be installed by pip when your project is
     # installed, so they must be valid existing projects.
@@ -135,19 +137,77 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     extras_require={
         "dev": [
-            "pytest==5.2.1",
-            "pytest-cov==2.8.1",
-            "pytest-datadir==1.3.0",
-            "pytest-xdist==1.30.0",
+            "apipkg==1.5",
+            "appdirs==1.4.3",
+            "atomicwrites==1.3.0",
+            "attrs==19.3.0",
+            "autopep8==1.4.4; python_version < '3.6'",
+            "black==19.10b0; python_version >= '3.6'",
+            "bleach==3.1.0",
+            "cached-property==1.5.1",
+            "cerberus==1.3.2",
+            "certifi==2019.9.11",
+            "chardet==3.0.4",
+            "click==7.0",
             "codecov==2.0.15",
+            "colorama==0.4.1",
+            "coverage==4.5.4",
+            "distlib==0.3.0",
+            "docutils==0.15.2",
+            "execnet==1.7.1",
+            "filelock==3.0.12",
+            "first==2.0.2",
+            "idna==2.8",
+            "importlib-metadata==0.23",
+            "more-itertools==7.2.0",
+            "mypy==0.740; python_version >= '3.5' and python_version < '3.8.0b1'",
+            "mypy-extensions==0.4.3",
+            "orderedmultidict==1.0.1",
+            "packaging==19.2",
+            "pathspec==0.6.0",
+            "pep517==0.7.0",
+            "pip-shims==0.3.3",
+            "pipfile==0.0.2",
+            "pkginfo==1.5.0.1",
+            "plette[validation]==0.2.3",
+            "pluggy==0.13.0",
+            "py==1.8.0",
+            "pycodestyle==2.5.0",
+            "pygments==2.4.2",
+            "pyparsing==2.4.2",
+            "pytest==5.2.2",
+            "pytest-cov==2.8.1",
+            "pytest-datadir==1.3.1",
+            "pytest-forked==1.1.3",
             "pytest-mypy==0.4.1",
+            "pytest-xdist==1.30.0",
+            "readme-renderer==24.0",
+            "regex==2019.11.1",
+            "requests==2.22.0",
+            "requests-toolbelt==0.9.1",
+            "requirementslib==1.5.3",
+            "six==1.12.0",
+            "toml==0.10.0",
+            "tomlkit==0.5.8",
             "tox==3.14.0",
             "tox-travis==0.12",
+            "tqdm==4.37.0",
+            "twine==2.0.0",
+            "typed-ast==1.4.0",
+            "typing-extensions==3.7.4.1",
+            "urllib3==1.25.6",
+            "virtualenv==16.7.7",
+            "vistir==0.4.3",
+            "wcwidth==0.1.7",
+            "webencodings==0.5.1",
+            "wheel==0.33.6",
+            "zipp==0.6.0",
         ]
     },
     install_requires=[
         "appdirs==1.4.3",
         "attrs==19.3.0",
+        "autopep8==1.4.4; python_version < '3.6'",
         "black==19.10b0; python_version >= '3.6'",
         "cached-property==1.5.1",
         "cerberus==1.3.2",
@@ -167,6 +227,7 @@ setup(
         "pip-shims==0.3.3",
         "pipfile==0.0.2",
         "plette[validation]==0.2.3",
+        "pycodestyle==2.5.0",
         "pyparsing==2.4.2",
         "regex==2019.11.1",
         "requests==2.22.0",

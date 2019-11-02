@@ -1,24 +1,15 @@
-import contextlib
-import os
 import shutil
 from os.path import dirname
-from pathlib import Path
 from typing import Optional, List
 
 import pytest
+from vistir.compat import Path
 
 from pipenv_setup import setup_parser, msg_formatter, main
 from pipenv_setup.main import cmd
+from tests.conftest import cwd, data
 
 data_path = Path(dirname(__file__)) / "data"
-
-
-@contextlib.contextmanager
-def working_directory(path):
-    prev_cwd = os.getcwd()
-    os.chdir(path)
-    yield
-    os.chdir(prev_cwd)
 
 
 def copy_pipfiles(src_dir: Path, target_dir: Path):
@@ -60,20 +51,21 @@ def test_generation(tmp_path, shared_datadir, source_pipfile_dirname: str):
     """
     pipfile_dir = shared_datadir / source_pipfile_dirname
     copy_pipfiles(pipfile_dir, tmp_path)
-    with working_directory(tmp_path):
-        cmd(argv=["", "sync"])
-    generated_setup = tmp_path / "setup.py"
-    assert generated_setup.exists()
-    generated_setup_text = generated_setup.read_text()
-    expected_setup_text = (pipfile_dir / "setup.py").read_text()
-    for kw_arg_names in ("install_requires", "dependency_links"):
+    with data(source_pipfile_dirname, tmp_path):
 
-        assert compare_list_of_string_kw_arg(
-            generated_setup_text,
-            expected_setup_text,
-            kw_arg_names,
-            ordering_matters=False,
-        )
+        cmd(argv=["", "sync"])
+        generated_setup = Path("setup.py")
+        assert generated_setup.exists()
+        generated_setup_text = generated_setup.read_text()
+        expected_setup_text = Path("setup.py").read_text()
+        for kw_arg_names in ("install_requires", "dependency_links"):
+
+            assert compare_list_of_string_kw_arg(
+                generated_setup_text,
+                expected_setup_text,
+                kw_arg_names,
+                ordering_matters=False,
+            )
 
 
 @pytest.mark.parametrize(
@@ -89,12 +81,12 @@ def test_update(
     pipfile_dir = shared_datadir / source_pipfile_dirname
     for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
         copy_file(pipfile_dir / filename, tmp_path)
-    with working_directory(tmp_path):
-        cmd(argv=[..., "sync"])
-    generated_setup = tmp_path / "setup.py"
-    assert generated_setup.exists()
-    generated_setup_text = generated_setup.read_text()
-    expected_setup_text = (shared_datadir / "setup.py").read_text()
+    with data(source_pipfile_dirname, tmp_path):
+        cmd(argv=["", "sync"])
+        generated_setup = Path("setup.py")
+        assert generated_setup.exists()
+        generated_setup_text = generated_setup.read_text()
+        expected_setup_text = Path("setup.py").read_text()
     for kw_arg_names in ("install_requires", "dependency_links"):
 
         assert compare_list_of_string_kw_arg(
@@ -133,9 +125,9 @@ def test_sync_file_missing_exit_code(
         if filename not in missing_filenames:
             copy_file(file, tmp_path)
     # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
-    with working_directory(tmp_path):
+    with cwd(tmp_path):
         with pytest.raises(SystemExit) as e:
-            cmd(argv=[..., "sync"])
+            cmd(argv=["", "sync"])
         assert e.value.code == 1
 
 
@@ -151,16 +143,16 @@ def test_sync_lock_file_missing_messages(
     pipfile_dir = shared_datadir / source_pipfile_dirname
     copy_file(pipfile_dir / "Pipfile", tmp_path)
     # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
-    with working_directory(tmp_path):
+    with cwd(tmp_path):
         with pytest.raises(SystemExit):
-            cmd(argv=[..., "sync"])
+            cmd(argv=["", "sync"])
     captured = capfd.readouterr()
     assert msg_formatter.no_sync_performed() in captured.err
     assert msg_formatter.missing_file(Path("Pipfile.lock")) in captured.err
 
 
 def test_help_text(capsys):
-    cmd(argv=[...])
+    cmd(argv=[""])
     captured = capsys.readouterr()
     assert "Commands:" in captured.out
     assert "sync" in captured.out
@@ -196,9 +188,9 @@ def test_check_file_missing_exit_code(
         if filename not in missing_filenames:
             copy_file(file, tmp_path)
     # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
-    with working_directory(tmp_path):
+    with cwd(tmp_path):
         with pytest.raises(SystemExit) as e:
-            cmd(argv=[..., "check"])
+            cmd(argv=["", "check"])
         assert e.value.code == 1
 
 
@@ -213,12 +205,12 @@ def test_check_file_ignore_local(
     for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
         copy_file(pipfile_dir / filename, tmp_path)
     # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
-    with working_directory(tmp_path):
+    with cwd(tmp_path):
         with pytest.raises(SystemExit) as e:
-            cmd(argv=[..., "check"])
+            cmd(argv=["", "check"])
         assert e.value.code == 1
 
-        cmd(argv=[..., "check", "--ignore-local"])
+        cmd(argv=["", "check", "--ignore-local"])
         captured = capsys.readouterr()
         assert msg_formatter.checked_no_problem() in captured.out
 
@@ -233,12 +225,12 @@ def test_check_file_strict(
     pipfile_dir = shared_datadir / source_pipfile_dirname
     for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
         copy_file(pipfile_dir / filename, tmp_path)
-    with working_directory(tmp_path):
+    with cwd(tmp_path):
         with pytest.raises(SystemExit) as e:
-            cmd(argv=[..., "check", "--strict"])
+            cmd(argv=["", "check", "--strict"])
         assert e.value.code == 1
 
-        cmd(argv=[..., "check"])
+        cmd(argv=["", "check"])
         captured = capsys.readouterr()
         assert msg_formatter.checked_no_problem() in captured.out
 
@@ -254,9 +246,9 @@ def test_check_file_many_conflicts(
     for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
         copy_file(pipfile_dir / filename, tmp_path)
 
-    with working_directory(tmp_path):
+    with cwd(tmp_path):
         with pytest.raises(SystemExit) as e:
-            cmd(argv=[..., "check"])
+            cmd(argv=["", "check"])
         assert e.value.code == 1
 
 
@@ -271,7 +263,7 @@ def test_check_file_broken_setup(
     for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
         copy_file(pipfile_dir / filename, tmp_path)
     # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
-    with working_directory(tmp_path):
+    with cwd(tmp_path):
         with pytest.raises(SystemExit) as e:
             cmd(argv=["", "check", "--ignore-local"])
         assert e.value.code == 1
@@ -288,9 +280,9 @@ def test_check_file_install_requires_missing(
     for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
         copy_file(pipfile_dir / filename, tmp_path)
     # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
-    with working_directory(tmp_path):
+    with cwd(tmp_path):
         with pytest.raises(SystemExit) as e:
-            cmd(argv=[..., "check"])
+            cmd(argv=["", "check"])
         assert e.value.code == 1
 
 
@@ -305,9 +297,9 @@ def test_sync_lock_file_package_broken(
     for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
         copy_file(pipfile_dir / filename, tmp_path)
 
-    with working_directory(tmp_path):
+    with cwd(tmp_path):
         with pytest.raises(SystemExit) as e:
-            cmd(argv=[..., "sync"])
+            cmd(argv=["", "sync"])
         assert e.value.code == 1
 
 
@@ -319,7 +311,7 @@ def test_sync_no_setup_call(tmp_path, shared_datadir, source_pipfile_dirname: st
     pipfile_dir = shared_datadir / source_pipfile_dirname
     for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
         copy_file(pipfile_dir / filename, tmp_path)
-    with working_directory(tmp_path):
+    with cwd(tmp_path):
         with pytest.raises(SystemExit) as e:
             cmd(argv=["", "sync"])
         assert e.value.code == 1

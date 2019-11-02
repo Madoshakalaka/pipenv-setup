@@ -21,7 +21,9 @@ jobs:
   - python: '3.8'
   - python: '3.7'
   - python: '3.6'
-#  - python: '3.5'
+  - python: '3.5'
+  - python: '3.4'
+  - python: '2.7'
 
   # osx python 3.8
   - name: "Python: 3.8"
@@ -78,24 +80,62 @@ jobs:
     install: python3 -m pip install --user .[dev]
     # end switch
 
-#  # osx python 3.5
-#  - name: "Python: 3.5"
-#    os: osx
-#    osx_image: xcode11
-#    cache:
-#      directories:
-#        - $HOME/Library/Caches/Homebrew
-#        - /usr/local/Homebrew
-#    language: shell
-#    # switch to python 3.5
-#    addons:
-#      homebrew:
-#        update: true
-#    before_install:
-#      - pyenv install 3.5.2
-#      - pyenv global 3.5.2
-#    install: python3 -m pip install --user .[dev]
-#    # end switch
+  # osx python 3.5
+  - name: "Python: 3.5"
+    os: osx
+    osx_image: xcode11
+    cache:
+      directories:
+        - $HOME/Library/Caches/Homebrew
+        - /usr/local/Homebrew
+    language: shell
+    # switch to python 3.5
+    addons:
+      homebrew:
+        update: true
+    before_install:
+      - pyenv install 3.5.2
+      - pyenv global 3.5.2
+    install: python3 -m pip install --user .[dev]
+    # end switch
+
+  # osx python 3.4
+  - name: "Python: 3.4"
+    os: osx
+    osx_image: xcode11
+    cache:
+      directories:
+        - $HOME/Library/Caches/Homebrew
+        - /usr/local/Homebrew
+    language: shell
+    # switch to python 3.4
+    addons:
+      homebrew:
+        update: true
+    before_install:
+      - pyenv install 3.4.5
+      - pyenv global 3.4.5
+    install: python3 -m pip install --user .[dev]
+    # end switch
+
+  # osx python 2.7.12
+  - name: "Python: 2,7"
+    os: osx
+    osx_image: xcode11
+    cache:
+      directories:
+        - $HOME/Library/Caches/Homebrew
+        - /usr/local/Homebrew
+    language: shell
+    # switch to python 2.7
+    addons:
+      homebrew:
+        update: true
+    before_install:
+      - pyenv install 2.7.12
+      - pyenv global 2.7.12
+    install: python -m pip install --user .[dev]
+    # end switch
 
   # windows python 3.8
   - name: "Python: 3.8"
@@ -137,23 +177,47 @@ jobs:
     script: python -m tox
     env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
 
-#  # windows python 3.5
-#  - name: "Python: 3.5"
-#    os: windows
-#    language: shell
-#    before_install:
-#      - choco install python --version 3.5.4
-#      - python -m pip install --upgrade pip
-#      - python -m pip install pipenv
-#    install: python -m pip install .[dev]
-#    script: python -m tox
-#    env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
+  # windows python 3.5
+  - name: "Python: 3.5"
+    os: windows
+    language: shell
+    before_install:
+      - choco install python --version 3.5.4
+      - python -m pip install --upgrade pip
+      - python -m pip install pipenv
+    install: python -m pip install .[dev]
+    script: python -m tox
+    env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
+
+  # windows python 3.4
+  - name: "Python: 3.4"
+    os: windows
+    language: shell
+    before_install:
+      - choco install python --version 3.4.4.20180111
+      - python -m pip install --upgrade pip
+      - python -m pip install pipenv
+    install: python -m pip install .[dev]
+    script: python -m tox
+    env: PATH=/c/Python34:/c/Python34/Scripts:$PATH
+
+  # windows python 2.7
+  - name: "Python: 2.7"
+    os: windows
+    language: shell
+    before_install:
+      - choco install python --version 2.7.11
+      - python -m pip install --upgrade pip
+      - python -m pip install pipenv
+    install: python -m pip install .[dev]
+    script: python -m tox
+    env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
 
   - stage: "PYPI release"
-    install: 'pip install pipenv-setup'
+    install: ''
     after_success: ''
     script: ""
-    before_deploy: 'pipenv-setup sync && pipenv-setup check'
+    before_deploy: 'pip install pipenv-setup && pipenv-setup sync --dev && pipenv-setup check'
     deploy:
       provider: pypi
       user: Madoshakalaka

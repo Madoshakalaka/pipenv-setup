@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="data_excluded" pattern="!file[pipenv-setup]:tests/data//*" />
+</component>

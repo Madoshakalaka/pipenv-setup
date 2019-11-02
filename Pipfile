@@ -14,6 +14,7 @@ codecov = "~=2.0"
 pytest-xdist = "~=1.29"
 tox = "~=3.14"
 tox-travis = "~=0.12"
+autopep8 = "~=1.4"
 
 [packages]
 pipfile = "~=0.0"
@@ -22,6 +23,7 @@ colorama = "~=0.4"
 packaging = "~=19.1"
 requirementslib = "~=1.5"
 vistir = "~=0.4"
+autopep8 = {markers = "python_version<'3.6'",version = "~=1.4"}
 
 [scripts]
 build = 'python setup.py sdist'

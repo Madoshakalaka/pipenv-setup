@@ -2,12 +2,13 @@ import ast
 import sys
 import tokenize
 from io import BytesIO
-from pathlib import Path
 from subprocess import Popen, PIPE
-from sys import stderr
 from tokenize import OP
 from typing import Tuple, List
 
+from vistir.compat import Path
+
+from pipenv_setup import setup_parser
 from pipenv_setup.setup_parser import get_setup_call_node, get_kw_list_node
 
 
@@ -35,10 +36,12 @@ def update_setup(dependency_arguments, filename: Path):
     install_requires_col_offset = -1
     dependency_links_lineno = -1
     dependency_links_col_offset = -1
+    extras_require_lineno = -1
+    extras_require_col_offset = -1
 
     for kw in ["install_requires", "dependency_links"]:
-
         setup_bytes, setup_lines = clear_kw_list(kw, setup_bytes, setup_lines)
+    setup_bytes, setup_lines = clear_dev_value(setup_bytes, setup_lines)
 
     root_node = ast.parse("\n".join(setup_lines))
 
@@ -50,15 +53,22 @@ def update_setup(dependency_arguments, filename: Path):
     if node is not None:
         dependency_links_lineno = node.lineno
         dependency_links_col_offset = node.col_offset
+    extras_require_node = setup_parser.get_extras_require_dict_node(root_node)
+    if extras_require_node is not None:
+        extras_require_lineno = extras_require_node.lineno
+        extras_require_col_offset = extras_require_node.col_offset
 
+    # update keyword arguments
     if install_requires_lineno != -1:
+        # if install_requires exists from the start
         insert_at_lineno_col_offset(
             setup_lines,
             install_requires_lineno,
             install_requires_col_offset + 1,
             str(dependency_arguments["install_requires"])[1:-1],
         )
-    else:
+    elif len(dependency_arguments["install_requires"]) > 0:
+        # install_requires does not exist, create a new one
         insert_at_lineno_col_offset(
             setup_lines,
             setup_call_lineno,
@@ -67,30 +77,80 @@ def update_setup(dependency_arguments, filename: Path):
         )
 
     if dependency_links_lineno != -1:
+        # if dependency_links exists from the start
         insert_at_lineno_col_offset(
             setup_lines,
             dependency_links_lineno,
             dependency_links_col_offset + 1,
             str(dependency_arguments["dependency_links"])[1:-1],
         )
-    else:
+    elif len(dependency_arguments["dependency_links"]) > 0:
+        # dependency_links does not exist, create a new one
         insert_at_lineno_col_offset(
             setup_lines,
             setup_call_lineno,
             setup_call_col_offset + len("setup("),
             "dependency_links=" + str(dependency_arguments["dependency_links"]) + ",",
         )
+
+    # update extras_require
+    root_node = ast.parse("\n".join(setup_lines))
+    if len(dependency_arguments["extras_require"]) > 0:
+        if extras_require_lineno == -1:
+            # extras_require does not exist from the start
+            insert_at_lineno_col_offset(
+                setup_lines,
+                setup_call_lineno,
+                setup_call_col_offset + len("setup("),
+                'extras_require = {"dev": []},',
+            )
+            extras_require_lineno = setup_call_lineno
+            extras_require_col_offset = setup_call_col_offset + len("setup(")
+            root_node = ast.parse("\n".join(setup_lines))
+
+        dev_list_node = setup_parser.get_extras_require_dev_list_node(root_node)
+        if dev_list_node is None:
+            insert_at_lineno_col_offset(
+                setup_lines,
+                extras_require_lineno,
+                extras_require_col_offset + 1,
+                '"dev": [],',
+            )
+            root_node = ast.parse("\n".join(setup_lines))
+            dev_list_node = setup_parser.get_extras_require_dev_list_node(root_node)
+        assert dev_list_node is not None
+        insert_at_lineno_col_offset(
+            setup_lines,
+            dev_list_node.lineno,
+            dev_list_node.col_offset + 1,
+            str(dependency_arguments["extras_require"])[1:-1] + ",",
+        )
+
     with open("setup.py", "w+") as file:
         file.write("\n".join(setup_lines))
 
-    blacken("setup.py")
+    format_file(Path("setup.py"))
 
 
-def blacken(filename: str):
-    with Popen(
-        [sys.executable, "-m", "black", filename], stdout=PIPE, stderr=PIPE
-    ) as p:
-        p.communicate()
+def format_file(file):  # type: (Path) -> None
+    """
+    use black or autopep8 to format python file
+    """
+    try:
+        # noinspection PyPackageRequirements
+        import black
+
+        with Popen(
+            [sys.executable, "-m", "black", file], stdout=PIPE, stderr=PIPE
+        ) as p:
+            p.communicate()
+
+    except ImportError:
+        # use autopep8
+        import autopep8
+
+        code = autopep8.fix_code(file.read_text())
+        file.write_text(code)
 
 
 def insert_at_lineno_col_offset(
@@ -100,18 +160,30 @@ def insert_at_lineno_col_offset(
     lines[lineno - 1] = the_line[:col_offset] + content + the_line[col_offset:]
 
 
-def clear_kw_list(kw: str, file_bytes: bytes, file_lines: List[str]):
+def clear_dev_value(file_bytes: bytes, file_lines: List[str]):
     """
-    clear a list without moving number of lines in a file
+    clear dev list in extra_require without moving number of lines in a file
 
     :raise ValueError: if list lineno col_offset can not be located
     """
     root_node = ast.parse(file_bytes)
     # This raises ValueError
-    list_node = get_kw_list_node(root_node, kw)
+    list_node = setup_parser.get_extras_require_dev_list_node(root_node)  # type: ignore
     if list_node is None:
+        # nothing needs to be done
         return file_bytes, file_lines
 
+    return clear_list_content(list_node, file_bytes, file_lines)
+
+
+def clear_list_content(
+    list_node, file_bytes, file_lines
+):  # type: (ast.List, bytes, List[str]) -> Tuple[bytes, List[str]]
+    """
+    clear list content in a file
+
+    :raise ValueError: if list lineno col_offset can not be located
+    """
     lbrace_lineno = list_node.lineno
     lbrace_col_offset = list_node.col_offset
 
@@ -135,6 +207,24 @@ def clear_kw_list(kw: str, file_bytes: bytes, file_lines: List[str]):
         file_lines[between_lineno - 1] = ""
 
     return "\n".join(file_lines).encode("utf-8"), file_lines
+
+
+def clear_kw_list(
+    kw, file_bytes, file_lines
+):  # type: (str, bytes, List[str]) -> Tuple[bytes, List[str]]
+    """
+    clear list content in a keyword argument without moving number of lines in a file
+
+    :raise ValueError: if list lineno col_offset can not be located
+    """
+    root_node = ast.parse(file_bytes)
+    # This raises ValueError
+    list_node = get_kw_list_node(root_node, kw)
+    if list_node is None:
+        # need to do nothing
+        return file_bytes, file_lines
+
+    return clear_list_content(list_node, file_bytes, file_lines)
 
 
 def get_list_closing_bracket_lineno_offset(

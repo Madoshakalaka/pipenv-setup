@@ -72,6 +72,54 @@ def get_setup_call_node(root_node) -> Optional[ast.Call]:
     return None
 
 
+def get_extras_require_dev_list_node(root_node) -> Optional[ast.List]:
+    """
+    get the list from [dev]
+
+    :raise ValueError: When the extras_require exist but is not a dictionary
+    :return: a list node, or None if it does not exist
+    """
+    node = get_extras_require_dict_node(root_node)
+    if node is not None:
+        dev_index = -1
+
+        current = -1
+        children = list(ast.iter_child_nodes(node))
+        for child in children:
+            current += 1
+            if isinstance(child, ast.Str):
+                if child.s == "dev":
+                    dev_index = current
+            else:
+                break
+
+        if dev_index == -1:
+            return None
+        else:
+            return children[current + dev_index]  # type: ignore
+
+    return None
+
+
+def get_extras_require_dict_node(root_node) -> Optional[ast.Dict]:
+    """
+    :raise ValueError: When the keyword argument is not a list or when can not get the list
+    :return: a dict node, or None if it does not exist
+    """
+    setup_call_node = get_setup_call_node(root_node)
+    if setup_call_node is None:
+        raise ValueError("Can not find keyword argument extra_require")
+    node = None
+    for keyword in setup_call_node.keywords:
+        if keyword.arg == "extras_require":
+            node = keyword.value
+            if not isinstance(node, ast.Dict):
+                raise ValueError(
+                    "Error parsing setup.py: extra_require keyword argument is not a dictionary"
+                )
+    return node  # type: ignore
+
+
 def get_kw_list_node(root_node, kw: str) -> Optional[ast.List]:
     """
     :raise ValueError: When the keyword argument is not a list or when can not get the list
