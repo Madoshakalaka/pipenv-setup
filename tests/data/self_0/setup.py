@@ -135,29 +135,8 @@ setup(
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    extras_require={
-        "dev": [
-            "pytest~=5.1",
-            "pytest-mypy~=0.3",
-            "pytest-cov~=2.7",
-            "twine~=2.0; python_version >= '3.6'",
-            "pytest-datadir~=1.3",
-            "codecov~=2.0; python_version >= '3.6'",
-            "pytest-xdist~=1.29",
-            "tox~=3.14",
-            "tox-travis~=0.12",
-            "autopep8~=1.4",
-        ]
-    },
-    install_requires=[
-        "pipfile~=0.0",
-        "black==19.10b0; python_version >= '3.6'",
-        "colorama~=0.4",
-        "packaging~=19.1",
-        "requirementslib~=1.5",
-        "vistir~=0.4",
-        "autopep8~=1.4; python_version < '3.6'",
-    ],  # Optional
+    extras_require={},
+    install_requires=[],  # Optional
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
     # syntax, for example:

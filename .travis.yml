@@ -1,9 +1,9 @@
 language: python
 dist: xenial
 
-# only intended for Linux jobs. Windows and Mac will overwrite
-install: python3 -m pip install .[dev]
-# only intended for Linux and Mac jobs. Windows will overwrite
+# only intended for Linux python3 jobs.
+install: python3 -m pip install tox-travis
+# only intended for Linux and Mac python3 jobs. Windows will overwrite
 script: python3 -m tox
 
 
@@ -24,6 +24,7 @@ jobs:
   - python: '3.5'
   - python: '3.4'
   - python: '2.7'
+    install: 'python -m pip install tox-travis'
 
   # osx python 3.8
   - name: "Python: 3.8"
@@ -41,7 +42,7 @@ jobs:
     before_install:
       - pyenv install 3.8-dev
       - pyenv global 3.8-dev
-    install: python3 -m pip install --user .[dev]
+    install: python3 -m pip install --user tox-travis
     # end switch
 
   # osx python 3.7
@@ -59,7 +60,7 @@ jobs:
       homebrew:
         update: true
     # weird permission error without --user
-    install: python3 -m pip install --user .[dev]
+    install: python3 -m pip install --user tox-travis
 
   # osx python 3.6
   - name: "Python: 3.6"
@@ -77,7 +78,7 @@ jobs:
     before_install:
       - pyenv install 3.6.5
       - pyenv global 3.6.5
-    install: python3 -m pip install --user .[dev]
+    install: python3 -m pip install --user tox-travis
     # end switch
 
   # osx python 3.5
@@ -96,7 +97,7 @@ jobs:
     before_install:
       - pyenv install 3.5.2
       - pyenv global 3.5.2
-    install: python3 -m pip install --user .[dev]
+    install: python3 -m pip install --user tox-travis
     # end switch
 
   # osx python 3.4
@@ -115,7 +116,7 @@ jobs:
     before_install:
       - pyenv install 3.4.5
       - pyenv global 3.4.5
-    install: python3 -m pip install --user .[dev]
+    install: python3 -m pip install --user tox-travis
     # end switch
 
   # osx python 2.7.12
@@ -134,7 +135,8 @@ jobs:
     before_install:
       - pyenv install 2.7.12
       - pyenv global 2.7.12
-    install: python -m pip install --user .[dev]
+    install: python -m pip install --user tox-travis
+    script: python -m tox
     # end switch
 
   # windows python 3.8
@@ -146,7 +148,7 @@ jobs:
     before_install:
       - choco install python --version 3.8.0
       - python -m pip install --upgrade pip
-    install: python -m pip install .[dev]
+    install: python -m pip install tox-travis
     # On Windows, python3 does not exist
     script: python -m tox
     env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
@@ -160,7 +162,7 @@ jobs:
     before_install:
       - choco install python --version 3.7.4
       - python -m pip install --upgrade pip
-    install: python -m pip install .[dev]
+    install: python -m pip install tox-travis
     # On Windows, python3 does not exist
     script: python -m tox
     env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
@@ -172,8 +174,7 @@ jobs:
     before_install:
       - choco install python --version 3.6.8
       - python -m pip install --upgrade pip
-      - python -m pip install pipenv
-    install: python -m pip install .[dev]
+    install: python -m pip install tox-travis
     script: python -m tox
     env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
 
@@ -184,8 +185,7 @@ jobs:
     before_install:
       - choco install python --version 3.5.4
       - python -m pip install --upgrade pip
-      - python -m pip install pipenv
-    install: python -m pip install .[dev]
+    install: python -m pip install tox-travis
     script: python -m tox
     env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
 
@@ -196,8 +196,7 @@ jobs:
     before_install:
       - choco install python --version 3.4.4.20180111
       - python -m pip install --upgrade pip
-      - python -m pip install pipenv
-    install: python -m pip install .[dev]
+    install: python -m pip install tox-travis
     script: python -m tox
     env: PATH=/c/Python34:/c/Python34/Scripts:$PATH
 
@@ -208,8 +207,7 @@ jobs:
     before_install:
       - choco install python --version 2.7.11
       - python -m pip install --upgrade pip
-      - python -m pip install pipenv
-    install: python -m pip install .[dev]
+    install: python -m pip install tox-travis
     script: python -m tox
     env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
 
@@ -217,7 +215,7 @@ jobs:
     install: ''
     after_success: ''
     script: ""
-    before_deploy: 'pip install pipenv-setup && pipenv-setup sync --dev && pipenv-setup check'
+    before_deploy: 'pip install pipenv-setup && pipenv-setup sync --dev --pipfile'
     deploy:
       provider: pypi
       user: Madoshakalaka

@@ -5,13 +5,13 @@
 [![PyPI version](https://badge.fury.io/py/pipenv-setup.svg)](https://badge.fury.io/py/pipenv-setup)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Sync dependencies in Pipfile.lock to setup.py
+Sync dependencies in Pipfile or Lockfile to setup.py
 
 A beautiful python package development tool.
 
 Never need again to change dependencies 
 manually in `setup.py` and enjoy the same
- dependency locking
+ dependency locking or semantic versioning
  
  Or just check whether setup.py and pipfile are consistent and sync dependency when necessary
 ### Install
@@ -27,7 +27,7 @@ it creates command line entry `$ pipenv-setup`
 
    ![help](https://raw.githubusercontent.com/Madoshakalaka/pipenv-setup/master/readme_assets/help.PNG)
 
-### Sync `Pipfile.lock` to `setup.py`
+### Sync to `setup.py`
 - supports assorted package configuration. You can have a pipfile as ugly as you want:
     ```Pipfile
     [package]
@@ -76,7 +76,7 @@ it creates command line entry `$ pipenv-setup`
     extras_require={"dev": ["pytest==1.1.3",]},
     install_requires=["xml-subsetter==0.0.1"],
     ```
-  
+- provide `--pipfile` flag to sync Pipfile instead of lockfile. 
 - [Blackened](https://github.com/psf/black) setup.py file.
 - [Template](https://github.com/pypa/sampleproject/blob/master/setup.py) generation with filled dependencies in the absence of a setup file.
 
@@ -88,6 +88,7 @@ it creates command line entry `$ pipenv-setup`
     23 packages moved from Pipfile.lock to setup.py
     Please edit the required fields in the generated file
     ```
+> Note: by default $ pipenv-setup syncs lockfile instead of pipfile
 ### Checks Only
 run `$ pipenv-setup check`
 - checks four items
@@ -146,18 +147,6 @@ run `$ pipenv-setup check`
     package 'requests' has version string: ==2.18.4 in setup.py, which specifies a subset of * in pipfile
     (exits with 1)
     ```
-
-## Note
-`$ pipenv-setup sync` command syncs `Pipfile.lock` to `setup.py`
-
-While `$ pipenv-setup check` checks conflicts between `Pipfile` and `setup.py` (not `Pipfile.lock`!) 
-
-
-This means `sync` will copy pinned versions from `Pipfile.lock`. This ensures the releases runs with almost exact the same dependencies as the dev environment.
-
-While `check` allows more relaxed constraints (when you have semantic versioning in pipfile)
-
-There is no philosophy behind this asymmetry and it makes a lot of sense to allow more user choice: add `sync --pipfile` and `check --lock` functionality. I welcome a feature request or PR :)
 
 ## Contributing
 

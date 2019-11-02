@@ -38,6 +38,13 @@ def cmd(argv=sys.argv):
     )
 
     sync_parser.add_argument(
+        "-p",
+        "--pipfile",
+        action="store_true",
+        help="sync Pipfile instead of Pipfile.lock",
+    )
+
+    sync_parser.add_argument(
         "-d",
         "--dev",
         action="store_true",
@@ -171,20 +178,25 @@ def sync(argv):
     missing_files = tuple(filter(lambda x: not x.exists(), required_files))
     only_setup_missing = len(missing_files) == 1 and not setup_file_path.exists()
 
+    # todo: refactor out a parser class
+    if argv.pipfile:
+        parser = pipfile_parser
+        file = pipfile_path
+    else:
+        parser = lockfile_parser
+        file = lockfile_path
+
     if not missing_files or only_setup_missing:
+
         dependency_arguments = {
             "dependency_links": [],
             "install_requires": [],
             "extras_require": [],
         }
-        local_packages, remote_packages = lockfile_parser.get_default_packages(
-            lockfile_path
-        )
+        local_packages, remote_packages = parser.get_default_packages(file)
         if argv.dev:
             # parse development package in lockfile
-            dev_local_packages, dev_remote_packages = lockfile_parser.get_dev_packages(
-                lockfile_path
-            )
+            dev_local_packages, dev_remote_packages = parser.get_dev_packages(file)
             for dev_local_package in dev_local_packages:
                 print(
                     "Development package %s is local, omitted in setup.py"
@@ -198,7 +210,7 @@ def sync(argv):
         # format default packages
         for remote_package_name, remote_package_config in remote_packages.items():
             try:
-                destination_kw, value = lockfile_parser.format_remote_package(
+                destination_kw, value = parser.format_remote_package(
                     remote_package_name, remote_package_config
                 )
             except ValueError as e:
@@ -221,7 +233,7 @@ def sync(argv):
                 remote_package_config,
             ) in dev_remote_packages.items():
 
-                destination_kw, value = lockfile_parser.format_remote_package(
+                destination_kw, value = parser.format_remote_package(
                     remote_package_name, remote_package_config, dev=True
                 )
                 dev_package_success_count += 1
@@ -243,18 +255,24 @@ def sync(argv):
                 congratulate(
                     [
                         "setup.py generated",
-                        "%d packages moved from Pipfile.lock to setup.py"
-                        % default_package_success_count,
+                        "%d packages moved from %s to setup.py"
+                        % (default_package_success_count, file.name),
                         "Please edit the required fields in the generated file",
                     ]
                 )
 
         else:  # all files exist. Update setup.py
             try:
-                setup_updater.update_setup(dependency_arguments, setup_file_path)
+                setup_updater.update_setup(
+                    dependency_arguments, setup_file_path, argv.dev
+                )
             except ValueError as e:
                 fatal_error([str(e), msg_formatter.no_sync_performed()])
-            congratulate(msg_formatter.update_success(default_package_success_count, dev_package_success_count))
+            congratulate(
+                msg_formatter.update_success(
+                    default_package_success_count, dev_package_success_count
+                )
+            )
     else:
         msgs = []
         for file in missing_files:

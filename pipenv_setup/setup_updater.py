@@ -12,10 +12,13 @@ from pipenv_setup import setup_parser
 from pipenv_setup.setup_parser import get_setup_call_node, get_kw_list_node
 
 
-def update_setup(dependency_arguments, filename: Path):
+def update_setup(dependency_arguments, filename: Path, dev=False):
     """
     Clear install_requires and dependency_links argument and fill new ones. Format the code.
 
+    :param dependency_arguments:
+    :param filename:
+    :param dev: update extras_require or not
     :raise ValueError: when setup.py is not recognized (malformed)
     """
     with open(str(filename), "rb") as setup_file:
@@ -41,7 +44,8 @@ def update_setup(dependency_arguments, filename: Path):
 
     for kw in ["install_requires", "dependency_links"]:
         setup_bytes, setup_lines = clear_kw_list(kw, setup_bytes, setup_lines)
-    setup_bytes, setup_lines = clear_dev_value(setup_bytes, setup_lines)
+    if dev:
+        setup_bytes, setup_lines = clear_dev_value(setup_bytes, setup_lines)
 
     root_node = ast.parse("\n".join(setup_lines))
 
@@ -95,7 +99,7 @@ def update_setup(dependency_arguments, filename: Path):
 
     # update extras_require
     root_node = ast.parse("\n".join(setup_lines))
-    if len(dependency_arguments["extras_require"]) > 0:
+    if len(dependency_arguments["extras_require"]) > 0 and dev:
         if extras_require_lineno == -1:
             # extras_require does not exist from the start
             insert_at_lineno_col_offset(
