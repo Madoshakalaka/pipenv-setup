@@ -20,11 +20,12 @@ jobs:
   # linux
   - python: '3.8'
   - python: '3.7'
-  - python: '3.6'
+  - python: '3.6.9'
   - python: '3.5'
-  - python: '3.4'
-  - python: '2.7'
+  - python: '3.4.8'
+  - python: '2.7.17'
     install: 'python -m pip install tox-travis'
+    script: 'python -m tox'
 
   # osx python 3.8
   - name: "Python: 3.8"
@@ -206,7 +207,6 @@ jobs:
     language: shell
     before_install:
       - choco install python --version 2.7.11
-      - python -m pip install --upgrade pip
     install: python -m pip install tox-travis
     script: python -m tox
     env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
