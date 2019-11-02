@@ -1,7 +1,17 @@
 build
 dist
-.mypy_cache/
 *.egg-info/
-__pycache__/
 .tox/
 .coverage
+
+# caches
+.mypy_cache/
+.pytest_cache
+__pycache__/
+
+# virtual environments
+.venv/
+
+# editor files
+*.code-workspace
+*~
