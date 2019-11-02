@@ -206,7 +206,8 @@ jobs:
     os: windows
     language: shell
     before_install:
-      - choco install python --version 2.7.11
+      - choco install python2
+      - python -m pip install --upgrade pip
     install: python -m pip install tox-travis
     script: python -m tox
     env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
