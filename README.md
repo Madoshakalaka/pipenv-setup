@@ -77,7 +77,7 @@ it creates command line entry `$ pipenv-setup`
     install_requires=["xml-subsetter==0.0.1"],
     ```
 - provide `--pipfile` flag to sync Pipfile instead of lockfile, which syncs semantic versioning in pipfile instead of pinned versions in lockfile.
-- [Blackened](https://github.com/psf/black) setup.py file.
+- Beautiful [Blackened](https://github.com/psf/black) setup.py file.
 - [Template](https://github.com/pypa/sampleproject/blob/master/setup.py) generation with filled dependencies in the absence of a setup file.
 
     `$ pipenv-setup sync`
