@@ -76,7 +76,7 @@ it creates command line entry `$ pipenv-setup`
     extras_require={"dev": ["pytest==1.1.3",]},
     install_requires=["xml-subsetter==0.0.1"],
     ```
-- provide `--pipfile` flag to sync Pipfile instead of lockfile. 
+- provide `--pipfile` flag to sync Pipfile instead of lockfile, which syncs semantic versioning in pipfile instead of pinned versions in lockfile.
 - [Blackened](https://github.com/psf/black) setup.py file.
 - [Template](https://github.com/pypa/sampleproject/blob/master/setup.py) generation with filled dependencies in the absence of a setup file.
 
