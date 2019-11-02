@@ -6,7 +6,7 @@ is all you need
 
 # Tests
 
-`$ pytest` runs all the tests on 3.7
+`$ pytest` runs all the tests with your python version
 
 Optionally, if you have python 2.7/3.4/3.5/3.6/3.7/3.8 installed
 
