@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Any
 
 import pytest
 
@@ -49,11 +49,13 @@ from pipenv_setup.inconsistency_checker import VersionConflict as VC
     ],
 )
 def test__check_install_requires_conflicts(
-    install_requires, pipfile_packages: Dict[str, PipfileConfig], actual_conflicts
-):
+    install_requires, pipfile_packages, actual_conflicts
+):  # type: (Any, Dict[str, PipfileConfig], Any) -> None
     # noinspection PyTypeChecker
     checker = InconsistencyChecker(install_requires, [], pipfile_packages, False)
-    assert checker._check_install_requires_conflict() == actual_conflicts
+    assert sorted(checker._check_install_requires_conflict()) == sorted(
+        actual_conflicts
+    )
 
 
 @pytest.mark.parametrize(
@@ -138,8 +140,8 @@ def test__check_install_requires_conflicts(
     ],
 )
 def test_check_dependency_links(
-    dependency_links, pipfile_packages: Dict[str, PipfileConfig], actual_conflicts
-):
+    dependency_links, pipfile_packages, actual_conflicts
+):  # type: (Any, Dict[str, PipfileConfig], Any) -> None
 
     # noinspection PyTypeChecker
     checker = InconsistencyChecker([], dependency_links, pipfile_packages, False)
@@ -205,11 +207,11 @@ def test_check_dependency_links(
     ],
 )
 def test_check_lacking_install_requires(
-    install_requires, pipfile_packages: Dict[str, PipfileConfig], actual_conflicts
-):
+    install_requires, pipfile_packages, actual_conflicts
+):  # type: (Any, Dict[str, PipfileConfig], Any) -> None
     # noinspection PyTypeChecker
     checker = InconsistencyChecker(install_requires, [], pipfile_packages, False)
-    assert checker.check_lacking_install_requires() == actual_conflicts
+    assert sorted(checker.check_lacking_install_requires()) == sorted(actual_conflicts)
 
 
 @pytest.mark.parametrize(
@@ -238,8 +240,8 @@ def test_check_lacking_install_requires(
     ],
 )
 def test_check_lacking_dependency_links(
-    dependency_links, pipfile_packages: Dict[str, PipfileConfig], actual_conflicts
-):
+    dependency_links, pipfile_packages, actual_conflicts
+):  # type: (Any, Dict[str, PipfileConfig], Any) -> None
 
     # noinspection PyTypeChecker
     checker = InconsistencyChecker([], dependency_links, pipfile_packages, False)

@@ -1,10 +1,14 @@
+from __future__ import print_function
+
 from os import path
 from os.path import dirname
 from sys import stderr
 from typing import Dict, Optional, List
 
 
-def fill_boilerplate(dependency_arguments: Dict[str, List[str]]) -> Optional[str]:
+def fill_boilerplate(
+    dependency_arguments,
+):  # type: (Dict[str, List[str]]) -> Optional[str]
     """
     read boilerplate setup.py file, fill dependency_links and install_requires keyword arguments and format the code
 

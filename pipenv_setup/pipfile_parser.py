@@ -3,7 +3,7 @@ from typing import Tuple, Dict
 import pipfile
 from requirementslib import Requirement
 from vistir.compat import Path
-
+from six import string_types
 from pipenv_setup.constants import PipfileConfig, vcs_list
 
 
@@ -62,7 +62,7 @@ def format_remote_package(
             return "dependency_links", link
 
 
-def is_vcs_package(config: PipfileConfig):
+def is_vcs_package(config):  # type: (PipfileConfig) -> bool
     """
     >>> is_vcs_package('==1.6.2')
     False
@@ -78,9 +78,9 @@ def is_vcs_package(config: PipfileConfig):
     return False
 
 
-def is_pypi_package(config: PipfileConfig) -> bool:
+def is_pypi_package(config):  # type: (PipfileConfig) -> bool
     # fixme: uh.. I guess there are special cases
-    if isinstance(config, str):
+    if isinstance(config, string_types):
         return True
     elif (
         isinstance(config, dict)
@@ -92,10 +92,10 @@ def is_pypi_package(config: PipfileConfig) -> bool:
     return False
 
 
-def is_remote_package(config: PipfileConfig) -> bool:
+def is_remote_package(config):  # type: (PipfileConfig) -> bool
     if isinstance(config, dict) and "path" not in config:
         return True
-    if isinstance(config, str):
+    if isinstance(config, string_types):
         return True
     return False
 
@@ -108,7 +108,7 @@ def get_default_packages(
     """
     local_packages = {}  # type: Dict[str, PipfileConfig]
     remote_packages = {}  # type: Dict[str, PipfileConfig]
-    for package_name, config in pipfile.load(pipfile_path).data["default"].items():
+    for package_name, config in pipfile.load(str(pipfile_path)).data["default"].items():
         if is_remote_package(config):
             remote_packages[package_name] = config
         else:
@@ -125,7 +125,7 @@ def get_dev_packages(
     local_packages = {}  # type: Dict[str, PipfileConfig]
     remote_packages = {}  # type: Dict[str, PipfileConfig]
 
-    for package_name, config in pipfile.load(pipfile_path).data["develop"].items():
+    for package_name, config in pipfile.load(str(pipfile_path)).data["develop"].items():
         if is_remote_package(config):
             remote_packages[package_name] = config
         else:

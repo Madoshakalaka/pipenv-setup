@@ -1,4 +1,4 @@
-from enum import Enum, auto
+from enum import Enum
 from typing import Union, Dict, Any
 
 PipfileConfig = Union[dict, str]
@@ -9,10 +9,10 @@ vcs_list = ["git", "bzr", "svn", "hg"]
 
 class VersionConflict(Enum):
     # >=2.0 potentially violates >=3.0
-    POTENTIAL = auto()
+    POTENTIAL = "POTENTIAL"
 
     # <=2.0 is disjoint with >=3.0
-    DISJOINT = auto()
+    DISJOINT = "DISJOINT"
 
     # >=3.0 is compatible with >=2.0
-    COMPATIBLE = auto()
+    COMPATIBLE = "COMPATIBLE"

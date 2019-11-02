@@ -27,7 +27,7 @@ def colorful_help():
     return string
 
 
-def missing_file(file: Path):
+def missing_file(file):  # type: (Path) -> str
     return "file %s not found" % file.name
 
 

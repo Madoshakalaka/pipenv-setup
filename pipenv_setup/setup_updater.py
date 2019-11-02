@@ -4,15 +4,17 @@ import tokenize
 from io import BytesIO
 from subprocess import Popen, PIPE
 from tokenize import OP
-from typing import Tuple, List
-
+from typing import Tuple, List, Any
+import codecs
 from vistir.compat import Path
 
 from pipenv_setup import setup_parser
 from pipenv_setup.setup_parser import get_setup_call_node, get_kw_list_node
 
 
-def update_setup(dependency_arguments, filename: Path, dev=False):
+def update_setup(
+    dependency_arguments, filename, dev=False
+):  # type: (Any, Path, bool) -> None
     """
     Clear install_requires and dependency_links argument and fill new ones. Format the code.
 
@@ -130,8 +132,9 @@ def update_setup(dependency_arguments, filename: Path, dev=False):
             str(dependency_arguments["extras_require"])[1:-1] + ",",
         )
 
-    with open("setup.py", "w+") as file:
-        file.write("\n".join(setup_lines))
+    f = codecs.open("setup.py", encoding="utf-8", mode="w")
+    f.write("\n".join(setup_lines))
+    f.close()
 
     format_file(Path("setup.py"))
 
@@ -158,13 +161,15 @@ def format_file(file):  # type: (Path) -> None
 
 
 def insert_at_lineno_col_offset(
-    lines: List[str], lineno: int, col_offset: int, content: str
-):
+    lines, lineno, col_offset, content
+):  # type: (List[str], int, int, str) -> None
     the_line = lines[lineno - 1]
     lines[lineno - 1] = the_line[:col_offset] + content + the_line[col_offset:]
 
 
-def clear_dev_value(file_bytes: bytes, file_lines: List[str]):
+def clear_dev_value(
+    file_bytes, file_lines
+):  # type: (bytes, List[str]) -> Tuple[bytes, List[str]]
     """
     clear dev list in extra_require without moving number of lines in a file
 
@@ -232,17 +237,21 @@ def clear_kw_list(
 
 
 def get_list_closing_bracket_lineno_offset(
-    ast_list_node: ast.List, file_bytes: bytes
-) -> Tuple[int, int]:
+    ast_list_node, file_bytes
+):  # type: (ast.List, bytes) -> Tuple[int, int]
     """
     :raise ValueError: if fails to locate
     """
+    import platform
 
-    tokens = tokenize.tokenize(BytesIO(file_bytes).readline)
+    if platform.python_version().startswith("2"):
+        tokens = tokenize.generate_tokens(BytesIO(file_bytes).readline)  # type: ignore
+    else:
+        tokens = tokenize.tokenize(BytesIO(file_bytes).readline)
+
     list_met = False
     count = 1
     for (token_type, token_val, (start_lineno, start_offset), _, _) in tokens:
-        # print(token_type, token_val)
         if list_met and token_type == OP:
             if list_met:
                 if token_val == "]":

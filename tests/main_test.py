@@ -1,6 +1,6 @@
 import shutil
 from os.path import dirname
-from typing import Optional, List
+from typing import Optional, List, Any
 
 import pytest
 from vistir.compat import Path
@@ -12,17 +12,19 @@ from tests.conftest import cwd, data
 data_path = Path(dirname(__file__)) / "data"
 
 
-def copy_pipfiles(src_dir: Path, target_dir: Path):
+def copy_pipfiles(src_dir, target_dir):  # type: (Path, Path) -> None
     for f in src_dir.glob("Pipfile*"):
         shutil.copy(str(f), str(target_dir))
 
 
-def copy_files(src_dir: Path, target_dir: Path):
+def copy_files(src_dir, target_dir):  # type: (Path, Path) -> None
     for f in src_dir.glob("*"):
         shutil.copy(str(f), str(target_dir))
 
 
-def copy_file(file: Path, target_dir: Path, new_name: Optional[str] = None):
+def copy_file(
+    file, target_dir, new_name=None
+):  # type: (Path, Path, Optional[str]) -> None
     new_file = target_dir / file.name
     if new_name is not None:
         new_file = target_dir / new_name
@@ -30,8 +32,8 @@ def copy_file(file: Path, target_dir: Path, new_name: Optional[str] = None):
 
 
 def compare_list_of_string_kw_arg(
-    setup_text_a: str, setup_text_b: str, kw_name: str, ordering_matters: bool = True
-) -> bool:
+    setup_text_a, setup_text_b, kw_name, ordering_matters=True
+):  # type: (str, str, str, bool) -> bool
     """
     :return: whether these two setup files has the same keyword argument of type list of strings (element order can not be different)
     :raise ValueError TypeError: if failed to get a list of strings
@@ -45,7 +47,9 @@ def compare_list_of_string_kw_arg(
 
 
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("nasty_0",)])
-def test_generation(tmp_path, shared_datadir, source_pipfile_dirname: str):
+def test_generation(
+    tmp_path, shared_datadir, source_pipfile_dirname
+):  # type: (Path, Path, str) -> None
     """
     test boilerplate
     """
@@ -73,8 +77,8 @@ def test_generation(tmp_path, shared_datadir, source_pipfile_dirname: str):
     [("nasty_0", 23), ("no_original_kws_0", 23)],
 )
 def test_update(
-    capsys, tmp_path, shared_datadir, source_pipfile_dirname: str, update_count
-):
+    capsys, tmp_path, shared_datadir, source_pipfile_dirname, update_count
+):  # type: (Any, Path, Path, str, int) -> None
     """
     test updating setup.py (when it already exists)
     """
@@ -110,12 +114,8 @@ def test_update(
     ],
 )
 def test_sync_file_missing_exit_code(
-    capfd,
-    tmp_path,
-    shared_datadir,
-    source_pipfile_dirname: str,
-    missing_filenames: List[str],
-):
+    capfd, tmp_path, shared_datadir, source_pipfile_dirname, missing_filenames
+):  # type: (Any, Path, Path, str, List[str]) -> None
     """
     when Pipfile.lock is missing, return code should be one
     """
@@ -135,8 +135,8 @@ def test_sync_file_missing_exit_code(
 @pytest.mark.xfail
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("nasty_0",)])
 def test_sync_lock_file_missing_messages(
-    capfd, tmp_path, shared_datadir, source_pipfile_dirname: str
-):
+    capfd, tmp_path, shared_datadir, source_pipfile_dirname
+):  # type: (Any, Path, Path, str) -> None
     """
     when pipfile is missing, there should be error msgs
     """
@@ -173,12 +173,8 @@ def test_help_text(capsys):
     ],
 )
 def test_check_file_missing_exit_code(
-    capfd,
-    tmp_path,
-    shared_datadir,
-    source_pipfile_dirname: str,
-    missing_filenames: List[str],
-):
+    capfd, tmp_path, shared_datadir, source_pipfile_dirname, missing_filenames
+):  # type: (Any, Path, Path, str, List[str]) -> None
     """
     when Pipfile.lock is missing, return code should be one
     """
@@ -196,8 +192,8 @@ def test_check_file_missing_exit_code(
 
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("nasty_0",)])
 def test_check_file_ignore_local(
-    capsys, tmp_path, shared_datadir, source_pipfile_dirname: str
-):
+    capsys, tmp_path, shared_datadir, source_pipfile_dirname
+):  # type: (Any, Path, Path, str) -> None
     """
     when Pipfile.lock is missing, return code should be one
     """
@@ -217,8 +213,8 @@ def test_check_file_ignore_local(
 
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("loose_pass_strict_fail_0",)])
 def test_check_file_strict(
-    capsys, tmp_path, shared_datadir, source_pipfile_dirname: str
-):
+    capsys, tmp_path, shared_datadir, source_pipfile_dirname
+):  # type: (Any, Path, Path, str) -> None
     """
     when --strict flag is passed. compatible but not identical versioning should fail
     """
@@ -237,8 +233,8 @@ def test_check_file_strict(
 
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("many_conflicts_0",)])
 def test_check_file_many_conflicts(
-    capsys, tmp_path, shared_datadir, source_pipfile_dirname: str
-):
+    capsys, tmp_path, shared_datadir, source_pipfile_dirname
+):  # type: (Any, Path, Path, str) -> None
     """
     many conflicts, return code should be one
     """
@@ -254,8 +250,8 @@ def test_check_file_many_conflicts(
 
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("broken_0",), ("broken_1",)])
 def test_check_file_broken_setup(
-    capsys, tmp_path, shared_datadir, source_pipfile_dirname: str
-):
+    capsys, tmp_path, shared_datadir, source_pipfile_dirname
+):  # type: (Any, Path, Path, str) -> None
     """
     when Pipfile.lock is missing, return code should be one
     """
@@ -271,8 +267,8 @@ def test_check_file_broken_setup(
 
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("install_requires_missing_0",)])
 def test_check_file_install_requires_missing(
-    capsys, tmp_path, shared_datadir, source_pipfile_dirname: str
-):
+    capsys, tmp_path, shared_datadir, source_pipfile_dirname
+):  # type: (Any, Path, Path, str) -> None
     """
     when Pipfile.lock is missing, return code should be one
     """
@@ -288,8 +284,8 @@ def test_check_file_install_requires_missing(
 
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("lock_package_broken_0",)])
 def test_sync_lock_file_package_broken(
-    tmp_path, shared_datadir, source_pipfile_dirname: str
-):
+    tmp_path, shared_datadir, source_pipfile_dirname
+):  # type: (Path, Path, str) -> None
     """
     when Pipfile.lock is missing, return code should be one
     """
@@ -304,7 +300,9 @@ def test_sync_lock_file_package_broken(
 
 
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("broken_no_setup_call_0",)])
-def test_sync_no_setup_call(tmp_path, shared_datadir, source_pipfile_dirname: str):
+def test_sync_no_setup_call(
+    tmp_path, shared_datadir, source_pipfile_dirname
+):  # type: (Path, Path, str) -> None
     """
     when setup call is not found, return code should be one
     """

@@ -2,7 +2,7 @@
 check inconsistency between Pipfile and setup.py
 """
 from string import digits
-from typing import List, Dict, Tuple, Iterable, Optional, Set
+from typing import List, Dict, Tuple, Iterable, Optional, Set, Any
 
 import packaging.version
 from packaging.version import Version
@@ -11,6 +11,30 @@ from pipenv_setup import pipfile_parser
 from pipenv_setup.constants import PipfileConfig
 from pipenv_setup.constants import VersionConflict
 from pipenv_setup.constants import vcs_list
+
+
+def lt(a):
+    return lambda x: a < x
+
+
+def le(a):
+    return lambda x: a <= x
+
+
+def eq(a):
+    return lambda x: a == x
+
+
+def gt(a):
+    return lambda x: a > x
+
+
+def ge(a):
+    return lambda x: a >= x
+
+
+def ne(a):
+    return lambda x: a != x
 
 
 class _VersionReqs:
@@ -22,7 +46,7 @@ class _VersionReqs:
         self._op_versions = self._parse_reqs(string)  # type: List[Tuple[str, Version]]
 
     @staticmethod
-    def _parse_reqs(req_string: str) -> List[Tuple[str, Version]]:
+    def _parse_reqs(req_string):  # type: (str) -> List[Tuple[str, Version]]
         """
         :param req_string: accepts both setup.py style and pipfile style
         :raise ValueError: if the string can not be understood
@@ -69,7 +93,9 @@ class _VersionReqs:
                     reqs.append((op_string, packaging.version.parse(ver_string)))
         return reqs
 
-    def analyze_compatibility(self, pipfile_reqs: str) -> Optional[VersionConflict]:
+    def analyze_compatibility(
+        self, pipfile_reqs
+    ):  # type: (str) -> Optional[VersionConflict]
         """
         :param pipfile_reqs: pipfile style version string
         :return: conflicts or None when there's no conflicts
@@ -104,8 +130,8 @@ class _VersionReqs:
 
     @staticmethod
     def _filter_metric_by_op(
-        op: str, metric: int, space: Iterable[int]
-    ) -> Iterable[int]:
+        op, metric, space
+    ):  # type: (str, int, Iterable[int]) -> Iterable[int]
         """
         filter int in space that 'op's metric
         :raise ValueError: for unrecognizable op
@@ -126,22 +152,24 @@ class _VersionReqs:
         [0, 2]
         """
         if op == "==":
-            return filter(metric.__eq__, list(space))
+            return filter(eq(metric), list(space))
         elif op == ">=":
-            return filter(metric.__le__, list(space))
+            return filter(le(metric), list(space))
         elif op == ">":
-            return filter(metric.__lt__, list(space))
+            return filter(lt(metric), list(space))
         elif op == "<":
-            return filter(metric.__gt__, list(space))
+            return filter(gt(metric), list(space))
         elif op == "<=":
-            return filter(metric.__ge__, list(space))
+            return filter(ge(metric), list(space))
         elif op == "!=":
-            return filter(metric.__ne__, list(space))
+            return filter(ne(metric), list(space))
         else:
             raise ValueError("not recognizable version string operator: " + op)
 
     @staticmethod
-    def _get_version_metric_mapping(versions: List[Version]) -> Dict[Version, int]:
+    def _get_version_metric_mapping(
+        versions,
+    ):  # type: (List[Version]) -> Dict[Version, int]
         """
         >>> parse = packaging.version.parse
         >>> v0 = parse('1.0')
@@ -166,12 +194,8 @@ class _VersionReqs:
 
 class InconsistencyChecker:
     def __init__(
-        self,
-        install_requires: List[str],
-        dependency_links: List[str],
-        pipfile_packages: Dict[str, PipfileConfig],
-        strict: bool,
-    ):
+        self, install_requires, dependency_links, pipfile_packages, strict,
+    ):  # type: (List[str], List[str], Dict[str, PipfileConfig], bool) -> None
         """
         :param strict: whether to report compatible but not identical version requirements.
         If strict is True. Then "==1.3" and "~=1.2" will be a failing instance
@@ -189,17 +213,8 @@ class InconsistencyChecker:
         self._dependency_links = dependency_links
         self._pipfile_packages = pipfile_packages
 
-    # @staticmethod
-    # def _parse_dependency_links(link) -> Tuple[str, str, str, str]:
-    #     """
-    #
-    #     :param link:
-    #     :return:
-    #     """
-    #     pass
-
     @staticmethod
-    def _separate_name_version(package_string: str) -> Tuple[str, str]:
+    def _separate_name_version(package_string):  # type: (str) -> Tuple[str, str]
         """
         :param package_string: setup.py install_requires style string
         >>> InconsistencyChecker._separate_name_version('numpy==1.2.3')
@@ -229,8 +244,8 @@ class InconsistencyChecker:
         return name.replace(" ", ""), version_reqs_string.replace(" ", "")
 
     def _parse_install_requires(
-        self, install_requires: List[str]
-    ) -> Dict[str, _VersionReqs]:
+        self, install_requires
+    ):  # type: (List[str]) -> Dict[str, _VersionReqs]
         res = {}  # type: Dict[str, _VersionReqs]
         for package_string in install_requires:
             name, version_req_string = self._separate_name_version(package_string)
@@ -239,8 +254,8 @@ class InconsistencyChecker:
 
     @staticmethod
     def format_version_report(
-        name: str, setup_config, pipfile_config, conflict: VersionConflict
-    ):
+        name, setup_config, pipfile_config, conflict
+    ):  # type: (str, Any, Any, VersionConflict) -> str
         """
         :raise ValueError when `conflict` is not recognized
         """
@@ -255,7 +270,7 @@ class InconsistencyChecker:
             raise ValueError()
         return report % args
 
-    def check_install_requires_conflict(self) -> List[str]:
+    def check_install_requires_conflict(self):  # type: ()->List[str]
         """
         :raise ValueError: if some package in install_requires is not a pypi package in pipfile
         :return: string reports. Can be empty if there is no conflict
@@ -284,7 +299,7 @@ class InconsistencyChecker:
 
     def _check_install_requires_conflict(
         self,
-    ) -> List[Tuple[str, str, str, VersionConflict]]:
+    ):  # type: ()->List[Tuple[str, str, str, VersionConflict]]
         """
         :return: A list of conflicts in the form of (package_name, setup_config, pipfile_config), empty for no conflict
         """
@@ -312,7 +327,7 @@ class InconsistencyChecker:
         return conflicts
 
     @staticmethod
-    def _is_vcs_link(link: str):
+    def _is_vcs_link(link):  # type: (str) -> bool
         """
         :param link: setup.py dependency_link style string
 
@@ -326,7 +341,7 @@ class InconsistencyChecker:
         return any([link.startswith(vcs) for vcs in vcs_list])
 
     @staticmethod
-    def _parse_vcs_link(link: str) -> Tuple[str, str, Optional[str], str]:
+    def _parse_vcs_link(link):  # type: (str) -> Tuple[str, str, Optional[str], str]
         """
         :param link: a setup.py dependency_links style vcs link
         :return: vcs_name, url_stripped_of_ref_egg, ref(version/branch), package name
@@ -389,7 +404,7 @@ class InconsistencyChecker:
 
         return vcs, url, ref, name
 
-    def check_dependency_links_conflict(self) -> List[str]:
+    def check_dependency_links_conflict(self):  # type: () -> List[str]
         """
         :return A list of conflicts formatted as strings, can be empty when there's no conflict
         :raise ValueError: if check fails (e.g. can not parse dependency_links in setup.py)
@@ -439,7 +454,7 @@ class InconsistencyChecker:
 
         return msgs
 
-    def check_lacking_install_requires(self) -> List[str]:
+    def check_lacking_install_requires(self):  # type: () -> List[str]
         """
         report pypi packages that are in pipfile default package but not in install_requires
         """
@@ -452,7 +467,7 @@ class InconsistencyChecker:
                     )
         return reports
 
-    def check_lacking_dependency_links(self) -> List[str]:
+    def check_lacking_dependency_links(self):  # type: ()->List[str]
         """
         report vcs/url packages that are in pipfile default package but not in dependency_links
 
@@ -488,5 +503,4 @@ class InconsistencyChecker:
                             "package '%s' has a url in pipfile but not in dependency_links"
                             % name
                         )
-
         return reports

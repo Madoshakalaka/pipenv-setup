@@ -2,7 +2,7 @@ import ast
 from typing import List, Optional, Tuple
 
 
-def get_kw_list_of_string_arg(setup_text: str, kw_name: str) -> List[str]:
+def get_kw_list_of_string_arg(setup_text, kw_name):  # type: (str, str) -> List[str]
     """
     :raise TypeError ValueError: when failed to get a list of strings
     """
@@ -13,7 +13,7 @@ def get_kw_list_of_string_arg(setup_text: str, kw_name: str) -> List[str]:
     return parse_list_of_string(kw_list_node)
 
 
-def parse_list_of_string(node: ast.List) -> List[str]:
+def parse_list_of_string(node):  # type: (ast.List) -> List[str]
     """
     raise: TypeError: when node is not a `ast.List`
     raise: ValueError: when node has non-string element
@@ -36,8 +36,8 @@ def parse_list_of_string(node: ast.List) -> List[str]:
 
 
 def get_install_requires_dependency_links(
-    setup_code: str,
-) -> Tuple[List[str], List[str]]:
+    setup_code,
+):  # type: (str) -> Tuple[List[str], List[str]]
     """
     :raise ValueError SyntaxError: if can not get 'install_requires' or 'dependency_links' keyword list in the file
 
@@ -59,7 +59,7 @@ def get_install_requires_dependency_links(
     )
 
 
-def get_setup_call_node(root_node) -> Optional[ast.Call]:
+def get_setup_call_node(root_node):  # type: (ast.AST)-> Optional[ast.Call]
 
     for node in ast.walk(root_node):
 
@@ -72,7 +72,9 @@ def get_setup_call_node(root_node) -> Optional[ast.Call]:
     return None
 
 
-def get_extras_require_dev_list_node(root_node) -> Optional[ast.List]:
+def get_extras_require_dev_list_node(
+    root_node,
+):  # type: (ast.AST) -> Optional[ast.List]
     """
     get the list from [dev]
 
@@ -101,7 +103,7 @@ def get_extras_require_dev_list_node(root_node) -> Optional[ast.List]:
     return None
 
 
-def get_extras_require_dict_node(root_node) -> Optional[ast.Dict]:
+def get_extras_require_dict_node(root_node):  # type: (ast.AST) ->Optional[ast.Dict]
     """
     :raise ValueError: When the keyword argument is not a list or when can not get the list
     :return: a dict node, or None if it does not exist
@@ -120,7 +122,7 @@ def get_extras_require_dict_node(root_node) -> Optional[ast.Dict]:
     return node  # type: ignore
 
 
-def get_kw_list_node(root_node, kw: str) -> Optional[ast.List]:
+def get_kw_list_node(root_node, kw):  # type(ast.AST, str) -> Optional[ast.List]
     """
     :raise ValueError: When the keyword argument is not a list or when can not get the list
     :return: a list node, or None if it does not exist

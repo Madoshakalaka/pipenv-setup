@@ -6,7 +6,7 @@ from vistir.compat import Path
 from pipenv_setup.constants import LockConfig
 
 
-def is_remote_package(config: LockConfig) -> bool:
+def is_remote_package(config):  # type: (LockConfig) -> bool
     """
     This function is written according to the following file
     https://github.com/pypa/pipfile/blob/master/examples/Pipfile.lock
@@ -99,7 +99,7 @@ def get_dev_packages(
     local_packages = {}  # type: Dict[str, LockConfig]
     remote_packages = {}  # type: Dict[str, LockConfig]
     for package_name, config in (
-        Lockfile.create(lockfile_path.parent).get_deps(dev=True).items()
+        Lockfile.create(str(lockfile_path.parent)).get_deps(dev=True).items()
     ):
         if is_remote_package(config):
             remote_packages[package_name] = config

@@ -35,6 +35,8 @@ from pipenv_setup.inconsistency_checker import _VersionReqs
         ["", "*", None],
     ],
 )
-def test_check_compatibility(setup_version: str, pipfile_version: str, expected: bool):
+def test_check_compatibility(
+    setup_version, pipfile_version, expected
+):  # type: (str, str, bool) -> None
     vr = _VersionReqs(setup_version)
     assert vr.analyze_compatibility(pipfile_version) == expected

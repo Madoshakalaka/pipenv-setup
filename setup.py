@@ -137,8 +137,8 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     extras_require={
         "dev": [
-            "pytest~=5.1",
-            "pytest-mypy~=0.3",
+            "pytest~=5.2; python_version >= '3.6'",
+            "pytest-mypy~=0.3; python_version >= '3.5'",
             "pytest-cov~=2.7",
             "twine~=2.0; python_version >= '3.6'",
             "pytest-datadir~=1.3",
@@ -157,6 +157,7 @@ setup(
         "requirementslib~=1.5",
         "vistir~=0.4",
         "autopep8~=1.4; python_version < '3.6'",
+        "six~=1.12",
     ],  # Optional
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"

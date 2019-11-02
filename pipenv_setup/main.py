@@ -1,11 +1,14 @@
+from __future__ import print_function
+
 import argparse
 import sys
 from sys import stderr
-from typing import List, Union, NoReturn, Iterable
+from typing import List, Union, NoReturn, Iterable, Text
+
+from six import string_types
 
 from colorama import Fore, init
 from vistir.compat import Path
-
 from pipenv_setup import (
     lockfile_parser,
     setup_filler,
@@ -72,24 +75,25 @@ def cmd(argv=sys.argv):
         help="allow local packages in pipfile default packages",
     )
 
-    argv = parser.parse_args(argv[1:])
-
-    if argv.command_name == "sync":
-        sync(argv)
-    elif argv.command_name == "check":
-        check(argv)
-    else:
+    if len(argv[1:]) == 0:
         parser.print_help()
+    else:
+        argv = parser.parse_args(argv[1:])
+
+        if argv.command_name == "sync":
+            sync(argv)
+        elif argv.command_name == "check":
+            check(argv)
 
 
-def congratulate(msg: Union[str, Iterable[str]]):
+def congratulate(msg):  # type: (Union[Text, Iterable[Text]]) -> None
     """
     print green text to stdout
 
     :raise TypeError: if `msg` is of wrong type
     """
     msgs = []  # type: List[str]
-    if isinstance(msg, str):
+    if isinstance(msg, string_types):
         msgs = [msg]
     elif hasattr(msg, "__iter__"):
         for m in msg:
@@ -100,13 +104,13 @@ def congratulate(msg: Union[str, Iterable[str]]):
         print(Fore.GREEN + m + Fore.RESET)
 
 
-def fatal_error(msg: Union[str, List[str]]) -> NoReturn:
+def fatal_error(msg):  # type: (Union[Text, List[Text]]) -> NoReturn
     """
     print text or a list of text to stderr then exit with error code 1
 
     :raise TypeError: if msg is of wrong type
     """
-    if isinstance(msg, str):
+    if isinstance(msg, string_types):
         print(msg, file=stderr)
     elif isinstance(msg, list):
         for m in msg:

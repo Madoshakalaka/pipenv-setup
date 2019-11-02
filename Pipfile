@@ -5,8 +5,8 @@ verify_ssl = true
 
 [dev-packages]
 pipenv-setup = {editable = true,path = "."}
-pytest = "~=5.1"
-pytest-mypy = "~=0.3"
+pytest = {markers = "python_version>='3.6'",version = "~=5.2"}
+pytest-mypy = {markers = "python_version>='3.5'",version = "~=0.3"}
 pytest-cov = "~=2.7"
 twine = {markers = "python_version>='3.6'",version = "~=2.0"}
 pytest-datadir = "~=1.3"
@@ -24,6 +24,7 @@ packaging = "~=19.1"
 requirementslib = "~=1.5"
 vistir = "~=0.4"
 autopep8 = {markers = "python_version<'3.6'",version = "~=1.4"}
+six = "~=1.12"
 
 [scripts]
 # can not use pipenv-setup sync directly
