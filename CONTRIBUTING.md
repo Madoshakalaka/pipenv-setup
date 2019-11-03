@@ -4,28 +4,89 @@
 
 is all you need
 
-# Tests
+> about python interpreter: this project doesn't have "requires python_version==x.x" in Pipfile.
+> It means you have freedom using any version of python you want.
+> say: pipenv install --dev --python 3.7
+>
+> This could result in an ever changing Lockfile as people develop in different python versions, and
+> different version may result in different dependencies.
 
-`$ pytest` runs all the tests with your python version
+# To Introduce New Dependencies
+- write compatible setup.py and code
 
-Optionally, if you have python 2.7/3.4/3.5/3.6/3.7/3.8 installed
+This project aims to run on most compatible python versions.
 
-`$ tox -r` will run tests on 6 python versions
+If you want to introduce your favorite python package to this project, please note, Pipfile is synced to setup.py 
+in this project and setup.py will be published to everyone.
+ 
+This means you have the responsibility to specify markers 
+(python version requirements, os requirements) when you `pipenv install ` a not so compatible package.
 
-Specify `$ tox -r -e pyXX` to run tests with specific python version
+e.g. you can do a `$ pipenv install "advanced_tech~=x.x; python_versions>='3.6'"` and write python version dependent code for
+lower python versions. (or you can do a simple `$ pipenv install advanced_tech`, edit markers in Pipfile, and do a `pipenv lock`)
+
+An example in our project:
+
+When we update user's `setup.py`, `black` is used to format the file. However `black` does not support python versions below
+3.6. So we have `autopep8` as an alternative  
+
+```
+# pipfile
+
+black = {markers = "python_version>='3.6'",version = ">=19.3b0"}
+autopep8 = {markers = "python_version<'3.6'",version = "~=1.4"}
+``` 
+
+And in the code:
+
+```
+# setup_updater.py
+
+def format_file(file):
+    """
+    use black or autopep8 to format python file
+    """
+    try:
+        import black
+        # do black formatting
+        ...
+
+    except ImportError:
+        # use autopep8
+        import autopep8
+        ...
+```
+
+
 
 # Pull Request
 
 Upon pull request, travis will run tox tests on python 2.7/3.4/3.5/3.6/3.7/3.8 across 3 Operating Systems.(yep, 18 tests in total)
 
-Tox also tests packaging from `setup.py`. 
+Tox also tests packaging from `setup.py`. Before any pull request, be sure to sync changed dependencies to `setup.py`.
 
-> If dependency is changed, 
-> be sure to run `$ pipenv run update-deps` to update `setup.py` before a pull request.
-> Note you can't just do `$ pipenv-setup sync` if dependency is changed. `pipenv-setup` won't start because of un-matched dependencies.
-> `$ pipenv run update-deps` may fail too if new dependency is introduced in code, in which case please manually change setup.py.
+A caveat is that when you have changed dependencies, command entry `$ pipenv-setup sync` may not be able to start, 
+as the shortcut command is provided `setup.py` and `setup.py` detects mismatched dependencies and throw up.
 
-tl;dr: manually change dependency in `setup.py` is a safe bet
+Please use package entry instead: `python3 -m pipenv_setup sync --dev --pipfile`. Or use the shortcut in Pipfile:
+`$ pipenv run sync-deps` 
+
+
+# Tests
+
+`$ pytest` runs all the tests with your python version
+
+Optionally, if you have some of python 2.7/3.4/3.5/3.6/3.7/3.8 installed
+
+`$ tox` will run tests on at most 6 python versions depending how many versions you installed on your machine
+
+Specify `$ tox -e pyXX` to run tests with specific python version
+
+In this project, dev dependencies in Pipfile should be synced to `setup.py` in `extras_require`, as tox installs 
+`pipenv-setup[dev]` before running tests.
+
+If you made changes to dev dependencies in pipfile, before running tox tests, use `pipenv run sync-deps`  to
+ update them to `setup.py`
 
 # Test Data Creation
 

@@ -27,12 +27,9 @@ autopep8 = {markers = "python_version<'3.6'",version = "~=1.4"}
 six = "~=1.12"
 
 [scripts]
-# can not use pipenv-setup sync directly
-# really meta: if dependency is changed in pipfile.lock, pipenv-setup won't even start because of wrong version of
-# dependencies
-# this may not work if new dependency is introduced in code. In which case dependencies needs to be updated manually
-# in setup.py
-update-deps = './update-deps.sh'
+# use this to sync this pipfile to setup.py, explained in CONTRIBUTING.md
+# e.g. `$ pipenv run sync-deps`
+sync-deps = 'python -m pipenv_setup sync --dev --pipfile'
 build = 'python setup.py sdist'
 release = 'python -m twine upload dist/*'
 

@@ -151,7 +151,7 @@ setup(
     },
     install_requires=[
         "pipfile~=0.0",
-        "black==19.10b0; python_version >= '3.6'",
+        "black>=19.3b0; python_version >= '3.6'",
         "colorama~=0.4",
         "packaging~=19.1",
         "requirementslib~=1.5",

@@ -216,7 +216,7 @@ jobs:
     install: ''
     after_success: ''
     script: ""
-    before_deploy: 'pip install pipenv-setup && pipenv-setup sync --dev --pipfile'
+    before_deploy: 'python3 -m pipenv_setup sync --dev --pipfile'
     deploy:
       provider: pypi
       user: Madoshakalaka
