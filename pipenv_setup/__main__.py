@@ -1,5 +1,5 @@
 """
-this file gives an alternative of using `python -m pipenv-setup`
+this file gives an alternative of using `python -m pipenv_setup`
 """
 from pipenv_setup.main import cmd
 
