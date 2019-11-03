@@ -85,7 +85,7 @@ Specify `$ tox -e pyXX` to run tests with specific python version
 In this project, dev dependencies in Pipfile should be synced to `setup.py` in `extras_require`, as tox installs 
 `pipenv-setup[dev]` before running tests.
 
-If you made changes to dev dependencies in pipfile, before running tox tests, use `pipenv run sync-deps`  to
+As mentioned, if you made changes to dev dependencies or default dependencies in pipfile, before running tox tests, use `$ pipenv run sync-deps`  to
  update them to `setup.py`
 
 # Test Data Creation
