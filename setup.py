@@ -47,7 +47,7 @@ setup(
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
-    description="sync pipfile.lock to setup.py",
+    description="sync Pipfile/Pipfile.lock to setup.py",
     # This is an optional longer description of your project that represents
     # the body of text which users will see when they visit PyPI.
     #
@@ -82,6 +82,7 @@ setup(
     # Classifiers help users find your project by categorizing it.
     #
     # For a list of valid classifiers, see https://pypi.org/classifiers/
+    license="MIT",
     classifiers=[  # Optional
         # How mature is this project? Common values are
         #   3 - Alpha
@@ -122,6 +123,7 @@ setup(
         # And include any *.msg files found in the 'hello' package, too:
         "pipenv_setup": ["res/*"]
     },
+    data_files=[("", ["LICENSE"])],
     packages=find_packages(exclude=["tests", "docs"]),  # Required
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
@@ -159,39 +161,6 @@ setup(
         "autopep8~=1.4; python_version < '3.6'",
         "six~=1.12",
     ],  # Optional
-    # List additional groups of dependencies here (e.g. development
-    # dependencies). Users will be able to install these using the "extras"
-    # syntax, for example:
-    #
-    #   $ pip install sampleproject[dev]
-    #
-    # Similar to `install_requires` above, these must be valid existing
-    # projects.
-    #
-    #
-    # If there are data files included in your packages that need to be
-    # installed, specify them here.
-    #
-    # If using Python 2.6 or earlier, then these have to be included in
-    # MANIFEST.in as well.
-    #
-    # package_data={"sample": ["package_data.dat"]},  # Optional
-    #
-    #
-    # Although 'package_data' is the preferred approach, in some case you may
-    # need to place data files outside of your packages. See:
-    # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files
-    #
-    # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
-    # data_files=[("my_data", ["data/data_file"])],  # Optional
-    #
-    # To provide executable scripts, use entry points in preference to the
-    # "scripts" keyword. Entry points provide cross-platform support and allow
-    # `pip` to create the appropriate form of executable for the target
-    # platform.
-    #
-    # For example, the following would provide a command called `sample` which
-    # executes the function `main` from this package when invoked:
     entry_points={
         "console_scripts": ["pipenv-setup=pipenv_setup.main:cmd"]
     },  # Optional
@@ -199,11 +168,6 @@ setup(
     #
     # This field corresponds to the "Project-URL" metadata fields:
     # https://packaging.python.org/specifications/core-metadata/#project-url-multiple-use
-    #
-    # Examples listed include a pattern for specifying where the package tracks
-    # issues, where the source is hosted, where to say thanks to the package
-    # maintainers, and where to support the project financially. The key is
-    # what's used to render the link text on PyPI.
     project_urls={  # Optional
         "Bug Reports": "https://github.com/Madoshakalaka/pipenv-setup/issues",
         "Say Thanks!": "https://github.com/Madoshakalaka/pipenv-setup",
