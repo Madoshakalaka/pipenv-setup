@@ -39,6 +39,7 @@ def test_sync_pipfile_no_original(
 
     captured = capsys.readouterr()
     assert "Pipfile.lock" not in captured.out, captured.out
+    assert "Pipfile" in captured.out, captured.out
 
 
 def test_sync_dev_pipfile_no_original(tmp_path):
