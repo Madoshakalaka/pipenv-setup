@@ -116,7 +116,7 @@ jobs:
     # end switch
 
   # osx python 2.7.12
-  - name: "Python: 2,7"
+  - name: "Python: 2.7"
     os: osx
     osx_image: xcode11
     cache:
