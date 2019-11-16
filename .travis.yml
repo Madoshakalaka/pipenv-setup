@@ -10,10 +10,11 @@ script: python3 -m tox
 before_cache:
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew cleanup; fi
 
+# release stage will be triggered by manual GitHub release
 stages:
 - test
 - name: "PYPI release"
-  if: branch = master && type IN (push, api) && tag IS present
+  if: type = api && tag IS present
 
 jobs:
   include:
