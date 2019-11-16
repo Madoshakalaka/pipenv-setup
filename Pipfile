@@ -17,7 +17,7 @@ autopep8 = "~=1.4"
 
 [packages]
 pipfile = "~=0.0"
-black = {markers = "python_version>='3.6'",version = ">=19.3b0"}
+black = {markers = "python_version>='3.6'",version = "==19.10b0"}
 colorama = "~=0.4"
 packaging = "~=19.1"
 requirementslib = "~=1.5"
@@ -29,6 +29,3 @@ six = "~=1.12"
 # use this to sync this pipfile to setup.py, explained in CONTRIBUTING.md
 # `$ pipenv run sync-deps`
 sync-deps = 'python -m pipenv_setup sync --dev --pipfile'
-
-[pipenv]
-allow_prereleases = true
