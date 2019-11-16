@@ -244,11 +244,12 @@ def sync(argv):
                 dependency_arguments[destination_kw].append(value)
 
         if only_setup_missing:
+            # TODO add test coverage for this branch
             print(msg_formatter.setup_not_found())
             print("Creating boilerplate setup.py...")
             setup_code = setup_filler.fill_boilerplate(dependency_arguments)
             if setup_code is None:
-                fatal_error("Can not find setup.py template file")
+                fatal_error("Cannot find setup.py template file")
             try:
                 with open(setup_file_path, "w") as new_setup_file:
                     new_setup_file.write(setup_code)
@@ -257,12 +258,9 @@ def sync(argv):
                 fatal_error([str(e), "failed to write setup.py file"])
             else:
                 congratulate(
-                    [
-                        "setup.py generated",
-                        "%d packages moved from %s to setup.py"
-                        % (default_package_success_count, file.name),
-                        "Please edit the required fields in the generated file",
-                    ]
+                    msg_formatter.generate_success(
+                        default_package_success_count, dev_package_success_count
+                    )
                 )
 
         else:  # all files exist. Update setup.py
