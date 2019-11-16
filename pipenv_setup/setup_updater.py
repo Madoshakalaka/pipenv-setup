@@ -1,11 +1,12 @@
 import ast
+import codecs
 import sys
 import tokenize
 from io import BytesIO
 from subprocess import Popen, PIPE
 from tokenize import OP
 from typing import Tuple, List, Any
-import codecs
+
 from vistir.compat import Path
 
 from pipenv_setup import setup_parser
@@ -148,7 +149,7 @@ def format_file(file):  # type: (Path) -> None
         import black
 
         with Popen(
-            [sys.executable, "-m", "black", file], stdout=PIPE, stderr=PIPE
+            [sys.executable, "-m", "black", str(file)], stdout=PIPE, stderr=PIPE
         ) as p:
             p.communicate()
 

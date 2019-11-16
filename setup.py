@@ -141,7 +141,6 @@ setup(
             "pytest~=5.2; python_version >= '3.6'",
             "pytest-mypy~=0.3; python_version >= '3.5'",
             "pytest-cov~=2.7",
-            "twine~=2.0; python_version >= '3.6'",
             "pytest-datadir~=1.3",
             "codecov~=2.0; python_version >= '3.6'",
             "pytest-xdist~=1.29",
