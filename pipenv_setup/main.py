@@ -259,7 +259,9 @@ def sync(argv):
             else:
                 congratulate(
                     msg_formatter.generate_success(
-                        default_package_success_count, dev_package_success_count
+                        default_package_success_count,
+                        dev_package_success_count,
+                        argv.pipfile,
                     )
                 )
 
@@ -272,7 +274,9 @@ def sync(argv):
                 fatal_error([str(e), msg_formatter.no_sync_performed()])
             congratulate(
                 msg_formatter.update_success(
-                    default_package_success_count, dev_package_success_count
+                    default_package_success_count,
+                    dev_package_success_count,
+                    argv.pipfile,
                 )
             )
     else:
