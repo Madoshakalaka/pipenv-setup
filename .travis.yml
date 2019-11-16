@@ -20,6 +20,9 @@ jobs:
   include:
   # linux
   - python: '3.8'
+    script:
+      - echo $TRAVIS_EVENT_TYPE
+      - echo $TRAVIS_TAG
   - python: '3.7'
   - python: '3.6.9'
   - python: '3.5'
