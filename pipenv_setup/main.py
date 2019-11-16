@@ -244,7 +244,6 @@ def sync(argv):
                 dependency_arguments[destination_kw].append(value)
 
         if only_setup_missing:
-            # TODO add test coverage for this branch
             print(msg_formatter.setup_not_found())
             print("Creating boilerplate setup.py...")
             setup_code = setup_filler.fill_boilerplate(dependency_arguments)

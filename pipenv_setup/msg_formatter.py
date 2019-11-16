@@ -54,7 +54,7 @@ def generate_success(
     src = "Pipfile" if pipfile else "Pipfile.lock"
     string = (
         "setup.py generated"
-        "\n%d default packages moved from %s to setup.py" % (default_package_count, src)
+        "\n%d default packages synced from %s to setup.py" % (default_package_count, src)
     )
 
     if dev_package_count != 0:
