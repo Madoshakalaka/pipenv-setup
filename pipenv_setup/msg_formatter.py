@@ -53,7 +53,7 @@ def generate_success(
     """
     src = "Pipfile" if pipfile else "Pipfile.lock"
     string = (
-        "setup.py generated"
+        "setup.py was successfully generated"
         "\n%d default packages synced from %s to setup.py" % (default_package_count, src)
     )
 
@@ -76,7 +76,7 @@ def update_success(
     """
     src = "Pipfile" if pipfile else "Pipfile.lock"
     string = (
-        "setup.py successfully updated"
+        "setup.py was successfully updated"
         + "\n%d default packages from %s synced to setup.py"
         % (default_package_count, src)
     )
