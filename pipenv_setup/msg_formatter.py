@@ -44,20 +44,23 @@ def checked_no_problem():
 
 
 def update_success(
-    default_package_count, dev_package_count=0
-):  # type: (int, int) -> str
+    default_package_count, dev_package_count=0, pipfile=False
+):  # type: (int, int, bool) -> str
     """
     :param default_package_count: The number of updated default packages
     :param dev_package_count: The number of updated dev packages
+    :param bool lockfile: indicate that Pipfile was used to update setup.py
     """
+    src = "Pipfile" if pipfile else "Pipfile.lock"
     string = (
         "setup.py successfully updated"
-        + "\n%d default packages from Pipfile.lock synced to setup.py"
-        % default_package_count
+        + "\n%d default packages from %s synced to setup.py"
+        % (default_package_count, src)
     )
+
     if dev_package_count != 0:
-        string += (
-            "\n%d dev packages from Pipfile.lock synced to setup.py"
-            % default_package_count
+        string += "\n%d dev packages from %s synced to setup.py" % (
+            default_package_count,
+            src,
         )
     return string
