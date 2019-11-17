@@ -40,7 +40,6 @@ jobs:
     before_install:
       - pyenv install 3.8-dev
       - pyenv global 3.8-dev
-    install: python3 -m pip install --user tox-travis
     # end switch
     script: python3 -m tox -e py38
 
@@ -52,8 +51,6 @@ jobs:
     # language: python will error
     language: shell
     before_script: python3 --version
-    # weird permission error without --user
-    install: python3 -m pip install --user tox-travis
     script: python3 -m tox -e py37
 
   # osx python 3.6.5
@@ -62,7 +59,6 @@ jobs:
     osx_image: xcode9.4 # Python 3.6.5 running on macOS 10.13
     before_script: python3 --version
     language: shell
-    install: python3 -m pip install --user tox-travis
     script: python3 -m tox -e py36
 
   # osx python 3.5
@@ -81,7 +77,6 @@ jobs:
     before_install:
       - pyenv install 3.5.2
       - pyenv global 3.5.2
-    install: python3 -m pip install --user tox-travis
     # end switch
     script: python3 -m tox -e py35
 
@@ -102,7 +97,6 @@ jobs:
       - pyenv install 3.4.5
       - pyenv global 3.4.5
       - python3 -m pip install --user --upgrade setuptools
-    install: python3 -m pip install --user tox-travis
     # end switch
     script: python3 -m tox -e py34
 
@@ -114,7 +108,6 @@ jobs:
     before_install:
       - python -m pip install --user --upgrade pip
       - python -m pip install --user --upgrade setuptools
-    install: python -m pip install --user tox-travis
     script: python -m tox -e py27
     before_script: python --version
 
@@ -127,7 +120,6 @@ jobs:
     before_install:
       - choco install python --version 3.8.0
       - python -m pip install --upgrade pip
-    install: python -m pip install tox-travis
     # On Windows, python3 does not exist
     script: python -m tox -e py38
     env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
@@ -141,7 +133,6 @@ jobs:
     before_install:
       - choco install python --version 3.7.4
       - python -m pip install --upgrade pip
-    install: python -m pip install tox-travis
     # On Windows, python3 does not exist
     script: python -m tox -e py37
     env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
@@ -153,7 +144,6 @@ jobs:
     before_install:
       - choco install python --version 3.6.8
       - python -m pip install --upgrade pip
-    install: python -m pip install tox-travis
     script: python -m tox -e py36
     env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
 
@@ -164,7 +154,6 @@ jobs:
     before_install:
       - choco install python --version 3.5.4
       - python -m pip install --upgrade pip
-    install: python -m pip install tox-travis
     script: python -m tox -e py35
     env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
 
@@ -176,7 +165,6 @@ jobs:
       - choco install python --version 3.4.4.20180111
       - python -m pip install --upgrade pip
       - python -m pip install --upgrade setuptools # old setuptools does not recognize a bunch of keyword arguments in setup.py
-    install: python -m pip install tox-travis
     script: python -m tox -e py34
     env: PATH=/c/Python34:/c/Python34/Scripts:$PATH
 
@@ -187,6 +175,5 @@ jobs:
     before_install:
       - choco install python2
       - python -m pip install --upgrade pip
-    install: python -m pip install tox-travis
     script: python -m tox -e py27
     env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
