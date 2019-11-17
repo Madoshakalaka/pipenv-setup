@@ -24,7 +24,7 @@ jobs:
     script: python3 -m tox -e py34
   - python: '2.7.17'
     install: python -m pip install .[dev]
-    script: 'python -m tox -e py27'
+    script: python -m tox -e py27
 
   # osx python 3.8
   - name: "Python: 3.8"
@@ -63,7 +63,7 @@ jobs:
     before_script: python3 --version
     language: shell
     install: python3 -m pip install --user .[dev]
-    script: python3 -m tox -e py
+    script: python3 -m tox -e py36
 
   # osx python 3.5
   - name: "Python: 3.5"
