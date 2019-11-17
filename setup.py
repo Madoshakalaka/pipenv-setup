@@ -42,7 +42,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="2.2.4",  # Required
+    version="2.2.3",  # Required
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
@@ -122,7 +122,6 @@ setup(
         # And include any *.msg files found in the 'hello' package, too:
         "pipenv_setup": ["res/*"]
     },
-    data_files=[("", ["LICENSE"])],
     packages=find_packages(exclude=["tests", "docs"]),  # Required
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
