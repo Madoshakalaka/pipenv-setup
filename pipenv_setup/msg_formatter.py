@@ -2,8 +2,8 @@
 All kinds of messages pipenv-setup prints to console
 """
 
-from vistir.compat import Path
 from colorama import Fore
+from vistir.compat import Path
 
 
 def colorful_help():
@@ -54,7 +54,8 @@ def generate_success(
     src = "Pipfile" if pipfile else "Pipfile.lock"
     string = (
         "setup.py was successfully generated"
-        "\n%d default packages synced from %s to setup.py" % (default_package_count, src)
+        "\n%d default packages synced from %s to setup.py"
+        % (default_package_count, src)
     )
 
     if dev_package_count != 0:
@@ -65,6 +66,7 @@ def generate_success(
 
     string += "\nPlease edit the required fields in the generated file"
     return string
+
 
 def update_success(
     default_package_count, dev_package_count=0, pipfile=False
@@ -83,7 +85,7 @@ def update_success(
 
     if dev_package_count != 0:
         string += "\n%d dev packages from %s synced to setup.py" % (
-            default_package_count,
+            dev_package_count,
             src,
         )
     return string

@@ -74,13 +74,15 @@ Please use package entry instead: `python3 -m pipenv_setup sync --dev --pipfile`
 
 # Tests
 
-`$ pytest` runs all the tests with your python version
+`$ pytest` runs tests with your python version
 
 Optionally, if you have some of python 2.7/3.4/3.5/3.6/3.7/3.8 installed
 
 `$ tox` will run tests on at most 6 python versions depending how many versions you installed on your machine
 
-Specify `$ tox -e pyXX` to run tests with specific python version
+Specify `$ tox -e pyXX` to run tests with specific python version. It's worth noting `py37` is the major test environment 
+and has extra `mypy` tests for static type checking (if type hints are used in code). For lightweight tests, it's a good
+ choice is to at least have python3.7 and use `$ tox -e py37` instead of `$ pytest`
 
 In this project, dev dependencies in Pipfile should be synced to `setup.py` in `extras_require`, as tox installs 
 `pipenv-setup[dev]` before running tests.

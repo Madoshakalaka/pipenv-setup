@@ -122,7 +122,6 @@ setup(
         # And include any *.msg files found in the 'hello' package, too:
         "pipenv_setup": ["res/*"]
     },
-    data_files=[("", ["LICENSE"])],
     packages=find_packages(exclude=["tests", "docs"]),  # Required
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
@@ -145,7 +144,6 @@ setup(
             "codecov~=2.0; python_version >= '3.6'",
             "pytest-xdist~=1.29",
             "tox~=3.14",
-            "tox-travis~=0.12",
             "autopep8~=1.4",
         ]
     },
@@ -158,6 +156,7 @@ setup(
         "vistir~=0.4",
         "autopep8~=1.4; python_version < '3.6'",
         "six~=1.12",
+        "typing~=3.7",
     ],  # Optional
     entry_points={
         "console_scripts": ["pipenv-setup=pipenv_setup.main:cmd"]
