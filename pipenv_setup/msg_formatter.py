@@ -2,8 +2,8 @@
 All kinds of messages pipenv-setup prints to console
 """
 
-from vistir.compat import Path
 from colorama import Fore
+from vistir.compat import Path
 
 
 def colorful_help():
@@ -57,7 +57,6 @@ def update_success(
     )
     if dev_package_count != 0:
         string += (
-            "\n%d dev packages from Pipfile.lock synced to setup.py"
-            % default_package_count
+            "\n%d dev packages from Pipfile.lock synced to setup.py" % dev_package_count
         )
     return string
