@@ -111,6 +111,9 @@ jobs:
     os: osx
     osx_image: xcode9.3  # Python 2.7.14_2 running on macOS 10.13
     language: shell
+    before_install:
+      - python -m pip install --user --upgrade pip
+      - python -m pip install --user --upgrade setuptools
     install: python -m pip install --user tox-travis
     script: python -m tox -e py27
     before_script: python --version
