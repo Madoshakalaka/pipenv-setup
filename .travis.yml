@@ -101,6 +101,7 @@ jobs:
     before_install:
       - pyenv install 3.4.5
       - pyenv global 3.4.5
+      - python3 -m pip install --user --upgrade setuptools
     install: python3 -m pip install --user tox-travis
     # end switch
     script: python3 -m tox -e py34
@@ -172,6 +173,7 @@ jobs:
     before_install:
       - choco install python --version 3.4.4.20180111
       - python -m pip install --upgrade pip
+      - python -m pip install --upgrade setuptools # old setuptools does not recognize a bunch of keyword arguments in setup.py
     install: python -m pip install tox-travis
     script: python -m tox -e py34
     env: PATH=/c/Python34:/c/Python34/Scripts:$PATH
