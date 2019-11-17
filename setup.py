@@ -144,7 +144,6 @@ setup(
             "codecov~=2.0; python_version >= '3.6'",
             "pytest-xdist~=1.29",
             "tox~=3.14",
-            "tox-travis~=0.12",
             "autopep8~=1.4",
         ]
     },
