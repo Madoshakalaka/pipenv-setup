@@ -113,8 +113,7 @@ jobs:
     language: shell
     install: python -m pip install --user tox-travis
     script: python -m tox -e py27
-    # end switch
-    before_script: python3 --version
+    before_script: python --version
 
   # windows python 3.8
   - name: "Python: 3.8"
