@@ -41,10 +41,10 @@ jobs:
         update: true
     before_install:
       - pyenv install 3.8-dev
-      - pyenv global 3.8-dev system
+      - pyenv global 3.8-dev
     # end switch
-    install: python3.8 -m pip install --user .[dev]
-    script: python3.8 -m tox -e py38
+    install: python3 -m pip install --user .[dev]
+    script: python3 -m tox -e py
 
   # osx python 3.7
   - name: "Python: 3.7"
