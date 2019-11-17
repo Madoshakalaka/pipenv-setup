@@ -250,7 +250,7 @@ def sync(argv):
             if setup_code is None:
                 fatal_error("Cannot find setup.py template file")
             try:
-                with open(setup_file_path, "w") as new_setup_file:
+                with open(str(setup_file_path), "w") as new_setup_file:
                     new_setup_file.write(setup_code)
                 format_file(setup_file_path)
             except OSError as e:
