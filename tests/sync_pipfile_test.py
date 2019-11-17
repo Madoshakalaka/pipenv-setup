@@ -20,7 +20,7 @@ def test_sync_pipfile_no_original(
     for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
         copy_file(pipfile_dir / filename, tmp_path)
 
-    with data(pipfile_dir, tmp_path) as path:
+    with data(str(pipfile_dir), tmp_path) as path:
         setup_file = path / "setup.py"  # type: Path
         cmd(["", "sync", "--pipfile"])
         text = setup_file.read_text()
