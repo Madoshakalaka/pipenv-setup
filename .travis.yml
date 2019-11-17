@@ -41,7 +41,7 @@ jobs:
         update: true
     before_install:
       - pyenv install 3.8-dev
-      - pyenv global 3.8-dev
+      - pyenv global system 3.8-dev
     # end switch
     install: python3 -m pip install --user .[dev]
     script: python3 -m tox -e py38
@@ -63,7 +63,7 @@ jobs:
     before_script: python3 --version
     language: shell
     install: python3 -m pip install --user .[dev]
-    script: python3 -m tox -e py36
+    script: python3 -m tox -e py
 
   # osx python 3.5
   - name: "Python: 3.5"
@@ -80,7 +80,7 @@ jobs:
         update: true
     before_install:
       - pyenv install 3.5.2
-      - pyenv global 3.5.2
+      - pyenv global system 3.5.2
     # end switch
     install: python3 -m pip install --user .[dev]
     script: python3 -m tox -e py35
@@ -100,7 +100,7 @@ jobs:
         update: true
     before_install:
       - pyenv install 3.4.5
-      - pyenv global 3.4.5
+      - pyenv global system 3.4.5
       - python3 -m pip install --user --upgrade setuptools
     # end switch
     install: python3 -m pip install --user .[dev]
