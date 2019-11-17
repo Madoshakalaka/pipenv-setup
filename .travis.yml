@@ -41,10 +41,11 @@ jobs:
         update: true
     before_install:
       - pyenv install 3.8-dev
-      - pyenv global 3.8-dev
+      - pyenv global 3.8
+      - export PATH="/Users/travis/.pyenv/shims:${PATH}"
     # end switch
     install: python3 -m pip install --user .[dev]
-    script: python3 -m tox -e py
+    script: python3 -m tox -e py38
 
   # osx python 3.7
   - name: "Python: 3.7"
@@ -81,10 +82,11 @@ jobs:
     before_install:
       - pyenv install 3.5.2
       - pyenv global 3.5.2
+      - export PATH="/Users/travis/.pyenv/shims:${PATH}"
     # end switch
     install: python3 -m pip install --user .[dev]
     # for some reason tox cannot find python3.5. we have to use py instead of py35
-    script: python3 -m tox -e py
+    script: python3 -m tox -e py35
 
   # osx python 3.4
   - name: "Python: 3.4"
@@ -102,13 +104,12 @@ jobs:
     before_install:
       - pyenv install 3.4.5
       - pyenv global 3.4.5
-      - python3 -m pip install --user pip==19.1
+      - export PATH="/Users/travis/.pyenv/shims:${PATH}"
+      - python3 -m pip install --user pip==19.1 # highest pip support for python 3.4 is 19.1
       - python3 -m pip install --user --upgrade setuptools
     # end switch
-    install:
-      - python3 -m pip install --user .[dev]
-      - python3 -m pip install --user pytest~=4.6
-    script: python3 -m tox -e py
+    install: python3 -m pip install --user .[dev]
+    script: python3 -m tox -e py34
 
   # osx python 2.7.14
   - name: "Python: 2.7.14"
