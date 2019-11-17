@@ -3,7 +3,15 @@ from __future__ import print_function
 import argparse
 import sys
 from sys import stderr
-from typing import List, Union, NoReturn, Iterable, Text
+from typing import List, Union, Iterable, Text
+
+try:
+    # Seems like NoReturn is not backported properly in python 3.5
+    # build failure
+    # https://travis-ci.org/Madoshakalaka/pipenv-setup/jobs/613058915?utm_medium=notification&utm_source=github_status
+    from typing import NoReturn
+except ImportError:
+    pass
 
 from six import string_types
 
