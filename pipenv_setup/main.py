@@ -248,21 +248,20 @@ def sync(argv):
             print("Creating boilerplate setup.py...")
             setup_code = setup_filler.fill_boilerplate(dependency_arguments)
             if setup_code is None:
-                fatal_error("Can not find setup.py template file")
+                fatal_error("Cannot find setup.py template file")
             try:
-                with open(setup_file_path, "w") as new_setup_file:
+                with open(str(setup_file_path), "w") as new_setup_file:
                     new_setup_file.write(setup_code)
                 format_file(setup_file_path)
             except OSError as e:
                 fatal_error([str(e), "failed to write setup.py file"])
             else:
                 congratulate(
-                    [
-                        "setup.py generated",
-                        "%d packages moved from %s to setup.py"
-                        % (default_package_success_count, file.name),
-                        "Please edit the required fields in the generated file",
-                    ]
+                    msg_formatter.generate_success(
+                        default_package_success_count,
+                        dev_package_success_count,
+                        argv.pipfile,
+                    )
                 )
 
         else:  # all files exist. Update setup.py
@@ -274,7 +273,9 @@ def sync(argv):
                 fatal_error([str(e), msg_formatter.no_sync_performed()])
             congratulate(
                 msg_formatter.update_success(
-                    default_package_success_count, dev_package_success_count
+                    default_package_success_count,
+                    dev_package_success_count,
+                    argv.pipfile,
                 )
             )
     else:
