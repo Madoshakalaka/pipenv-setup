@@ -83,6 +83,8 @@ jobs:
       - pyenv install 3.5.2
       - pyenv global 3.5.2
       - export PATH="/Users/travis/.pyenv/shims:${PATH}"
+      - python3 -m pip install --user --upgrade pip
+      - python3 -m pip install --user --upgrade setuptools
     # end switch
     install: python3 -m pip install --user .[dev]
     # for some reason tox cannot find python3.5. we have to use py instead of py35
