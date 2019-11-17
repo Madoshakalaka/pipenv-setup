@@ -41,7 +41,7 @@ jobs:
         update: true
     before_install:
       - pyenv install 3.8-dev
-      - pyenv global 3.8
+      - pyenv global 3.8-dev
       - export PATH="/Users/travis/.pyenv/shims:${PATH}"
     # end switch
     install: python3 -m pip install --user .[dev]
