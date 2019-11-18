@@ -23,7 +23,7 @@ This means you have the responsibility to specify markers
 (python version requirements, os requirements) when you `pipenv install ` a not so compatible package.
 
 e.g. you can do a `$ pipenv install "advanced_tech~=x.x; python_versions>='3.6'"` and write python version dependent code for
-lower python versions. (or you can do a simple `$ pipenv install advanced_tech`, edit markers in Pipfile, and do a `pipenv lock`)
+lower python versions. (or you can do a simple `$ pipenv install advanced_tech`, edit markers in Pipfile, and do a `pipenv install` again)
 
 An example in our project:
 
@@ -66,7 +66,7 @@ Upon pull request, travis will run tox tests on python 2.7/3.4/3.5/3.6/3.7/3.8 a
 Tox also tests packaging from `setup.py`. Before any pull request, be sure to sync changed dependencies to `setup.py`.
 
 A caveat is that when you have changed dependencies, command entry `$ pipenv-setup sync` may not be able to start, 
-as the shortcut command is provided `setup.py` and `setup.py` detects mismatched dependencies and throw up.
+as the shortcut command is provided by `setup.py` and `setup.py` detects mismatched dependencies and throw up.
 
 Please use package entry instead: `python3 -m pipenv_setup sync --dev --pipfile`. Or use the shortcut in Pipfile:
 `$ pipenv run sync-deps` 
@@ -87,7 +87,7 @@ and has extra `mypy` tests for static type checking (if type hints are used in c
 In this project, dev dependencies in Pipfile should be synced to `setup.py` in `extras_require`, as tox installs 
 `pipenv-setup[dev]` before running tests.
 
-As mentioned, if you made changes to dev dependencies or default dependencies in pipfile, before running tox tests, use `$ pipenv run sync-deps`  to
+As mentioned, if you made changes to dependencies in pipfile, before running tox tests, use `$ pipenv run sync-deps`  to
  update them to `setup.py`
 
 # Test Data Creation
@@ -96,7 +96,7 @@ The majority of `pipenv-setup`'s function requires the presence of pipfile, lock
 
 If you'd like to come up with test cases. Create one like this [generic test folder](tests/data/generic_nice_0).
 
-When you manipulate test data with `pipenv`, be sure to do it in a different environment to 
-avoid editing pipfile of `pipenv-setup`
+If you manipulate test data with `pipenv`, be sure to do it in a different environment to 
+avoid editing Pipfile of this project. 
 
 > `gitdir` and `xml-subsetter` in generic test data are light-weight example packages
