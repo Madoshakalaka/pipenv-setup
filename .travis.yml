@@ -1,5 +1,6 @@
 language: python
 dist: xenial
+after_success: codecov
 
 # only intended for Linux python3 jobs.
 # Linux Python2.7 job, Windows jobs, and Mac jobs will overwrite
