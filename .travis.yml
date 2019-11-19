@@ -1,10 +1,12 @@
 language: python
 dist: xenial
-after_success: codecov
 
 # only intended for Linux python3 jobs.
 # Linux Python2.7 job, Windows jobs, and Mac jobs will overwrite
 install: python3 -m pip install .[dev] codecov
+
+# only intended for linux jobs. MacOS and Windows will use package entry "python[3] -m codecov"
+after_success: codecov
 
 before_cache:
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew cleanup; fi
@@ -23,7 +25,7 @@ jobs:
   - python: '3.4.8'
     script: python3 -m tox -e py34
   - python: '2.7.17'
-    install: python -m pip install .[dev]
+    install: python -m pip install .[dev] codecov
     script: python -m tox -e py27
 
   # osx python 3.8
@@ -46,8 +48,9 @@ jobs:
     # end switch
     install: python3 -m pip install --user .[dev] codecov
     script: python3 -m tox -e py38
+    after_success: python3 -m codecov
 
-  # osx python 3.7
+    # osx python 3.7
   - name: "Python: 3.7"
     os: osx
     # xcode 11 image comes with python 3.7
@@ -56,6 +59,7 @@ jobs:
     language: shell
     install: python3 -m pip install --user .[dev] codecov
     script: python3 -m tox -e py37
+    after_success: python3 -m codecov
 
   # osx python 3.6.5
   - name: "Python: 3.6.5"
@@ -65,6 +69,7 @@ jobs:
     language: shell
     install: python3 -m pip install --user .[dev] codecov
     script: python3 -m tox -e py36
+    after_success: python3 -m codecov
 
   # osx python 3.5
   - name: "Python: 3.5"
@@ -89,6 +94,7 @@ jobs:
     install: python3 -m pip install --user .[dev] codecov
     # for some reason tox cannot find python3.5. we have to use py instead of py35
     script: python3 -m tox -e py35
+    after_success: python3 -m codecov
 
   # osx python 3.4
   - name: "Python: 3.4"
@@ -112,6 +118,7 @@ jobs:
     # end switch
     install: python3 -m pip install --user .[dev] codecov
     script: python3 -m tox -e py34
+    after_success: python3 -m codecov
 
   # osx python 2.7.14
   - name: "Python: 2.7.14"
@@ -123,6 +130,7 @@ jobs:
       - python -m pip install --user --upgrade setuptools
     install: python -m pip install --user .[dev] codecov
     script: python -m tox -e py27
+    after_success: python -m codecov
 
   # windows python 3.8
   - name: "Python: 3.8"
@@ -137,6 +145,7 @@ jobs:
     # On Windows, python3 does not exist
     script: python -m tox -e py38
     env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
+    after_success: python -m codecov
 
   # windows python 3.7
   - name: "Python: 3.7"
@@ -151,6 +160,7 @@ jobs:
     # On Windows, python3 does not exist
     script: python -m tox -e py37
     env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+    after_success: python -m codecov
 
   # windows python 3.6
   - name: "Python: 3.6"
@@ -162,6 +172,7 @@ jobs:
     install: python -m pip install --user .[dev] codecov
     script: python -m tox -e py36
     env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
+    after_success: python -m codecov
 
   # windows python 3.5
   - name: "Python: 3.5"
@@ -173,6 +184,7 @@ jobs:
     install: python -m pip install --user .[dev] codecov
     script: python -m tox -e py35
     env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
+    after_success: python -m codecov
 
   # windows python 3.4
   - name: "Python: 3.4"
@@ -185,6 +197,7 @@ jobs:
     install: python -m pip install --user .[dev] codecov
     script: python -m tox -e py34
     env: PATH=/c/Python34:/c/Python34/Scripts:$PATH
+    after_success: python -m codecov
 
   # windows python 2.7
   - name: "Python: 2.7"
@@ -196,3 +209,4 @@ jobs:
     install: python -m pip install --user .[dev] codecov
     script: python -m tox -e py27
     env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
+    after_success: python -m codecov
