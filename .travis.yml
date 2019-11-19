@@ -15,18 +15,18 @@ jobs:
   include:
   # linux
   - python: '3.8'
-    script: python3 -m tox -e py38
+    script: python3 -m tox -e py38 -- --cov-report=xml
   - python: '3.7'
-    script: python3 -m tox -e py37
+    script: python3 -m tox -e py37 -- --cov-report=xml
   - python: '3.6.9'
-    script: python3 -m tox -e py36
+    script: python3 -m tox -e py36 -- --cov-report=xml
   - python: '3.5'
-    script: python3 -m tox -e py35
+    script: python3 -m tox -e py35 -- --cov-report=xml
   - python: '3.4.8'
-    script: python3 -m tox -e py34
+    script: python3 -m tox -e py34 -- --cov-report=xml
   - python: '2.7.17'
     install: python -m pip install .[dev] codecov
-    script: python -m tox -e py27
+    script: python -m tox -e py27 -- --cov-report=xml
 
   # osx python 3.8
   - name: "Python: 3.8"
@@ -47,7 +47,7 @@ jobs:
       - export PATH="/Users/travis/.pyenv/shims:${PATH}"
     # end switch
     install: python3 -m pip install --user .[dev] codecov
-    script: python3 -m tox -e py38
+    script: python3 -m tox -e py38 -- --cov-report=xml
     after_success: python3 -m codecov
 
     # osx python 3.7
@@ -58,7 +58,7 @@ jobs:
     # language: python will error
     language: shell
     install: python3 -m pip install --user .[dev] codecov
-    script: python3 -m tox -e py37
+    script: python3 -m tox -e py37 -- --cov-report=xml
     after_success: python3 -m codecov
 
   # osx python 3.6.5
@@ -68,7 +68,7 @@ jobs:
     before_script: python3 --version
     language: shell
     install: python3 -m pip install --user .[dev] codecov
-    script: python3 -m tox -e py36
+    script: python3 -m tox -e py36 -- --cov-report=xml
     after_success: python3 -m codecov
 
   # osx python 3.5
@@ -93,7 +93,7 @@ jobs:
     # end switch
     install: python3 -m pip install --user .[dev] codecov
     # for some reason tox cannot find python3.5. we have to use py instead of py35
-    script: python3 -m tox -e py35
+    script: python3 -m tox -e py35 -- --cov-report=xml
     after_success: python3 -m codecov
 
   # osx python 3.4
@@ -117,7 +117,7 @@ jobs:
       - python3 -m pip install --user --upgrade setuptools
     # end switch
     install: python3 -m pip install --user .[dev] codecov
-    script: python3 -m tox -e py34
+    script: python3 -m tox -e py34 -- --cov-report=xml
     after_success: python3 -m codecov
 
   # osx python 2.7.14
@@ -129,7 +129,7 @@ jobs:
       - python -m pip install --user --upgrade pip
       - python -m pip install --user --upgrade setuptools
     install: python -m pip install --user .[dev] codecov
-    script: python -m tox -e py27
+    script: python -m tox -e py27 -- --cov-report=xml
     after_success: python -m codecov
 
   # windows python 3.8
@@ -143,7 +143,7 @@ jobs:
       - python -m pip install --upgrade pip
     install: python -m pip install --user .[dev] codecov
     # On Windows, python3 does not exist
-    script: python -m tox -e py38
+    script: python -m tox -e py38 -- --cov-report=xml
     env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
     after_success: python -m codecov
 
@@ -158,7 +158,7 @@ jobs:
       - python -m pip install --upgrade pip
     install: python -m pip install --user .[dev] codecov
     # On Windows, python3 does not exist
-    script: python -m tox -e py37
+    script: python -m tox -e py37 -- --cov-report=xml
     env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
     after_success: python -m codecov
 
@@ -170,7 +170,7 @@ jobs:
       - choco install python --version 3.6.8
       - python -m pip install --upgrade pip
     install: python -m pip install --user .[dev] codecov
-    script: python -m tox -e py36
+    script: python -m tox -e py36 -- --cov-report=xml
     env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
     after_success: python -m codecov
 
@@ -182,7 +182,7 @@ jobs:
       - choco install python --version 3.5.4
       - python -m pip install --upgrade pip
     install: python -m pip install --user .[dev] codecov
-    script: python -m tox -e py35
+    script: python -m tox -e py35 -- --cov-report=xml
     env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
     after_success: python -m codecov
 
@@ -195,7 +195,7 @@ jobs:
       - python -m pip install pip==19.1
       - python -m pip install --upgrade setuptools # old setuptools does not recognize a bunch of keyword arguments in setup.py
     install: python -m pip install --user .[dev] codecov
-    script: python -m tox -e py34
+    script: python -m tox -e py34 -- --cov-report=xml
     env: PATH=/c/Python34:/c/Python34/Scripts:$PATH
     after_success: python -m codecov
 
@@ -207,6 +207,6 @@ jobs:
       - choco install python2
       - python -m pip install --upgrade pip
     install: python -m pip install --user .[dev] codecov
-    script: python -m tox -e py27
+    script: python -m tox -e py27 -- --cov-report=xml
     env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
     after_success: python -m codecov

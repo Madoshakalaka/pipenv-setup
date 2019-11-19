@@ -3,6 +3,7 @@ dist
 *.egg-info/
 .tox/
 .coverage
+coverage.xml
 
 # caches
 .mypy_cache/
