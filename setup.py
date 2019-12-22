@@ -87,7 +87,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         # Indicate who your project is intended for
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Build Tools",
@@ -149,7 +149,7 @@ setup(
     install_requires=[
         "pipfile~=0.0",
         "black==19.10b0; python_version >= '3.6'",
-        "colorama~=0.4",
+        "colorama<=0.4.1",
         "packaging~=19.1",
         "requirementslib~=1.5",
         "vistir~=0.4",
