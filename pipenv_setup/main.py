@@ -189,6 +189,9 @@ def sync(argv):
 
     missing_files = tuple(filter(lambda x: not x.exists(), required_files))
     only_setup_missing = len(missing_files) == 1 and not setup_file_path.exists()
+    only_lockfile_missing = (
+        len(missing_files) == 1 and missing_files[0] == lockfile_path
+    )
 
     # todo: refactor out a parser class
     if argv.pipfile:
@@ -198,7 +201,11 @@ def sync(argv):
         parser = lockfile_parser
         file = lockfile_path
 
-    if not missing_files or only_setup_missing:
+    if (
+        not missing_files
+        or only_setup_missing
+        or (only_lockfile_missing and argv.pipfile)
+    ):
 
         dependency_arguments = {
             "dependency_links": [],

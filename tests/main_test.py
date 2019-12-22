@@ -155,7 +155,7 @@ def test_sync_file_missing_exit_code(
         file = pipfile_dir / filename
         if filename not in missing_filenames:
             copy_file(file, tmp_path)
-    # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
+
     with cwd(tmp_path):
         with pytest.raises(SystemExit) as e:
             cmd(argv=["", "sync"])
