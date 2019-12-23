@@ -72,7 +72,7 @@ jobs:
     after_success: python3 -m codecov
 
   # osx python 3.5
-  - name: "Python: 3.5"
+  - name: "Python: 3.5.7"
     os: osx
     osx_image: xcode11
     cache:
@@ -85,8 +85,8 @@ jobs:
       homebrew:
         update: true
     before_install:
-      - pyenv install 3.5.2
-      - pyenv global 3.5.2
+      - pyenv install 3.5.7
+      - pyenv global 3.5.7
       - export PATH="/Users/travis/.pyenv/shims:${PATH}"
       - python3 -m pip install --user --upgrade pip
       - python3 -m pip install --user --upgrade setuptools
