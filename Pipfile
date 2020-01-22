@@ -16,8 +16,7 @@ autopep8 = "~=1.4"
 [packages]
 pipfile = "~=0.0"
 black = {markers = "python_version>='3.6'",version = "==19.10b0"}
-# colorama dropped support for python 3.4 in 0.4.3
-colorama = "<=0.4.1"
+colorama = "~=0.4.3"
 packaging = "~=19.1"
 requirementslib = "~=1.5"
 vistir = "~=0.4"
