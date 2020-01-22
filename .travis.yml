@@ -22,8 +22,6 @@ jobs:
     script: python3 -m tox -e py36 -- --cov-report=xml
   - python: '3.5'
     script: python3 -m tox -e py35 -- --cov-report=xml
-  - python: '3.4.8'
-    script: python3 -m tox -e py34 -- --cov-report=xml
   - python: '2.7.17'
     install: python -m pip install .[dev] codecov
     script: python -m tox -e py27 -- --cov-report=xml
@@ -96,29 +94,6 @@ jobs:
     script: python3 -m tox -e py35 -- --cov-report=xml
     after_success: python3 -m codecov
 
-  # osx python 3.4
-  - name: "Python: 3.4"
-    os: osx
-    osx_image: xcode11
-    cache:
-      directories:
-        - $HOME/Library/Caches/Homebrew
-        - /usr/local/Homebrew
-    language: shell
-    # switch to python 3.4
-    addons:
-      homebrew:
-        update: true
-    before_install:
-      - pyenv install 3.4.5
-      - pyenv global 3.4.5
-      - export PATH="/Users/travis/.pyenv/shims:${PATH}"
-      - python3 -m pip install --user pip==19.1 # highest pip support for python 3.4 is 19.1
-      - python3 -m pip install --user --upgrade setuptools
-    # end switch
-    install: python3 -m pip install --user .[dev] codecov
-    script: python3 -m tox -e py34 -- --cov-report=xml
-    after_success: python3 -m codecov
 
   # osx python 2.7.14
   - name: "Python: 2.7.14"
@@ -186,18 +161,6 @@ jobs:
     env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
     after_success: python -m codecov
 
-  # windows python 3.4
-  - name: "Python: 3.4"
-    os: windows
-    language: shell
-    before_install:
-      - choco install python --version 3.4.4.20180111
-      - python -m pip install pip==19.1
-      - python -m pip install --upgrade setuptools # old setuptools does not recognize a bunch of keyword arguments in setup.py
-    install: python -m pip install --user .[dev] codecov
-    script: python -m tox -e py34 -- --cov-report=xml
-    env: PATH=/c/Python34:/c/Python34/Scripts:$PATH
-    after_success: python -m codecov
 
   # windows python 2.7
   - name: "Python: 2.7"
