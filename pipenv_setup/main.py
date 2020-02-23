@@ -45,7 +45,16 @@ def cmd(argv=sys.argv):
     subparsers = parser.add_subparsers(dest="command_name")
 
     sync_parser = subparsers.add_parser(
-        "sync", help="sync dependencies from Pipfile.lock to setup.py"
+        "sync",
+        help="sync dependencies from Pipfile.lock (default) or Pipfile to setup.py",
+    )
+
+    sync_parser.add_argument(
+        "--process-dependency-links",
+        dest="process_dependency_links",
+        action="store_true",
+        help="format vcs packages in dependency_links keyword argument instead of install_requires, this usage is"
+        " outdated and not supported by python anymore",
     )
 
     sync_parser.add_argument(
@@ -243,7 +252,9 @@ def sync(argv):
         for remote_package_name, remote_package_config in remote_packages.items():
             try:
                 destination_kw, value = parser.format_remote_package(
-                    remote_package_name, remote_package_config
+                    remote_package_name,
+                    remote_package_config,
+                    process_dependency_links=argv.process_dependency_links,
                 )
             except ValueError as e:
                 fatal_error(
@@ -266,7 +277,10 @@ def sync(argv):
             ) in dev_remote_packages.items():
 
                 destination_kw, value = parser.format_remote_package(
-                    remote_package_name, remote_package_config, dev=True
+                    remote_package_name,
+                    remote_package_config,
+                    dev=True,
+                    process_dependency_links=argv.process_dependency_links,
                 )
                 dev_package_success_count += 1
                 dependency_arguments[destination_kw].append(value)

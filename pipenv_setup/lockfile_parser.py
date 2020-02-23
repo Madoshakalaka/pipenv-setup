@@ -18,14 +18,15 @@ def is_remote_package(config):  # type: (LockConfig) -> bool
 
 
 def format_remote_package(
-    package_name, config, dev=False
-):  # type: (str, LockConfig, bool) -> Tuple[str, str]
+    package_name, config, dev=False, process_dependency_links=False
+):  # type: (str, LockConfig, bool, bool) -> Tuple[str, str]
     """
     format and return a string that can be put into either install_requires or dependency_links or extras_require
 
     :param package_name:
     :param config:
     :param dev: is package a development package
+    :param process_dependency_links: assign vcs packages to dependency_links
     :return: Tuple[keyword_target, list_argument]
     :raise ValueError: if a package config is not understood
     """
@@ -48,7 +49,7 @@ def format_remote_package(
                     include_hashes=False
                 ),
             )
-        else:  # vcs
+        elif process_dependency_links:  # vcs
             if "git" in config:
                 vcs = "git"
             # fixme: test cases other than git
@@ -68,6 +69,19 @@ def format_remote_package(
                 link += "@" + config["ref"]
             link += "#egg=" + package_name
             return "dependency_links", link
+        else:  # vcs
+            # fixme: when editable = true
+            #   this will generate 'django @ -e git+https://github.com/django/django.git@1.11.4#egg=django'
+            #   It is unrecognizable by pip because of the "-e"
+            #   find out how to deal with it properly
+            return (
+                "install_requires",
+                package_name
+                + " @ "
+                + Requirement.from_pipfile(package_name, config).as_line(
+                    include_hashes=False
+                ).strip("-e "),
+            )
 
 
 def get_default_packages(

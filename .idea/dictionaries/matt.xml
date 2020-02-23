@@ -2,6 +2,7 @@
   <dictionary name="matt">
     <words>
       <w>dependabot</w>
+      <w>pipfiles</w>
     </words>
   </dictionary>
 </component>

@@ -1,3 +1,4 @@
+# todo: refactor this file
 import shutil
 from os.path import dirname
 from typing import Optional, List, Any
@@ -5,21 +6,12 @@ from typing import Optional, List, Any
 import pytest
 from vistir.compat import Path
 
-from pipenv_setup import setup_parser, msg_formatter, main
+from pipenv_setup import msg_formatter, main
 from pipenv_setup.main import cmd
-from tests.conftest import cwd, data
+from tests.conftest import cwd, data, assert_kw_args_eq
 
 data_path = Path(dirname(__file__)) / "data"
 
-
-def copy_pipfiles(src_dir, target_dir):  # type: (Path, Path) -> None
-    for f in src_dir.glob("Pipfile*"):
-        shutil.copy(str(f), str(target_dir))
-
-
-def copy_files(src_dir, target_dir):  # type: (Path, Path) -> None
-    for f in src_dir.glob("*"):
-        shutil.copy(str(f), str(target_dir))
 
 
 def copy_file(
@@ -30,108 +22,6 @@ def copy_file(
         new_file = target_dir / new_name
     shutil.copy(str(file), str(new_file))
 
-
-def compare_list_of_string_kw_arg(
-    setup_text_a, setup_text_b, kw_name, ordering_matters=True
-):  # type: (str, str, str, bool) -> bool
-    """
-    :return: whether these two setup files has the same keyword argument of type list of strings (element order can not be different)
-    :raise ValueError TypeError: if failed to get a list of strings
-    """
-    args_a = setup_parser.get_kw_list_of_string_arg(setup_text_a, kw_name)
-    args_b = setup_parser.get_kw_list_of_string_arg(setup_text_b, kw_name)
-    if ordering_matters:
-        return args_a == args_b
-    else:
-        return set(args_a) == set(args_b)
-
-
-@pytest.mark.parametrize(("source_pipfile_dirname",), [("nasty_0",)])
-def test_generation(
-    tmp_path, shared_datadir, source_pipfile_dirname
-):  # type: (Path, Path, str) -> None
-    """
-    test boilerplate
-    """
-    pipfile_dir = shared_datadir / source_pipfile_dirname
-    copy_pipfiles(pipfile_dir, tmp_path)
-    with data(source_pipfile_dirname, tmp_path):
-
-        cmd(argv=["", "sync"])
-        generated_setup = Path("setup.py")
-        assert generated_setup.exists()
-        generated_setup_text = generated_setup.read_text()
-        expected_setup_text = Path("setup.py").read_text()
-        for kw_arg_names in ("install_requires", "dependency_links"):
-
-            assert compare_list_of_string_kw_arg(
-                generated_setup_text,
-                expected_setup_text,
-                kw_arg_names,
-                ordering_matters=False,
-            )
-
-
-@pytest.mark.parametrize(
-    ("source_pipfile_dirname", "update_count"),
-    [("nasty_0", 23), ("no_original_kws_0", 23)],
-)
-def test_update(
-    capsys, tmp_path, shared_datadir, source_pipfile_dirname, update_count
-):  # type: (Any, Path, Path, str, int) -> None
-    """
-    test updating setup.py (when it already exists)
-    """
-    pipfile_dir = shared_datadir / source_pipfile_dirname
-    for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
-        copy_file(pipfile_dir / filename, tmp_path)
-    with data(source_pipfile_dirname, tmp_path):
-        cmd(argv=["", "sync"])
-        generated_setup = Path("setup.py")
-        assert generated_setup.exists()
-        generated_setup_text = generated_setup.read_text()
-        expected_setup_text = Path("setup.py").read_text()
-    for kw_arg_names in ("install_requires", "dependency_links"):
-
-        assert compare_list_of_string_kw_arg(
-            generated_setup_text,
-            expected_setup_text,
-            kw_arg_names,
-            ordering_matters=False,
-        )
-    captured = capsys.readouterr()
-    assert msg_formatter.update_success(update_count) in captured.out
-
-
-@pytest.mark.parametrize(
-    ("source_pipfile_dirname", "update_count"),
-    [("nasty_0", 23), ("no_original_kws_0", 23)],
-)
-def test_only_setup_missing(
-    capsys, tmp_path, shared_datadir, source_pipfile_dirname, update_count
-):  # type: (Any, Path, Path, str, int) -> None
-    """
-    test generate setup.py (when it is missing)
-    """
-    pipfile_dir = shared_datadir / source_pipfile_dirname
-    with data(source_pipfile_dirname, tmp_path):
-        # delete the setup.py file that was copied to the tmp_path
-        (tmp_path / "setup.py").unlink()
-        cmd(argv=["", "sync"])
-        generated_setup = Path("setup.py")
-        assert generated_setup.exists()
-        generated_setup_text = generated_setup.read_text()
-        expected_setup_text = Path("setup.py").read_text()
-    for kw_arg_names in ("install_requires", "dependency_links"):
-
-        assert compare_list_of_string_kw_arg(
-            generated_setup_text,
-            expected_setup_text,
-            kw_arg_names,
-            ordering_matters=False,
-        )
-    captured = capsys.readouterr()
-    assert msg_formatter.generate_success(update_count) in captured.out, captured.out
 
 
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("nasty_0",)])
@@ -349,7 +239,7 @@ def test_sync_lock_file_package_broken(
     when Pipfile.lock is missing, return code should be one
     """
     pipfile_dir = shared_datadir / source_pipfile_dirname
-    for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
+    for filename in ("Pipfile", "setup.py"):
         copy_file(pipfile_dir / filename, tmp_path)
 
     with cwd(tmp_path):

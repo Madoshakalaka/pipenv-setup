@@ -2,17 +2,18 @@
 See:
 https://packaging.python.org/guides/distributing-packages-using-setuptools/
 https://github.com/pypa/sampleproject
+Modified by Madoshakalaka@Github (dependency links added)
 """
-
-# Always prefer setuptools over distutils
-from setuptools import setup, find_packages
-from os import path
 
 # io.open is needed for projects that support Python 2.7
 # It ensures open() defaults to text mode with universal newlines,
 # and accepts an argument to specify the text encoding
 # Python 3 only projects can skip this import
 from io import open
+from os import path
+
+# Always prefer setuptools over distutils
+from setuptools import setup, find_packages
 
 here = path.abspath(path.dirname(__file__))
 
@@ -130,7 +131,30 @@ setup(
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=[],  # Optional
+    install_requires=[
+        "django @ git+https://github.com/django/django.git@1.11.4#egg=django",
+        "certifi==2017.7.27.1",
+        "chardet==3.0.4",
+        "docopt==0.6.2",
+        "et-xmlfile==1.0.1",
+        "idna==2.6",
+        "jdcal==1.3",
+        "lxml==4.0.0",
+        "odfpy==1.3.5",
+        "openpyxl==2.4.8",
+        "pysocks==1.6.7",
+        "pytz==2017.2",
+        "pywinusb==0.4.2; os_name == 'nt'",
+        "pyyaml==3.12",
+        "records==0.5.2",
+        "requests==2.18.4",
+        "sqlalchemy==1.1.14",
+        "tablib==0.12.1",
+        "unicodecsv==0.14.1",
+        "urllib3==1.22",
+        "xlrd==1.1.0",
+        "xlwt==1.3.0",
+    ],  # Optional
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
     # syntax, for example:
@@ -139,7 +163,7 @@ setup(
     #
     # Similar to `install_requires` above, these must be valid existing
     # projects.
-    extras_require={"dev": []},  # Optional
+    # extras_require={"dev": []},  # Optional
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     #
@@ -150,7 +174,9 @@ setup(
     # will find and install the package correctly.
     # see https://python-packaging.readthedocs.io/en/latest/dependencies.html#packages-not-on-pypi
     #
-    dependency_links=[],
+    dependency_links=[
+        "https://github.com/divio/django-cms/archive/release/3.4.x.zip",
+    ],
     # If using Python 2.6 or earlier, then these have to be included in
     # MANIFEST.in as well.
     # package_data={"sample": ["package_data.dat"]},  # Optional
