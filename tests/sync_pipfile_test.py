@@ -1,5 +1,6 @@
 from .conftest import data
-from .main_test import copy_file, compare_list_of_string_kw_arg
+from .main_test import copy_file
+from tests.conftest import assert_kw_args_eq
 from pipenv_setup.main import cmd
 
 import pytest
@@ -17,9 +18,7 @@ def test_sync_pipfile_no_original(
     sync --pipfile should reference Pipfile (not Pipfile.lock) when printing results
     """
     pipfile_dir = shared_datadir / source_pipfile_dirname
-    for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
-        copy_file(pipfile_dir / filename, tmp_path)
-
+    expected_setup_text = (pipfile_dir / "setup_pipfile_synced.py").read_text()
     with data(str(pipfile_dir), tmp_path) as path:
         setup_file = path / "setup.py"  # type: Path
         cmd(["", "sync", "--pipfile"])
@@ -27,10 +26,10 @@ def test_sync_pipfile_no_original(
         generated_setup = Path("setup.py")
         assert generated_setup.exists()
         generated_setup_text = generated_setup.read_text()
-        expected_setup_text = Path("setup.py").read_text()
+
 
     for kw_arg_names in ("install_requires", "dependency_links"):
-        assert compare_list_of_string_kw_arg(
+        assert_kw_args_eq(
             generated_setup_text,
             expected_setup_text,
             kw_arg_names,
