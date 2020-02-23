@@ -42,7 +42,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="3.0.0",  # Required
+    version="3.0.1",  # Required
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
@@ -148,7 +148,7 @@ setup(
     install_requires=[
         "pipfile~=0.0",
         "black==19.10b0; python_version >= '3.6'",
-        "colorama~=0.4.3",
+        "colorama~=0.4",
         "packaging~=19.1",
         "requirementslib~=1.5",
         "vistir~=0.4",
