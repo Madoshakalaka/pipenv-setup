@@ -95,18 +95,6 @@ jobs:
     after_success: python3 -m codecov
 
 
-  # osx python 2.7.14
-  - name: "Python: 2.7.14"
-    os: osx
-    osx_image: xcode9.3  # Python 2.7.14_2 running on macOS 10.13
-    language: shell
-    before_install:
-      - python -m pip install --user --upgrade pip
-      - python -m pip install --user --upgrade setuptools
-    install: python -m pip install --user .[dev] codecov
-    script: python -m tox -e py27 -- --cov-report=xml
-    after_success: python -m codecov
-
   # windows python 3.8
   - name: "Python: 3.8"
     os: windows
