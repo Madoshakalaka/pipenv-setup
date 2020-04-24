@@ -313,6 +313,34 @@ def test_check_file_install_requires_missing(
         assert e.value.code == 1
 
 
+@pytest.mark.parametrize(("source_pipfile_dirname",), [("lockfile_vcs_branch_0",)])
+def test_check_lockfile_vcs_branch(
+    capsys, tmp_path, shared_datadir, source_pipfile_dirname
+):  # type: (Any, Path, Path, str) -> None
+    """
+    When Pipfile specifies a VCS dependency with a `ref` that is a mutable reference
+    (e.g. - a branch, not a tag or a commit hash), `setup.py` gets updated with the
+    resolved `sha` of that branch from Pipfile.lock.
+
+    This causes `check` to fail b/c setup.py doesn't match Pipfile.
+
+    The `--lockfile` flag allows checking against `Pipefile.lock` instead, which
+    fixes this check.
+    """
+    pipfile_dir = shared_datadir / source_pipfile_dirname
+    for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
+        copy_file(pipfile_dir / filename, tmp_path)
+    # copy_file(shared_datadir / "minimal_empty_setup.py", tmp_path, "setup.py")
+    with cwd(tmp_path):
+        # Check will fail b/c `master` branch resolves to commit sha in setup.py
+        with pytest.raises(SystemExit) as e:
+            cmd(argv=["", "check"])
+        assert e.value.code == 1
+
+        # `check --lockfile` will pass because Pipfile.lock also has the resolved sha
+        cmd(argv=["", "check", "--lockfile"])
+
+
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("lock_package_broken_0",)])
 def test_sync_lock_file_package_broken(
     tmp_path, shared_datadir, source_pipfile_dirname

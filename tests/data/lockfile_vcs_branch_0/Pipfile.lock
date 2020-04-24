@@ -1,0 +1,40 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "a7fb730effa11772acc36af98fa853226ccb3126431e0a8379b242edea8cd24b"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.7"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "django": {
+            "git": "https://github.com/django/django.git",
+            "ref": "a92cc84b4a206d18a5f1a0eaa47f19add40ff99b"
+        }
+    },
+    "develop": {
+        "colorama": {
+            "hashes": [
+                "sha256:7d73d2a99753107a36ac6b455ee49046802e59d9d076ef8e47b61499fa29afff",
+                "sha256:e96da0d330793e2cb9485e9ddfd918d456036c7149416295932478192f4436a1"
+            ],
+            "version": "==0.4.3"
+        },
+        "gitdir": {
+            "hashes": [
+                "sha256:e53954d11d238e06fa3d862b0e6acacb29bfd3ad7c9f56f5ca95303eb67b6815"
+            ],
+            "index": "pypi",
+            "version": "==1.2.2"
+        }
+    }
+}

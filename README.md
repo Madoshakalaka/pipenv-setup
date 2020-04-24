@@ -180,6 +180,18 @@ run `$ pipenv-setup check`
     (exits with 1)
     ```
 
+- provide `--lockfile` flag to check `setup.py` against `Pipfile.lock` instead of `Pipfile`
+
+    By default, `pipenv-setup check` compares the dependencies from `setup.py` against
+    the dependencies listed in `Pipfile`.  This works well for most cases, but there
+    are some exceptions that break this strategy, including (but not necessarily limited to):
+
+    * VCS dependencies with a mutable `ref` (e.g. - git branch name instead of a tag or commit sha)
+      * Because these resolve to an immutable pointer (e.g. - commit sha) in `setup.py`, the
+        dependency will no longer match between `setup.py` and `Pipfile`.  However, `Pipfile.lock`
+        will contain the same resolved pointer as `setup.py`.
+
+
 ## Contributing
 
 If you'd like to contribute to `pipenv-setup`, see [Contribution Guide](CONTRIBUTING.md)
