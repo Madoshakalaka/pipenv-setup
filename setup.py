@@ -149,7 +149,7 @@ setup(
         "pipfile~=0.0",
         "black==19.10b0; python_version >= '3.6'",
         "colorama~=0.4",
-        "packaging~=19.1",
+        "packaging>=19.1",
         "requirementslib~=1.5",
         "vistir~=0.4",
         "autopep8~=1.4; python_version < '3.6'",
