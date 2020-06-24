@@ -83,6 +83,14 @@ def cmd(argv=sys.argv):
         help="allow local packages in pipfile default packages",
     )
 
+    check_parser.add_argument(
+        "-l",
+        "--lockfile",
+        action="store_true",
+        help="check the dependencies from setup.py against Pipfile.lock instead of Pipfile."
+        " By default, the dependencies from setup.py are checked against the Pipfile.",
+    )
+
     if len(argv[1:]) == 0:
         parser.print_help()
     else:
@@ -134,9 +142,14 @@ def check(args):
     if not Path("setup.py").exists():
         fatal_error("setup.py not found")
 
-    local_packages, remote_packages = pipfile_parser.get_default_packages(
-        Path("Pipfile")
-    )
+    if args.lockfile:
+        local_packages, remote_packages = lockfile_parser.get_default_packages(
+            Path("Pipfile.lock")
+        )
+    else:
+        local_packages, remote_packages = pipfile_parser.get_default_packages(
+            Path("Pipfile")
+        )
 
     if local_packages and not args.ignore_local:
         package_names = ", ".join(local_packages)
