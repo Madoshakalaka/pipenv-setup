@@ -1,0 +1,13 @@
+# see the following link for specs of this file
+# https://help.github.com/en/github/administering-a-repository/enabling-and-disabling-version-updates
+
+# the directory: "/" part is the major reason why we have the config at all
+# We have pinned dependency files as our test data. If the directory is unspecified,
+# dependabot will complain about those dependencies
+
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
