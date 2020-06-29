@@ -149,27 +149,31 @@ jobs:
     env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
     after_success: python -m codecov
 
-  # windows python 3.5
-  - name: "Python: 3.5"
-    os: windows
-    language: shell
-    before_install:
-      - choco install python --version 3.5.4
-      - python -m pip install --upgrade pip
-    install: python -m pip install --user .[dev] codecov
-    script: python -m tox -e py35 -- --cov-report=xml
-    env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
-    after_success: python -m codecov
+# 3.5 and 2.7 on Windows are temporally disabled
+# cuz a timeout issue on travis builds
+# see this issue: https://github.com/Madoshakalaka/pipenv-setup/issues/31
 
-
-  # windows python 2.7
-  - name: "Python: 2.7"
-    os: windows
-    language: shell
-    before_install:
-      - choco install python2
-      - python -m pip install --upgrade pip
-    install: python -m pip install --user .[dev] codecov
-    script: python -m tox -e py27 -- --cov-report=xml
-    env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
-    after_success: python -m codecov
+#  # windows python 3.5
+#  - name: "Python: 3.5"
+#    os: windows
+#    language: shell
+#    before_install:
+#      - choco install python --version 3.5.4
+#      - python -m pip install --upgrade pip
+#    install: python -m pip install --user .[dev] codecov
+#    script: python -m tox -e py35 -- --cov-report=xml
+#    env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
+#    after_success: python -m codecov
+#
+#
+#  # windows python 2.7
+#  - name: "Python: 2.7"
+#    os: windows
+#    language: shell
+#    before_install:
+#      - choco install python2
+#      - python -m pip install --upgrade pip
+#    install: python -m pip install --user .[dev] codecov
+#    script: python -m tox -e py27 -- --cov-report=xml
+#    env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
+#    after_success: python -m codecov
