@@ -2,10 +2,10 @@
 check inconsistency between Pipfile and setup.py
 """
 from string import digits
-from typing import List, Dict, Tuple, Iterable, Optional, Set, Any
+from typing import List, Dict, Tuple, Iterable, Optional, Set, Any, Union
 
 import packaging.version
-from packaging.version import Version
+from packaging.version import Version, LegacyVersion
 
 from pipenv_setup import pipfile_parser
 from pipenv_setup.constants import PipfileConfig
@@ -43,10 +43,14 @@ class _VersionReqs:
         :param string: setup.py install_requires style e.g. '==1.3.2' '>=1.3, <2'
         """
         self._string = string
-        self._op_versions = self._parse_reqs(string)  # type: List[Tuple[str, Version]]
+        self._op_versions = self._parse_reqs(
+            string
+        )  # type: List[Tuple[str, Union[Version, LegacyVersion]]]
 
     @staticmethod
-    def _parse_reqs(req_string):  # type: (str) -> List[Tuple[str, Version]]
+    def _parse_reqs(
+        req_string,
+    ):  # type: (str) -> List[Tuple[str, Union[Version, LegacyVersion]]]
         """
         :param req_string: accepts both setup.py style and pipfile style
         :raise ValueError: if the string can not be understood
@@ -64,7 +68,7 @@ class _VersionReqs:
         >>> assert _VersionReqs._parse_reqs(' >=1.3.2, <2 ') == [('>=', parse('1.3.2')), ('<', parse('2'))]
         >>> assert _VersionReqs._parse_reqs(' > =1.3.2, <2 ') == [('>=', parse('1.3.2')), ('<', parse('2'))]
         """
-        reqs = []  # type: List[Tuple[str, Version]]
+        reqs = []  # type: List[Tuple[str, Union[Version, LegacyVersion]]]
         for req_ver_string in req_string.split(","):
             if req_ver_string == "":
                 continue
@@ -169,7 +173,7 @@ class _VersionReqs:
     @staticmethod
     def _get_version_metric_mapping(
         versions,
-    ):  # type: (List[Version]) -> Dict[Version, int]
+    ):  # type: (List[Union[Version, LegacyVersion]]) -> Dict[Union[Version, LegacyVersion], int]
         """
         >>> parse = packaging.version.parse
         >>> v0 = parse('1.0')
@@ -181,8 +185,11 @@ class _VersionReqs:
         >>> assert _VersionReqs._get_version_metric_mapping(v_list) == {v0: 1, v2:3, v3:5, v4: 7}
         """
 
-        mapping = dict()  # type: Dict[Version, int]
-        for i, v in enumerate([""] + sorted(list(set(versions)))):
+        mapping = dict()  # type: Dict[Union[Version, LegacyVersion], int]
+        # [packaging.version.parse('0.0')] is a hack to just add one meaningless element to the beginning
+        for i, v in enumerate(
+            [packaging.version.parse("0.0")] + sorted(list(set(versions)))
+        ):
             if i == 0:
                 continue
             mapping[v] = 2 * i - 1
