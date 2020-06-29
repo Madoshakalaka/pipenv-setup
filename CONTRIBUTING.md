@@ -101,3 +101,7 @@ If you manipulate test data with `pipenv`, be sure to do it in a different envir
 avoid editing Pipfile of this project. 
 
 > `gitdir` and `xml-subsetter` in generic test data are light-weight example packages
+
+# Others
+
+If you are working on something. It's appreciated to have an issue about it first so that we know it's being worked on :)
