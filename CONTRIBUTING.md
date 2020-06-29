@@ -61,7 +61,8 @@ def format_file(file):
 
 # Pull Request
 
-Upon pull request, travis will run tox tests on python 2.7/3.5/3.6/3.7/3.8 across 3 Operating Systems.(yep, 15 tests in total)
+Upon pull request, travis will run tox tests on python 2.7/3.5/3.6/3.7/3.8 across 3 Operating Systems.
+(yep, at most 15 tests in total, some of them may be disabled now and then because of configuration issues)
 
 Tox also tests packaging from `setup.py`. Before any pull request, be sure to sync changed dependencies to `setup.py`.
 
