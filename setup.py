@@ -42,7 +42,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="3.1.0",  # Required
+    version="3.1.1",  # Required
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
@@ -154,7 +154,7 @@ setup(
         "vistir~=0.4",
         "autopep8~=1.4; python_version < '3.6'",
         "six~=1.12",
-        "typing~=3.7",
+        "typing~=3.7; python_version < '3.7'",
     ],  # Optional
     entry_points={
         "console_scripts": ["pipenv-setup=pipenv_setup.main:cmd"]
