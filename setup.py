@@ -143,11 +143,11 @@ setup(
             "pytest-xdist~=1.29",
             "tox~=3.14",
             "autopep8~=1.4",
+            "black~=20.8b1; python_version >= '3.6'",
         ]
     },
     install_requires=[
         "pipfile~=0.0",
-        "black; python_version >= '3.6'",
         "colorama~=0.4",
         "packaging~=20.0",
         "requirementslib~=1.5",

@@ -147,7 +147,7 @@ def format_file(file):  # type: (Path) -> None
     try:
         # noinspection PyPackageRequirements
         import black
-
+    else:
         with Popen(
             [sys.executable, "-m", "black", str(file)], stdout=PIPE, stderr=PIPE
         ) as p:
@@ -155,10 +155,13 @@ def format_file(file):  # type: (Path) -> None
 
     except ImportError:
         # use autopep8
-        import autopep8
-
-        code = autopep8.fix_code(file.read_text())
-        file.write_text(code)
+        try:
+            import autopep8
+        else:
+            code = autopep8.fix_code(file.read_text())
+            file.write_text(code)
+        except ImportError:
+            raise RuntimeError("Either black or autopep8 must be installed.")
 
 
 def insert_at_lineno_col_offset(
