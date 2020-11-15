@@ -21,8 +21,10 @@ Create a command line entry point `pipenv-setup`, and add `pipenv-setup` as a `d
 package in `Pipfile`:
 
 ```bash
-pipenv install --dev pipenv-setup
+pipenv install --dev pipenv-setup black
 ```
+
+> Note: you can use `autopep8` rather than black if you wish to.
 
 ## Features
 
@@ -30,11 +32,11 @@ pipenv install --dev pipenv-setup
 
 `$ pipenv-setup`
 
-   ![help](https://raw.githubusercontent.com/Madoshakalaka/pipenv-setup/master/readme_assets/help.PNG)
+![help](https://raw.githubusercontent.com/Madoshakalaka/pipenv-setup/master/readme_assets/help.PNG)
 
 ### Sync to `setup.py`
 
-- supports assorted package configuration. You can have a pipfile as ugly as you want:
+-   supports assorted package configuration. You can have a pipfile as ugly as you want:
 
     ```Pipfile
     [package]
@@ -75,7 +77,7 @@ pipenv install --dev pipenv-setup
     )
     ```
 
-- provide `--dev` flag to sync development packages with `extras_require`:
+-   provide `--dev` flag to sync development packages with `extras_require`:
 
     ```bash
     $ pipenv-setup sync --dev
@@ -92,10 +94,10 @@ pipenv install --dev pipenv-setup
     )
     ```
 
-- produce beautiful [Blackened](https://github.com/psf/black) `setup.py` file
+-   produce beautiful [Blackened](https://github.com/psf/black) `setup.py` file
 
-- [Template](https://github.com/pypa/sampleproject/blob/master/setup.py) generation with
-  filled dependencies in the absence of a setup file.
+-   [Template](https://github.com/pypa/sampleproject/blob/master/setup.py) generation with
+    filled dependencies in the absence of a setup file.
 
     ```bash
     $ pipenv-setup sync
@@ -126,13 +128,13 @@ setup.py was successfully updated
 
 run `$ pipenv-setup check`
 
-- checks four items
-  - local package in default pipfile packages
-  - Package version requirements in `install_requires` in setup.py that potentially violates Pipfile
-  - Package version requirements in `dependency_links` in setup.py that differs from Pipfile
-  - Default package in pipfile missing in `install_requires` or `dependency_links` in setup.py
-- exits with non-zero code when conflict found (can be used in travis-ci)
-- here is a somewhat extreme example:
+-   checks four items
+    -   local package in default pipfile packages
+    -   Package version requirements in `install_requires` in setup.py that potentially violates Pipfile
+    -   Package version requirements in `dependency_links` in setup.py that differs from Pipfile
+    -   Default package in pipfile missing in `install_requires` or `dependency_links` in setup.py
+-   exits with non-zero code when conflict found (can be used in travis-ci)
+-   here is a somewhat extreme example:
 
     ```bash
     $ pipenv-setup check
@@ -145,7 +147,7 @@ run `$ pipenv-setup check`
     (exits with 1)
     ```
 
-- provide `--ignore-local` flag to allow local packages in pipfile
+-   provide `--ignore-local` flag to allow local packages in pipfile
 
     ```bash
     $ pipenv-setup check
@@ -160,13 +162,13 @@ run `$ pipenv-setup check`
     (exits with 0)
     ```
 
-- provide `--strict` flag to only pass identical version requirements
+-   provide `--strict` flag to only pass identical version requirements
 
     By default `pipenv-setup check` passes when the version `setup.py` specifies is
     "compatible" with `Pipfile`, i.e. is a subset of it. For example, a Pipfile
-    specifying  `django~=1.1` with `setup.py` requiring `django==1.2` is such a case.
+    specifying `django~=1.1` with `setup.py` requiring `django==1.2` is such a case.
 
-    Provide `--strict` to allow only identical requirements; *i.e.* for `Pipfile`'s
+    Provide `--strict` to allow only identical requirements; _i.e._ for `Pipfile`'s
     `django~=1.1`, `setup.py` must require `django>=1.1,<2.0`
 
     Example output:
@@ -180,17 +182,16 @@ run `$ pipenv-setup check`
     (exits with 1)
     ```
 
-- provide `--lockfile` flag to check `setup.py` against `Pipfile.lock` instead of `Pipfile`
+-   provide `--lockfile` flag to check `setup.py` against `Pipfile.lock` instead of `Pipfile`
 
     By default, `pipenv-setup check` compares the dependencies from `setup.py` against
-    the dependencies listed in `Pipfile`.  This works well for most cases, but there
+    the dependencies listed in `Pipfile`. This works well for most cases, but there
     are some exceptions that break this strategy, including (but not necessarily limited to):
 
-    * VCS dependencies with a mutable `ref` (e.g. - git branch name instead of a tag or commit sha)
-      * Because these resolve to an immutable pointer (e.g. - commit sha) in `setup.py`, the
-        dependency will no longer match between `setup.py` and `Pipfile`.  However, `Pipfile.lock`
-        will contain the same resolved pointer as `setup.py`.
-
+    -   VCS dependencies with a mutable `ref` (e.g. - git branch name instead of a tag or commit sha)
+        -   Because these resolve to an immutable pointer (e.g. - commit sha) in `setup.py`, the
+            dependency will no longer match between `setup.py` and `Pipfile`. However, `Pipfile.lock`
+            will contain the same resolved pointer as `setup.py`.
 
 ## Contributing
 
