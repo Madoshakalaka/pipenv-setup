@@ -18,14 +18,15 @@ def is_remote_package(config):  # type: (LockConfig) -> bool
 
 
 def format_remote_package(
-    package_name, config, dev=False
-):  # type: (str, LockConfig, bool) -> Tuple[str, str]
+    package_name, config, dev=False, use_dependency_links=False
+):  # type: (str, LockConfig, bool, bool) -> Tuple[str, str]
     """
     format and return a string that can be put into either install_requires or dependency_links or extras_require
 
     :param package_name:
     :param config:
     :param dev: is package a development package
+    :param use_dependency_links: use deprecated dependency_links field
     :return: Tuple[keyword_target, list_argument]
     :raise ValueError: if a package config is not understood
     """
@@ -40,7 +41,10 @@ def format_remote_package(
         # fixme: stronger checks?
         # https://setuptools.readthedocs.io/en/latest/setuptools.html#dependencies-that-aren-t-in-pypi
         if "file" in config:  # remote built distribution '.zip' file for example
-            return "dependency_links", config["file"]
+            if use_dependency_links:
+                return "dependency_links", config["file"]
+            else:
+                return "install_requires", config["file"]
         if "version" in config:  # pypi package
             return (
                 "install_requires",
@@ -66,8 +70,13 @@ def format_remote_package(
             link = "{vcs}+{link}".format(vcs=vcs, link=config[vcs])
             if "ref" in config:
                 link += "@" + config["ref"]
-            link += "#egg=" + package_name
-            return "dependency_links", link
+
+            if use_dependency_links:
+                link += "#egg=" + package_name
+                return "dependency_links", link
+            else:
+                link = "{package_name} @ {link}".format(package_name=package_name, link=link)
+                return "install_requires", link
 
 
 def get_default_packages(

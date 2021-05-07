@@ -40,7 +40,7 @@ def compare_list_of_string_kw_arg(
     """
     args_a = setup_parser.get_kw_list_of_string_arg(setup_text_a, kw_name)
     args_b = setup_parser.get_kw_list_of_string_arg(setup_text_b, kw_name)
-    if ordering_matters:
+    if ordering_matters or args_a is None or args_b is None:
         return args_a == args_b
     else:
         return set(args_a) == set(args_b)
