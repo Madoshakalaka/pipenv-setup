@@ -4,6 +4,7 @@ dist
 .tox/
 .coverage
 coverage.xml
+.idea/
 
 # caches
 .mypy_cache/
