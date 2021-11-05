@@ -155,7 +155,7 @@ setup(
         "autopep8~=1.4; python_version < '3.6'",
         "six~=1.12",
         "typing~=3.7; python_version < '3.7'",
-        "chardet>=3.0.0, <=5.0.0",
+        "chardet>=3.0.0,<=5.0.0",
     ],  # Optional
     entry_points={
         "console_scripts": ["pipenv-setup=pipenv_setup.main:cmd"]
