@@ -23,6 +23,7 @@ vistir = "~=0.4"
 autopep8 = {markers = "python_version<'3.6'",version = "~=1.4"}
 six = "~=1.12"
 typing = {markers = "python_version<'3.7'", version = "~=3.7"}
+chardet = ">=3.0.0, <=5.0.0"
 
 [scripts]
 # use this to sync this pipfile to setup.py, explained in CONTRIBUTING.md
