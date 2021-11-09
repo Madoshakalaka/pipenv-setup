@@ -11,21 +11,23 @@ pytest-cov = "~=2.7"
 pytest-datadir = "~=1.3"
 pytest-xdist = "~=1.29"
 tox = "~=3.14"
-autopep8 = "~=1.4"
 
 [packages]
-pipfile = "~=0.0"
-black = {markers = "python_version>='3.6'",version = "==19.10b0"}
-colorama = "~=0.4"
-packaging = "~=20.0"
-requirementslib = "~=1.5"
-vistir = "~=0.4"
-autopep8 = {markers = "python_version<'3.6'",version = "~=1.4"}
-six = "~=1.12"
-typing = {markers = "python_version<'3.7'", version = "~=3.7"}
+pipfile = ">=0.0"
+black = {markers = "python_version>='3.6'",version = ">=19.10b0"}
+colorama = ">=0.4"
+packaging = ">=20.0"
+requirementslib = ">=1.5"
+vistir = ">=0.4"
+autopep8 = {markers = "python_version<'3.6'",version = ">=1.4"}
+six = ">=1.12"
+typing = {markers = "python_version<'3.7'", version = ">=3.7"}
 chardet = ">=3.0.0, <=5.0.0"
 
 [scripts]
 # use this to sync this pipfile to setup.py, explained in CONTRIBUTING.md
 # `$ pipenv run sync-deps`
 sync-deps = 'python -m pipenv_setup sync --dev --pipfile'
+
+[pipenv]
+allow_prereleases = true
