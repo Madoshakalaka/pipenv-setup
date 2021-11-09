@@ -13,142 +13,140 @@ before_cache:
 
 jobs:
   include:
-  # linux
-  - python: '3.8'
-    script: python3 -m tox -e py38 -- --cov-report=xml
-  - python: '3.7'
-    script: python3 -m tox -e py37 -- --cov-report=xml
-  - python: '3.6.9'
-    script: python3 -m tox -e py36 -- --cov-report=xml
-  - python: '3.5'
-    script: python3 -m tox -e py35 -- --cov-report=xml
-  - python: '2.7.17'
-    install: python -m pip install .[dev] codecov
-    script: python -m tox -e py27 -- --cov-report=xml
+    # linux
+    - python: "3.8"
+      script: python3 -m tox -e py38 -- --cov-report=xml
+    - python: "3.7"
+      script: python3 -m tox -e py37 -- --cov-report=xml
+    - python: "3.6.9"
+      script: python3 -m tox -e py36 -- --cov-report=xml
+    - python: "3.5"
+      script: python3 -m tox -e py35 -- --cov-report=xml
+    - python: "2.7.17"
+      install: python -m pip install .[dev] codecov
+      script: python -m tox -e py27 -- --cov-report=xml
 
-  # osx python 3.8
-  - name: "Python: 3.8"
-    os: osx
-    osx_image: xcode11
-    language: shell
-    cache:
-      directories:
-        - $HOME/Library/Caches/Homebrew
-        - /usr/local/Homebrew
-    # switch to python 3.8
-    addons:
-      homebrew:
-        update: true
-    before_install:
-      - pyenv install 3.8-dev
-      - pyenv global 3.8-dev
-      - export PATH="/Users/travis/.pyenv/shims:${PATH}"
-    # end switch
-    install: python3 -m pip install --user .[dev] codecov
-    script: python3 -m tox -e py38 -- --cov-report=xml
-    after_success: python3 -m codecov
+    # osx python 3.8
+    - name: "Python: 3.8"
+      os: osx
+      osx_image: xcode11
+      language: shell
+      cache:
+        directories:
+          - $HOME/Library/Caches/Homebrew
+          - /usr/local/Homebrew
+      # switch to python 3.8
+      addons:
+        homebrew:
+          update: true
+      before_install:
+        - pyenv install 3.8-dev
+        - pyenv global 3.8-dev
+        - export PATH="/Users/travis/.pyenv/shims:${PATH}"
+      # end switch
+      install: python3 -m pip install --user .[dev] codecov
+      script: python3 -m tox -e py38 -- --cov-report=xml
+      after_success: python3 -m codecov
 
-    # osx python 3.7
-  - name: "Python: 3.7"
-    os: osx
-    # xcode 11 image comes with python 3.7
-    osx_image: xcode11
-    # language: python will error
-    language: shell
-    install: python3 -m pip install --user .[dev] codecov
-    script: python3 -m tox -e py37 -- --cov-report=xml
-    after_success: python3 -m codecov
+      # osx python 3.7
+    - name: "Python: 3.7"
+      os: osx
+      # xcode 11 image comes with python 3.7
+      osx_image: xcode11
+      # language: python will error
+      language: shell
+      install: python3 -m pip install --user .[dev] codecov
+      script: python3 -m tox -e py37 -- --cov-report=xml
+      after_success: python3 -m codecov
 
-  # osx python 3.6.5
-  - name: "Python: 3.6.5"
-    os: osx
-    osx_image: xcode9.4 # Python 3.6.5 running on macOS 10.13
-    before_script: python3 --version
-    language: shell
-    install: python3 -m pip install --user .[dev] codecov
-    script: python3 -m tox -e py36 -- --cov-report=xml
-    after_success: python3 -m codecov
+    # osx python 3.6.5
+    - name: "Python: 3.6.5"
+      os: osx
+      osx_image: xcode9.4 # Python 3.6.5 running on macOS 10.13
+      before_script: python3 --version
+      language: shell
+      install: python3 -m pip install --user .[dev] codecov
+      script: python3 -m tox -e py36 -- --cov-report=xml
+      after_success: python3 -m codecov
 
-  # osx python 3.5
-  - name: "Python: 3.5.7"
-    os: osx
-    osx_image: xcode11
-    cache:
-      directories:
-        - $HOME/Library/Caches/Homebrew
-        - /usr/local/Homebrew
-    language: shell
-    # switch to python 3.5
-    addons:
-      homebrew:
-        update: true
-    before_install:
-      - pyenv install 3.5.7
-      - pyenv global 3.5.7
-      - export PATH="/Users/travis/.pyenv/shims:${PATH}"
-      - python3 -m pip install --user --upgrade pip
-      - python3 -m pip install --user --upgrade setuptools
-    # end switch
-    install: python3 -m pip install --user .[dev] codecov
-    # for some reason tox cannot find python3.5. we have to use py instead of py35
-    script: python3 -m tox -e py35 -- --cov-report=xml
-    after_success: python3 -m codecov
+    # osx python 3.5
+    - name: "Python: 3.5.7"
+      os: osx
+      osx_image: xcode11
+      cache:
+        directories:
+          - $HOME/Library/Caches/Homebrew
+          - /usr/local/Homebrew
+      language: shell
+      # switch to python 3.5
+      addons:
+        homebrew:
+          update: true
+      before_install:
+        - pyenv install 3.5.7
+        - pyenv global 3.5.7
+        - export PATH="/Users/travis/.pyenv/shims:${PATH}"
+        - python3 -m pip install --user --upgrade pip
+        - python3 -m pip install --user --upgrade setuptools
+      # end switch
+      install: python3 -m pip install --user .[dev] codecov
+      # for some reason tox cannot find python3.5. we have to use py instead of py35
+      script: python3 -m tox -e py35 -- --cov-report=xml
+      after_success: python3 -m codecov
 
+    # osx python 2.7.14
+    - name: "Python: 2.7.14"
+      os: osx
+      osx_image: xcode9.3 # Python 2.7.14_2 running on macOS 10.13
+      language: shell
+      before_install:
+        - python -m pip install --user --upgrade pip
+        - python -m pip install --user --upgrade setuptools
+      install: python -m pip install --user .[dev] codecov
+      script: python -m tox -e py27 -- --cov-report=xml
+      after_success: python -m codecov
 
-  # osx python 2.7.14
-  - name: "Python: 2.7.14"
-    os: osx
-    osx_image: xcode9.3  # Python 2.7.14_2 running on macOS 10.13
-    language: shell
-    before_install:
-      - python -m pip install --user --upgrade pip
-      - python -m pip install --user --upgrade setuptools
-    install: python -m pip install --user .[dev] codecov
-    script: python -m tox -e py27 -- --cov-report=xml
-    after_success: python -m codecov
+    # windows python 3.8
+    - name: "Python: 3.8"
+      os: windows
+      # language: python will error
+      language: shell
+      # install python 3.8
+      before_install:
+        - choco install python --version 3.8.0
+        - python -m pip install --upgrade pip
+      install: python -m pip install --user .[dev] codecov
+      # On Windows, python3 does not exist
+      script: python -m tox -e py38 -- --cov-report=xml
+      env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
+      after_success: python -m codecov
 
-  # windows python 3.8
-  - name: "Python: 3.8"
-    os: windows
-    # language: python will error
-    language: shell
-    # install python 3.8
-    before_install:
-      - choco install python --version 3.8.0
-      - python -m pip install --upgrade pip
-    install: python -m pip install --user .[dev] codecov
-    # On Windows, python3 does not exist
-    script: python -m tox -e py38 -- --cov-report=xml
-    env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
-    after_success: python -m codecov
+    # windows python 3.7
+    - name: "Python: 3.7"
+      os: windows
+      # language: python will error
+      language: shell
+      # install python 3.7
+      before_install:
+        - choco install python --version 3.7.4
+        - python -m pip install --upgrade pip
+      install: python -m pip install --user .[dev] codecov
+      # On Windows, python3 does not exist
+      script: python -m tox -e py37 -- --cov-report=xml
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      after_success: python -m codecov
 
-  # windows python 3.7
-  - name: "Python: 3.7"
-    os: windows
-    # language: python will error
-    language: shell
-    # install python 3.7
-    before_install:
-      - choco install python --version 3.7.4
-      - python -m pip install --upgrade pip
-    install: python -m pip install --user .[dev] codecov
-    # On Windows, python3 does not exist
-    script: python -m tox -e py37 -- --cov-report=xml
-    env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
-    after_success: python -m codecov
-
-  # windows python 3.6
-  - name: "Python: 3.6"
-    os: windows
-    language: shell
-    before_install:
-      - choco install python --version 3.6.8
-      - python -m pip install --upgrade pip
-    install: python -m pip install --user .[dev] codecov
-    script: python -m tox -e py36 -- --cov-report=xml
-    env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
-    after_success: python -m codecov
-
+    # windows python 3.6
+    - name: "Python: 3.6"
+      os: windows
+      language: shell
+      before_install:
+        - choco install python --version 3.6.8
+        - python -m pip install --upgrade pip
+      install: python -m pip install --user .[dev] codecov
+      script: python -m tox -e py36 -- --cov-report=xml
+      env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
+      after_success: python -m codecov
 # 3.5 and 2.7 on Windows are temporally disabled
 # cuz a timeout issue on travis builds
 # see this issue: https://github.com/Madoshakalaka/pipenv-setup/issues/31

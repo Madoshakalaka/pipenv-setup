@@ -1,6 +1,5 @@
 # https://github.com/pypa/pipfile/blob/master/examples/Pipfile
 # a nasty pipfile with assorted stuff
-
 [[source]]
 url = 'https://pypi.python.org/simple'
 verify_ssl = true
@@ -13,10 +12,10 @@ python_version = '2.7'
 requests = { extras = ['socks'] }
 records = '>0.5.0'
 django = { git = 'https://github.com/django/django.git', ref = '1.11.4', editable = true }
-"e682b37" = {file = "https://github.com/divio/django-cms/archive/release/3.4.x.zip"}
-pywinusb = { version = "~=0.3.0", os_name = "=='nt'", index="pypi"}
+"e682b37" = { file = "https://github.com/divio/django-cms/archive/release/3.4.x.zip" }
+pywinusb = { version = "~=0.3.0", os_name = "=='nt'", index = "pypi" }
 numpy = '>=1.5'
 
 [dev-packages]
 nose = '*'
-unittest2 = {version = ">=1.0,<3.0", markers="python_version < '2.7.9' or (python_version >= '3.0' and python_version < '3.4')"}
+unittest2 = { version = ">=1.0,<3.0", markers = "python_version < '2.7.9' or (python_version >= '3.0' and python_version < '3.4')" }
