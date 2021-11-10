@@ -153,9 +153,9 @@ setup(
         "packaging",
         "requirementslib",
         "vistir",
-        "autopep8",
+        "autopep8; python_version < '3.6'",
         "six",
-        "typing",
+        "typing; python_version < '3.7'",
         "chardet",
     ],  # Optional
     entry_points={
