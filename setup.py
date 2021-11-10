@@ -148,7 +148,7 @@ setup(
     },
     install_requires=[
         "pipfile",
-        "black==21.9b0; python_version >= '3.6'",
+        "black>=21.9b0; python_version >= '3.6'",
         "colorama",
         "packaging",
         "requirementslib",
