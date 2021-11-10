@@ -42,7 +42,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="3.1.2",  # Required
+    version="3.1.1",  # Required
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
@@ -102,6 +102,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
     # This field adds keywords for your project which will appear on the
     # project page. What does your project relate to?
@@ -136,26 +137,26 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     extras_require={
         "dev": [
-            "pytest~=5.2; python_version >= '3.6'",
-            "pytest-mypy~=0.3; python_version >= '3.5'",
-            "pytest-cov~=2.7",
-            "pytest-datadir~=1.3",
-            "pytest-xdist~=1.29",
-            "tox~=3.14",
-            "autopep8~=1.4",
+            "pytest",
+            "pytest-mypy",
+            "pytest-cov",
+            "pytest-datadir",
+            "pytest-xdist",
+            "tox",
+            "autopep8",
         ]
     },
     install_requires=[
-        "pipfile~=0.0",
-        "black==19.10b0; python_version >= '3.6'",
-        "colorama~=0.4",
-        "packaging~=20.0",
-        "requirementslib~=1.5",
-        "vistir~=0.4",
-        "autopep8~=1.4; python_version < '3.6'",
-        "six~=1.12",
-        "typing~=3.7; python_version < '3.7'",
-        "chardet>=3.0.0,<=5.0.0",
+        "pipfile",
+        "black>=19.10b0; python_version >= '3.6'",
+        "colorama",
+        "packaging",
+        "requirementslib",
+        "vistir",
+        "autopep8; python_version < '3.6'",
+        "six",
+        "typing; python_version < '3.7'",
+        "chardet",
     ],  # Optional
     entry_points={
         "console_scripts": ["pipenv-setup=pipenv_setup.main:cmd"]
