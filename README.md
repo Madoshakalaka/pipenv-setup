@@ -1,6 +1,7 @@
 # Pipenv-Setup
 
 [![travis-badge](https://travis-ci.org/Madoshakalaka/pipenv-setup.svg?branch=master)](https://travis-ci.org/Madoshakalaka/pipenv-setup)
+[![ci](https://github.com/Madoshakalaka/pipenv-setup/actions/workflows/ci.yml/badge.svg)](https://github.com/Madoshakalaka/pipenv-setup/actions/workflows/ci.yml)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/pipenv-setup.svg)](https://pypi.python.org/pypi/pipenv-setup/)
 [![codecov](https://codecov.io/gh/Madoshakalaka/pipenv-setup/branch/master/graph/badge.svg)](https://codecov.io/gh/Madoshakalaka/pipenv-setup)
 [![PyPI version](https://badge.fury.io/py/pipenv-setup.svg)](https://badge.fury.io/py/pipenv-setup)
