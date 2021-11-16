@@ -5,7 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 gitdir = "*"
-generic-package = {editable = true,path = "."}
+generic-package = { editable = true, path = "." }
 
 [packages]
 xml-subsetter = "*"

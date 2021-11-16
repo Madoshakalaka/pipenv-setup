@@ -164,9 +164,7 @@
             "version": "==0.0.2"
         },
         "plette": {
-            "extras": [
-                "validation"
-            ],
+            "extras": ["validation"],
             "hashes": [
                 "sha256:46402c03e36d6eadddad2a5125990e322dd74f98160c8f2dcd832b2291858a26",
                 "sha256:d6c9b96981b347bddd333910b753b6091a2c1eb2ef85bb373b4a67c9d91dca16"
@@ -574,9 +572,7 @@
             "version": "==1.5.0.1"
         },
         "plette": {
-            "extras": [
-                "validation"
-            ],
+            "extras": ["validation"],
             "hashes": [
                 "sha256:46402c03e36d6eadddad2a5125990e322dd74f98160c8f2dcd832b2291858a26",
                 "sha256:d6c9b96981b347bddd333910b753b6091a2c1eb2ef85bb373b4a67c9d91dca16"

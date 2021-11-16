@@ -1,0 +1,13 @@
+{
+    "overrides": [
+        {
+            "files": "Pipfile",
+            "options": { "parser": "toml" }
+        },
+        {
+            "files": "Pipfile.lock",
+            "options": { "parser": "json", "tabWidth": 4 }
+        }
+    ],
+    "tabWidth": 2
+}
