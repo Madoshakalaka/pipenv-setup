@@ -7,61 +7,127 @@ on:
 
   pull_request:
 
+  workflow_dispatch:
+
+  release:
+    types: [published]
+
 jobs:
   ci:
     name: test-${{ matrix.os }}-python${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-
         # this works like a loop; think `pytest.mark.parametrize`
         python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-    - name: checkout build
-      id: checkout-build
-      uses: actions/checkout@v2
+      - name: checkout build
+        id: checkout-build
+        uses: actions/checkout@v2
 
-    # with this we do not need to worry about the various ways in which
-    # each os installs python
-    - name: setup python
-      id: setup-python
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
+      # with this we do not need to worry about the various ways in which
+      # each os installs python
+      - name: setup python
+        id: setup-python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: upgrade pip
-      id: upgrade-pip
-      run: |
-        python -m pip install --upgrade pip
+      - name: upgrade pip
+        id: upgrade-pip
+        run: |
+          python -m pip install --upgrade pip
 
-    # gets the path to wherever each os stores pip's cache
-    - name: get pip cache dir
-      id: get-pip-cache-dir
-      run: |
-        echo "::set-output name=dir::$(pip cache dir)"
+      # gets the path to wherever each os stores pip's cache
+      - name: get pip cache dir
+        id: get-pip-cache-dir
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
 
-    - name: cache pip
-      uses: actions/cache@v2
-      id: cache-pip
-      with:
+      - name: cache pip
+        uses: actions/cache@v2
+        id: cache-pip
+        with:
+          # set above with `get pip cache dir`
+          path: ${{ steps.get-pip-cache-dir.outputs.dir }}
 
-        # set above with `get pip cache dir`
-        path: ${{ steps.get-pip-cache-dir.outputs.dir }}
+          # determines whether the hash of setup.py has changed
+          # CACHE_VERSION: slight hack, see https://stackoverflow.com/a/64819132
+          key: ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/setup.py') }}
 
-        # determines whether the hash of setup.py has changed
-        # CACHE_VERSION: slight hack, see https://stackoverflow.com/a/64819132
-        key: ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/setup.py') }}
+      - name: install packages
+        id: install-packages
+        run: |
+          python -m pip install .[dev] codecov
 
-    - name: install packages
-      id: install-packages
-      run: |
-        python -m pip install .[dev] codecov
+      - name: test
+        id: test
 
-    - name: test
-      id: test
+        # python -m codecov only to run if exit status is 0
+        run: |
+          python -m pytest --cov=pipenv_setup --cov-report=xml && python -m codecov
 
-      # python -m codecov only to run if exit status is 0
-      run: |
-        python -m pytest --cov=pipenv_setup --cov-report=xml && python -m codecov
+  test-deploy:
+    # this job publishes the package to TestPyPI; releases published with the
+    # "pre-release" tag are included
+
+    name: Publish to TestPyPI 🚀
+    needs: ci
+    runs-on: ubuntu-latest
+    if: github.event.release
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel twine
+
+      - name: Build and publish to TestPyPI 🐍
+
+        # TestPyPI credentials are managed separately from PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.TEST_PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
+
+        run: |
+          python setup.py sdist bdist_wheel
+          twine upload -r testpypi dist/*
+
+  deploy:
+    # build and publish the package to PyPI; depend on the `test-deploy` job, and only
+    # run for non-draft, non-pre-release published releases.
+
+    name: Publish to PyPI 🚀
+    needs: test-deploy # ensure the test deployment has already passed
+    runs-on: ubuntu-latest
+
+    # only run for real releases, not drafts or pre-releases
+    if: github.event.release && !(github.event.release.draft || github.event.release.prerelease)
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel twine
+
+      - name: Build and publish to PyPI 🐍
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          python setup.py sdist bdist_wheel
+          twine upload dist/*
