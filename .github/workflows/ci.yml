@@ -7,6 +7,11 @@ on:
 
   pull_request:
 
+  workflow_dispatch:
+
+  release:
+    types: [published]
+
 jobs:
   ci:
     name: test-${{ matrix.os }}-python${{ matrix.python-version }}
@@ -63,3 +68,66 @@ jobs:
         # python -m codecov only to run if exit status is 0
         run: |
           python -m pytest --cov=pipenv_setup --cov-report=xml && python -m codecov
+
+  test-deploy:
+    # this job publishes the package to TestPyPI; releases published with the
+    # "pre-release" tag are included
+
+    name: Publish to TestPyPI 🚀
+    needs: ci
+    runs-on: ubuntu-latest
+    if: github.event.release
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel twine
+
+      - name: Build and publish to TestPyPI 🐍
+
+        # TestPyPI credentials are managed separately from PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.TEST_PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
+
+        run: |
+          python setup.py sdist bdist_wheel
+          twine upload -r testpypi dist/*
+
+  deploy:
+    # build and publish the package to PyPI; depend on the `test-deploy` job, and only
+    # run for non-draft, non-pre-release published releases.
+
+    name: Publish to PyPI 🚀
+    needs: test-deploy # ensure the test deployment has already passed
+    runs-on: ubuntu-latest
+
+    # only run for real releases, not drafts or pre-releases
+    if: github.event.release && !(github.event.release.draft || github.event.release.prerelease)
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel twine
+
+      - name: Build and publish to PyPI 🐍
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          python setup.py sdist bdist_wheel
+          twine upload dist/*
