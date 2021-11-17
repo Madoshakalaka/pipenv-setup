@@ -144,7 +144,7 @@ setup(
         "pysocks==1.6.7",
         "pytz==2017.2",
         "pywinusb==0.4.2; os_name == 'nt'",
-        "pyyaml==5.1",
+        "pyyaml==5.4",
         "records==0.5.2",
         "requests==2.20.0",
         "sqlalchemy==1.1.14",
