@@ -54,3 +54,27 @@ def test_sync_dev_pipfile_no_original(tmp_path):
         text = setup_file.read_text()
         assert "pytest~=5.1" in text, text
         assert "requirementslib~=1.5" in text, text
+
+
+@pytest.mark.parametrize(
+    ("source_pipfile_dirname", "update_count"),
+    [("dash_or_underscore_0", 23)],
+)
+def test_sync_underscore_or_dash(
+    capsys, tmp_path, shared_datadir, source_pipfile_dirname, update_count
+):
+    """
+    sync --pipfile should work for either dash or underscore names.
+
+    Asserts fix for https://github.com/Madoshakalaka/pipenv-setup/issues/72.
+    """
+    pipfile_dir = shared_datadir / source_pipfile_dirname
+    for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
+        copy_file(pipfile_dir / filename, tmp_path)
+
+    with data(str(pipfile_dir), tmp_path):
+        cmd(["", "sync", "--pipfile"])
+        cmd(["", "check"])
+
+    captured = capsys.readouterr()
+    assert "in pipfile but not in install_requires" not in captured.out

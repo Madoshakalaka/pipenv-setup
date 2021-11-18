@@ -1,0 +1,48 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "33e4c198f1c10315bab223d387d2d9f452b2af2ffc376d4992d3f1e8cabe0d61"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.7"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "xml-subsetter": {
+            "hashes": [
+                "sha256:3c102e20288d37d1fff6e081b3e22339acc710e8e24458a050bd777985589837"
+            ],
+            "index": "pypi",
+            "version": "==0.0.2"
+        }
+    },
+    "develop": {
+        "colorama": {
+            "hashes": [
+                "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b",
+                "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
+            "version": "==0.4.4"
+        },
+        "generic-package": {
+            "editable": true,
+            "path": "."
+        },
+        "gitdir": {
+            "hashes": [
+                "sha256:fa7ded6dd37222096cabd0a8bbc45534de163fba8f3fa3df7241ef22428fd969"
+            ],
+            "index": "pypi",
+            "version": "==1.2.5"
+        }
+    }
+}
