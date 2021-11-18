@@ -147,7 +147,7 @@ setup(
         "pyyaml==5.4",
         "records==0.5.2",
         "requests==2.20.0",
-        "sqlalchemy==1.1.14",
+        "sqlalchemy==1.3.0",
         "tablib==0.12.1",
         "unicodecsv==0.14.1",
         "urllib3==1.24.2",
