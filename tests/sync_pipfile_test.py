@@ -67,5 +67,3 @@ def test_sync_underscore_or_dash(shared_datadir):  # type: pathlib.Path
         cmd(["", "sync", "--pipfile"])
         cmd(["", "check"])
 
-    captured = capsys.readouterr()
-    assert "in pipfile but not in install_requires" not in captured.out
