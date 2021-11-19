@@ -56,10 +56,6 @@ def test_sync_dev_pipfile_no_original(tmp_path):
         assert "requirementslib~=1.5" in text, text
 
 
-@pytest.mark.parametrize(
-    ("source_pipfile_dirname", "update_count"),
-    [("dash_or_underscore_0", 23)],
-)
 def test_sync_underscore_or_dash(
     capsys, tmp_path, shared_datadir, source_pipfile_dirname, update_count
 ):
