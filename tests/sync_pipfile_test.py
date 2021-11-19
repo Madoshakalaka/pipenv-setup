@@ -56,13 +56,15 @@ def test_sync_dev_pipfile_no_original(tmp_path):
         assert "requirementslib~=1.5" in text, text
 
 
-def test_sync_underscore_or_dash(shared_datadir):  # type: pathlib.Path
+def test_sync_underscore_or_dash(shared_datadir):
     """
     sync --pipfile should work for either dash or underscore names.
 
+    No need to run any assertions; we are testing that no error is
+    raised.
+
     Asserts fix for https://github.com/Madoshakalaka/pipenv-setup/issues/72.
     """
-    pipfile_dir = shared_datadir / source_pipfile_dirname
     with data("dash_or_underscore_0", shared_datadir / "dash_or_underscore_0"):
         cmd(["", "sync", "--pipfile"])
         cmd(["", "check"])
