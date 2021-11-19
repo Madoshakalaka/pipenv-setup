@@ -467,6 +467,14 @@ class InconsistencyChecker:
         """
         reports = []
         for name, config in self._pipfile_packages.items():
+            # fixes https://github.com/Madoshakalaka/pipenv-setup/issues/72
+            # if the Pipfile has a dependency with an underscore then
+            # it will be synced to the setup.py file with a dash
+            # before this commit `pipenv-setup check` would check for a
+            # dependency exactly as defined in the Pipfile
+            # this would fail as `package_name` does not equal
+            # `package-name`
+            name = name.replace("_", "-")
             if pipfile_parser.is_pypi_package(config):
                 if name not in self._install_requires_package_names:
                     reports.append(
