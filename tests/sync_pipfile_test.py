@@ -56,9 +56,7 @@ def test_sync_dev_pipfile_no_original(tmp_path):
         assert "requirementslib~=1.5" in text, text
 
 
-def test_sync_underscore_or_dash(
-    capsys, tmp_path, shared_datadir, source_pipfile_dirname, update_count
-):
+def test_sync_underscore_or_dash(shared_datadir):  # type: pathlib.Path
     """
     sync --pipfile should work for either dash or underscore names.
 
