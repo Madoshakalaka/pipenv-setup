@@ -11,7 +11,7 @@ setup(
         "et-xmlfile==1.0.1",
         "idna==2.6",
         "jdcal==1.3",
-        "lxml==4.0.0",
+        "lxml==4.6.3",
         "odfpy==1.3.5",
         "openpyxl==2.4.8",
         "pysocks==1.6.7",
