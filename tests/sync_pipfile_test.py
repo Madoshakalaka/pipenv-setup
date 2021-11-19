@@ -63,7 +63,7 @@ def test_sync_underscore_or_dash(shared_datadir):  # type: pathlib.Path
     Asserts fix for https://github.com/Madoshakalaka/pipenv-setup/issues/72.
     """
     pipfile_dir = shared_datadir / source_pipfile_dirname
-    with data(str(pipfile_dir), tmp_path):
+    with data("dash_or_underscore_0", shared_datadir / "dash_or_underscore_0"):
         cmd(["", "sync", "--pipfile"])
         cmd(["", "check"])
 
