@@ -3,14 +3,15 @@ import codecs
 import sys
 import tokenize
 from io import BytesIO
-from subprocess import Popen, PIPE
+from subprocess import PIPE, Popen
 from tokenize import OP
-from typing import Tuple, List, Any
+from types import ModuleType
+from typing import Any, List, Optional, Tuple
 
 from vistir.compat import Path
 
 from pipenv_setup import setup_parser
-from pipenv_setup.setup_parser import get_setup_call_node, get_kw_list_node
+from pipenv_setup.setup_parser import get_kw_list_node, get_setup_call_node
 
 
 def update_setup(
@@ -138,6 +139,25 @@ def update_setup(
     f.close()
 
     format_file(Path("setup.py"))
+
+
+def _get_formatting_module():  # type: () -> Optional[ModuleType]
+    """
+    retrieve the correct formatting module if one is installed
+
+    :return: formatting module (`black` or `autopep8`) if installed; otherwise `None`
+    """
+    try:
+        import black
+    except:
+
+        try:
+            import autopep8
+        except ImportError:
+            return None
+        return autopep8
+
+    return black
 
 
 def format_file(file):  # type: (Path) -> None
