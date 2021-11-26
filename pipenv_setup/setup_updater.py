@@ -1,17 +1,19 @@
 import ast
 import codecs
-import sys
 import tokenize
 from io import BytesIO
-from subprocess import PIPE, Popen
 from tokenize import OP
 from types import ModuleType
-from typing import Any, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple, no_type_check
 
 from vistir.compat import Path
 
 from pipenv_setup import setup_parser
 from pipenv_setup.setup_parser import get_kw_list_node, get_setup_call_node
+
+if TYPE_CHECKING:  # this is used for IDEs later on
+    import autopep8  # pragma: no cover
+    import black  # pragma: no cover
 
 
 def update_setup(
@@ -160,25 +162,42 @@ def _get_formatting_module():  # type: () -> Optional[ModuleType]
     return black
 
 
+@no_type_check  # IDK how to get mypy to play nicely with the `mod` variable
 def format_file(file):  # type: (Path) -> None
     """
     use black or autopep8 to format python file
+
+    if neither is installed, do nothing
     """
-    try:
-        # noinspection PyPackageRequirements
-        import black
+    mod = _get_formatting_module()
+    if not mod:
+        return
 
-        with Popen(
-            [sys.executable, "-m", "black", str(file)], stdout=PIPE, stderr=PIPE
-        ) as p:
-            p.communicate()
+    if mod.__name__ == "black":
+        if TYPE_CHECKING:  # for IDEs
+            mod = black  # pragma: no cover
 
-    except ImportError:
-        # use autopep8
-        import autopep8
+        mode = mod.FileMode(
+            target_versions=set(),
+            line_length=mod.DEFAULT_LINE_LENGTH,
+            is_pyi=False,
+            string_normalization=True,
+        )
+        write_back = mod.WriteBack.from_configuration(check=False, diff=False)
+        report = mod.Report(check=False, quiet=False, verbose=False)
 
-        code = autopep8.fix_code(file.read_text())
-        file.write_text(code)
+        mod.reformat_one(
+            src=file, fast=False, write_back=write_back, mode=mode, report=report
+        )
+        return
+
+    if mod.__name__ == "autopep8":
+        if TYPE_CHECKING:  # for IDEs
+            mod = autopep8  # pragma: no cover
+        raw = file.read_text()
+        formatted = mod.fix_code(raw)
+        file.write_text(formatted)
+        return
 
 
 def insert_at_lineno_col_offset(
