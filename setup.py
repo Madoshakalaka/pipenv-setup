@@ -136,6 +136,7 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     extras_require={
         "dev": [
+            "black==19.10b0; python_version >= '3.6'",
             "pytest~=5.2; python_version >= '3.6'",
             "pytest-mypy>=0.8; python_version >= '3.5'",
             "pytest-cov~=2.7",
@@ -144,19 +145,19 @@ setup(
             "tox~=3.14",
             "autopep8~=1.4",
             "types-six",
-        ]
+        ],
+        "black": ["black"],
+        "autopep8": ["autopep8"],
     },
     install_requires=[
         "pipfile~=0.0",
-        "black==19.10b0; python_version >= '3.6'",
         "colorama~=0.4",
         "packaging~=20.0",
         "requirementslib~=1.5",
         "vistir~=0.4",
-        "autopep8~=1.4; python_version < '3.6'",
         "six~=1.12",
         "typing~=3.7; python_version < '3.7'",
-        "chardet>=3.0.0,<=5.0.0",
+        "chardet<=5.0.0,>=3.0.0",
         "pyparsing!=3.0.5",
     ],  # Optional
     entry_points={
