@@ -4,6 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+black = { markers = "python_version>='3.6'", version = "==19.10b0" }
 pipenv-setup = { editable = true, path = "." }
 pytest = { markers = "python_version>='3.6'", version = "~=5.2" }
 pytest-mypy = { markers = "python_version>='3.5'", version = ">=0.8" }
@@ -16,12 +17,10 @@ types-six = "*"
 
 [packages]
 pipfile = "~=0.0"
-black = { markers = "python_version>='3.6'", version = "==19.10b0" }
 colorama = "~=0.4"
 packaging = "~=20.0"
 requirementslib = "~=1.5"
 vistir = "~=0.4"
-autopep8 = { markers = "python_version<'3.6'", version = "~=1.4" }
 six = "~=1.12"
 typing = { markers = "python_version<'3.7'", version = "~=3.7" }
 chardet = ">=3.0.0, <=5.0.0"

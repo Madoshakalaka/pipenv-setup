@@ -1,0 +1,89 @@
+# -------------------------------------------------------------------------------------
+# Summary: Test the external CLI usage of this project.
+# Created: 2021-11-20 18:44:48
+# Author:  Bryant Finney <bryant.finney@alumni.uah.edu> (https://bryant-finney.github.io/about)
+# -------------------------------------------------------------------------------------
+name: Test Usage
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Build wheel
+    outputs:
+      wheel: ${{ steps.build.outputs.wheel }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+
+      - name: Prepare build system
+        run: pip install --upgrade pip setuptools wheel
+
+      - name: Build wheel and source distribution 🛠️
+        id: build
+        run: |
+          python setup.py sdist bdist_wheel
+          echo "::set-output name=wheel::$(ls ./dist/*.whl)"
+
+      - name: Upload build artifacts ⬆️
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist/*.whl
+
+  test-install:
+    name: "${{ matrix.os }} | py${{ matrix.py }}: ${{ matrix.manager }} install ${{ needs.build.outputs.wheel }}[${{ matrix.extras }}]"
+    needs: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        extras: ["", "dev", "black", "autopep8"]
+        manager: [pip, pipenv]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        py: [3.7, 3.8]
+
+    steps:
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.py }}
+
+      - name: Update ${{ matrix.manager }}
+        run: echo "${{ matrix.manager }}" | grep pipenv | xargs pip install --upgrade pip
+
+      - name: Download build artifacts ⬇️
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist
+
+      - name: Install using ${{ matrix.manager }} ➕
+        if: "!${{ matrix.extras }}"
+        run: ${{ matrix.manager }} install "${{ needs.build.outputs.wheel }}"
+
+      - name: Install (with [${{ matrix.extras }}] extras) using ${{ matrix.manager }} ➕
+        if: ${{ matrix.extras }}
+        run: ${{ matrix.manager }} install "${{ needs.build.outputs.wheel }}[${{ matrix.extras }}]"
+
+      - name: "Verify ${{ matrix.extras }} installation (${{ matrix.manager }}) 🖨️"
+        if: ${{ matrix.manager == 'pip' && matrix.extras && matrix.extras != 'dev' }}
+        run: ${{ matrix.extras }} --version
+
+      - name: "Verify ${{ matrix.extras }} installation (${{ matrix.manager }}) 🖨️"
+        if: ${{ matrix.manager == 'pipenv' && matrix.extras && matrix.extras != 'dev' }}
+        run: pipenv run ${{ matrix.extras }} --version
+
+      - name: "Verify package installation (${{ matrix.manager }}) 🖨️"
+        if: ${{ matrix.manager == 'pip' }}
+        run: pipenv-setup --help
+
+      - name: "Verify installation (${{ matrix.manager }}) 🖨️"
+        if: ${{ matrix.manager == 'pipenv' }}
+        run: pipenv run pipenv-setup --help

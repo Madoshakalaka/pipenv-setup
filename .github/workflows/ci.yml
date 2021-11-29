@@ -17,6 +17,7 @@ jobs:
     name: test-${{ matrix.os }}-python${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         # this works like a loop; think `pytest.mark.parametrize`
         python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
