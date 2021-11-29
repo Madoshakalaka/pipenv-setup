@@ -150,7 +150,7 @@ setup(
         "sqlalchemy==1.3.0",
         "tablib==0.12.1",
         "unicodecsv==0.14.1",
-        "urllib3==1.24.2",
+        "urllib3==1.26.5",
         "xlrd==1.1.0",
         "xlwt==1.3.0",
     ],  # Optional
