@@ -59,15 +59,34 @@ def get_install_requires_dependency_links(
     )
 
 
+def _get_name(node, name):
+    # get node by import name
+    if (
+            hasattr(node, "func")
+            and hasattr(node.func, "id")  # type: ignore
+            and node.func.id == name  # type: ignore
+    ):
+        return node  # type: ignore
+
+    return None
+
+
+def _get_attr(node, attr):
+    # get node as attribute
+    if (
+            hasattr(node, "func")
+            and hasattr(node.func, "attr")  # type: ignore
+            and attr in node.func.attr  # type: ignore
+    ):
+        return node  # type: ignore
+
+    return None
+
+
 def get_setup_call_node(root_node):  # type: (ast.AST)-> Optional[ast.Call]
 
     for node in ast.walk(root_node):
-
-        if (
-            hasattr(node, "func")
-            and hasattr(node.func, "id")  # type: ignore
-            and node.func.id == "setup"  # type: ignore
-        ):
+        if _get_name(node, 'setup') or _get_attr(node, 'setup'):  # type: ignore
             return node  # type: ignore
     return None
 
