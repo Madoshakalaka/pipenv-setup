@@ -1,9 +1,11 @@
+from collections import KeysView
 from typing import Tuple, Dict
 
 import pipfile
 from requirementslib import Requirement
 from vistir.compat import Path
 from six import string_types
+
 from pipenv_setup.constants import PipfileConfig, vcs_list
 
 
@@ -97,6 +99,23 @@ def is_remote_package(config):  # type: (PipfileConfig) -> bool
         return True
     if isinstance(config, string_types):
         return True
+    return False
+
+
+def is_name_with_extras_in_install_requires_package_names(name, config,
+                                                          install_requires_package_names
+                                                          ):  # type: (str, PipfileConfig, KeysView[str]) -> bool
+    """
+    return whether package with extras appear in install_requires.
+    """
+
+    if isinstance(config, string_types):
+        return False  # no extras
+    if isinstance(config, dict) and 'extras' in config:
+        pkg_with_ext = "{name}[{e}]".format(name=name,
+                                            e=",".join(config['extras']))  # for 2.7 support (f-strings not supported)
+        return pkg_with_ext in install_requires_package_names
+
     return False
 
 

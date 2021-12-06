@@ -476,7 +476,9 @@ class InconsistencyChecker:
             # `package-name`
             name = name.replace("_", "-")
             if pipfile_parser.is_pypi_package(config):
-                if name not in self._install_requires_package_names:
+                if name not in self._install_requires_package_names and \
+                        not pipfile_parser.is_name_with_extras_in_install_requires_package_names(
+                            name, config, self._install_requires_package_names):
                     reports.append(
                         "package '%s' in pipfile but not in install_requires" % name
                     )
