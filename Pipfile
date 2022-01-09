@@ -18,7 +18,7 @@ types-six = "*"
 [packages]
 pipfile = "~=0.0"
 colorama = "~=0.4"
-packaging = "~=20.0"
+packaging = "~=21.3"
 requirementslib = "~=1.5"
 vistir = "~=0.4"
 six = "~=1.12"
