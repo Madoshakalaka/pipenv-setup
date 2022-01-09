@@ -799,11 +799,11 @@
         },
         "types-six": {
             "hashes": [
-                "sha256:606dd8c7edff3100fae8277c270e65285e5cdb6a7819c0b1ea6a8973690e68da",
-                "sha256:b96bd911f87d15258c38e10ee3f0921c32887a5d22e41c39d15707b4d0e4d0f1"
+                "sha256:04da8bad920aea300e13d99c8948fd0914abdfc5d9421bad636137f9829dcbf6",
+                "sha256:da5748f10eec44accbd393e7f5a834991aff8f37522472166fbc8233cc735b84"
             ],
             "index": "pypi",
-            "version": "==1.16.2"
+            "version": "==1.16.9"
         },
         "typing-extensions": {
             "hashes": [
