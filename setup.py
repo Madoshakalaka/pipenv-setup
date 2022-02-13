@@ -143,7 +143,7 @@ setup(
             "pytest-datadir~=1.3",
             "pytest-xdist~=1.29",
             "tox~=3.24",
-            "pre-commit~=2.17",
+            "pre-commit~=2.17; python_version >= '3.7'",
             "autopep8~=1.4",
             "types-six",
         ],
@@ -158,7 +158,7 @@ setup(
         "vistir~=0.4",
         "six~=1.12",
         "typing~=3.7; python_version < '3.7'",
-        "chardet<=5.0.0,>=3.0.0",
+        "chardet>=3.0.0,<=5.0.0",
         "pyparsing!=3.0.5",
     ],  # Optional
     entry_points={
