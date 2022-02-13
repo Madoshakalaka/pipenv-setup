@@ -1,0 +1,7 @@
+repos:
+  - repo: https://github.com/Madoshakalaka/pipenv-setup.git
+    rev: v3.2.0
+    hooks:
+      - id: pipenv-setup
+        additional_dependencies: [".[black]"]
+        args: [--dev, --pipfile]

@@ -192,6 +192,31 @@ run `$ pipenv-setup check`
       dependency will no longer match between `setup.py` and `Pipfile`. However, `Pipfile.lock`
       will contain the same resolved pointer as `setup.py`.
 
+### Pre-commit integration
+
+You can run `pipenv-setup` automatically using a [pre-commit](https://pre-commit.com) hook. To get
+started, add this configuration to your `.pre-commit-config.yaml`:
+
+```yaml
+-   repo: https://github.com/Madoshakalaka/pipenv-setup
+    rev: '3.2.0'  # pick a git hash / tag to point to
+    hooks:
+    - id: pipenv-setup
+```
+
+This configuration will will execute `pipenv-setup sync --pipfile` on changes to `Pipfile`,
+`Pipfile.lock`, and `setup.py`.
+
+You can also customize the default args (`"--pipfile"`). For example, to synchronize `--dev` extras:
+
+```yaml
+    # ...
+    hooks:
+    - id: pipenv-setup
+      args: [--dev, --pipfile]
+```
+
+
 ## Contributing
 
 If you'd like to contribute to `pipenv-setup`, see [Contribution Guide](CONTRIBUTING.md)
