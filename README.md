@@ -25,6 +25,22 @@ package in `Pipfile`:
 pipenv install --dev pipenv-setup
 ```
 
+Additionally, starting with the
+[`3.2.0`](https://github.com/Madoshakalaka/pipenv-setup/releases/tag/v3.2.0) release,
+[`black`](https://github.com/psf/black) and [`autopep8`](https://github.com/hhatto/autopep8) can be
+included as package extras:
+
+```bash
+pipenv install --dev "pipenv-setup[black]"  # alternatively: pipenv-setup[autopep8]
+```
+
+### Note
+
+`pipenv-setup<3.2` includes pinned versions of `black` and `autopep8` as dependencies. However, most
+projects manage `black` requirements independently from `pipenv-setup`; accordingly, `black` is no
+longer a requirement of `pipenv-setup` after `3.2.0` (instead, include it as an extra as shown
+above).
+
 ## Features
 
 ### Beautiful pipenv flavored help
@@ -198,9 +214,9 @@ You can run `pipenv-setup` automatically using a [pre-commit](https://pre-commit
 started, add this configuration to your `.pre-commit-config.yaml`:
 
 ```yaml
--   repo: https://github.com/Madoshakalaka/pipenv-setup
-    rev: '3.2.0'  # pick a git hash / tag to point to
-    hooks:
+- repo: https://github.com/Madoshakalaka/pipenv-setup
+  rev: "3.2.0" # pick a git hash / tag to point to
+  hooks:
     - id: pipenv-setup
 ```
 
@@ -210,12 +226,21 @@ This configuration will will execute `pipenv-setup sync --pipfile` on changes to
 You can also customize the default args (`"--pipfile"`). For example, to synchronize `--dev` extras:
 
 ```yaml
-    # ...
-    hooks:
+- repo: # ...
+  hooks:
     - id: pipenv-setup
       args: [--dev, --pipfile]
 ```
 
+If using the hook during CI (or in another environment separate from a `black` / `autopep8`
+installation), you can include the appropriate auto-formatter with the hook:
+
+```yaml
+- repo: # ...
+  hooks:
+    - id: pipenv-setup
+      additional_dependencies: [".[black]"]
+```
 
 ## Contributing
 
