@@ -1,6 +1,14 @@
 from typing import Tuple, Dict
 
-from requirementslib import Lockfile, Requirement
+try:
+    from requirementslib import Lockfile
+except AssertionError:
+    import os
+
+    os.environ["SETUPTOOLS_USE_DISTUTILS"] = "stdlib"
+    from requirementslib import Lockfile
+
+from requirementslib import Requirement
 from vistir.compat import Path
 
 from pipenv_setup.constants import LockConfig
