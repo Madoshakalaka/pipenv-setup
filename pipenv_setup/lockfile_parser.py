@@ -77,10 +77,10 @@ def format_remote_package(
             return (
                 "install_requires",
                 package_name
-                + " @ "
+                + "@"
                 + Requirement.from_pipfile(package_name, config).as_line(
                     include_hashes=False
-                ).strip("-e "),
+                ).replace("-e", ""),
             )
 
 
