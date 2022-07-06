@@ -5,12 +5,13 @@ https://github.com/pypa/sampleproject
 Modified by Madoshakalaka@Github (dependency links added)
 """
 
+from os import path
+
 # io.open is needed for projects that support Python 2.7
 # It ensures open() defaults to text mode with universal newlines,
 # and accepts an argument to specify the text encoding
 # Python 3 only projects can skip this import
 from io import open
-from os import path
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
@@ -132,27 +133,19 @@ setup(
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        "certifi==2017.7.27.1",
-        "chardet==3.0.4",
-        "docopt==0.6.2",
-        "et-xmlfile==1.0.1",
-        "idna==2.6",
-        "jdcal==1.3",
-        "lxml==4.6.3",
-        "odfpy==1.3.5",
-        "openpyxl==2.4.8",
-        "pysocks==1.6.7",
-        "pytz==2017.2",
-        "pywinusb==0.4.2; os_name == 'nt'",
-        "pyyaml==5.4",
-        "records==0.5.2",
-        "requests==2.20.0",
-        "sqlalchemy==1.3.0",
-        "tablib==0.12.1",
-        "unicodecsv==0.14.1",
-        "urllib3==1.24.2",
-        "xlrd==1.1.0",
-        "xlwt==1.3.0",
+        "boto3-stubs[ec2,ecs,iam,logs,s3]==1.18.31; python_version >= '3.6'",
+        "botocore-stubs==1.21.31; python_version >= '3.6'",
+        "certifi==2021.5.30",
+        "charset-normalizer==2.0.4; python_version >= '3'",
+        "idna==3.2; python_version >= '3'",
+        "mypy-boto3-ec2==1.18.31",
+        "mypy-boto3-ecs==1.18.31",
+        "mypy-boto3-iam==1.18.31",
+        "mypy-boto3-logs==1.18.31",
+        "mypy-boto3-s3==1.18.31",
+        "pysocks==1.7.1",
+        "requests[socks]==2.26.0",
+        "urllib3==1.26.6; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'",
     ],  # Optional
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
@@ -162,7 +155,7 @@ setup(
     #
     # Similar to `install_requires` above, these must be valid existing
     # projects.
-    # extras_require={"dev": []},  # Optional
+    extras_require={"dev": []},  # Optional
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     #
@@ -173,10 +166,7 @@ setup(
     # will find and install the package correctly.
     # see https://python-packaging.readthedocs.io/en/latest/dependencies.html#packages-not-on-pypi
     #
-    dependency_links=[
-        "git+https://github.com/django/django.git@1.11.4#egg=django",
-        "https://github.com/divio/django-cms/archive/release/3.4.x.zip",
-    ],
+    dependency_links=[],
     # If using Python 2.6 or earlier, then these have to be included in
     # MANIFEST.in as well.
     # package_data={"sample": ["package_data.dat"]},  # Optional

@@ -279,6 +279,19 @@ def test_check_lockfile_vcs_branch(capsys, tmp_path: Path, source_pipfile_dirnam
         cmd(argv=["", "check", "--lockfile"])
 
 
+@pytest.mark.parametrize(("source_pipfile_dirname",), [("extra_0",)])
+def test_check_lockfile_support_extras(
+        capsys, tmp_path, shared_datadir, source_pipfile_dirname
+):  # type: (Any, Path, Path, str) -> None
+    pipfile_dir = shared_datadir / source_pipfile_dirname
+    for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
+        copy_file(pipfile_dir / filename, tmp_path)
+    with cwd(tmp_path):
+        cmd(argv=["", "check", "--lockfile"])
+        captured = capsys.readouterr()
+        assert msg_formatter.checked_no_problem() in captured.out
+
+
 @pytest.mark.parametrize(("source_pipfile_dirname",), [("lock_package_broken_0",)])
 def test_sync_lock_file_package_broken(tmp_path: Path, source_pipfile_dirname: str):
     """

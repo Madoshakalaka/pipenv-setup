@@ -6,6 +6,7 @@ dist
 coverage.xml
 
 # caches
+*.pyc
 .mypy_cache/
 .pytest_cache
 __pycache__/
@@ -16,3 +17,4 @@ __pycache__/
 # editor files
 *.code-workspace
 *~
+.idea/

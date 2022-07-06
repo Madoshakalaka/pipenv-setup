@@ -1,3 +1,4 @@
+from collections import KeysView
 from typing import Tuple, Dict
 
 import pipfile
@@ -7,8 +8,8 @@ from pathlib import Path
 
 
 def format_remote_package(
-    package_name, config, dev=False, use_dependency_links=False
-):  # type: (str, PipfileConfig, bool, bool) -> Tuple[str, str]
+    package_name: str, config:PipfileConfig, dev=False, use_dependency_links=False
+)-> Tuple[str, str]:
     """
     format and return a string that can be put into either install_requires or dependency_links or extras_require
 
@@ -107,6 +108,23 @@ def is_remote_package(config):  # type: (PipfileConfig) -> bool
         return True
     if isinstance(config, str):
         return True
+    return False
+
+
+def is_name_with_extras_in_install_requires_package_names(name: str, config: PipfileConfig,
+                                                          install_requires_package_names: KeysView[str]
+                                                          ) -> bool:
+    """
+    return whether package with extras appear in install_requires.
+    """
+
+    if isinstance(config, str):
+        return False  # no extras
+    if isinstance(config, dict) and 'extras' in config:
+        pkg_with_ext = "{name}[{e}]".format(name=name,
+                                            e=",".join(config['extras']))  # for 2.7 support (f-strings not supported)
+        return pkg_with_ext in install_requires_package_names
+
     return False
 
 
