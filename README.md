@@ -67,18 +67,13 @@ pipenv install --dev "pipenv-setup[black]"
   ```python
   # setup.py
   setup(...,
-      install_requires=[
-          "certifi==2017.7.27.1",
-          "chardet==3.0.4",
-          "pywinusb==0.4.2; os_name == 'nt'",
-          ...,
-          "xlrd==1.1.0",
-          "xlwt==1.3.0",
-      ],
-      dependency_links=[
-          "git+https://github.com/django/django.git@1.11.4#egg=django",
-          "https://github.com/divio/django-cms/archive/release/3.4.x.zip",
-      ],
+    install_requires=[
+        "requests[socks]",
+        "records>0.5.0",
+        "django @ git+https://github.com/django/django.git@1.11.4",
+        "https://github.com/divio/django-cms/archive/release/3.4.x.zip",
+        "pywinusb; os_name == 'nt'",
+    ]
   )
   ```
 
