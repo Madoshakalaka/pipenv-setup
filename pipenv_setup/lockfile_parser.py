@@ -27,7 +27,7 @@ def is_remote_package(config):  # type: (LockConfig) -> bool
 
 def format_remote_package(
     package_name: str, config: LockConfig, dev=False, use_dependency_links=False
-)-> Tuple[str, str]:
+) -> Tuple[str, str]:
     """
     format and return a string that can be put into either install_requires or dependency_links or extras_require
 
