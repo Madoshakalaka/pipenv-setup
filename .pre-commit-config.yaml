@@ -4,4 +4,3 @@ repos:
     hooks:
       - id: pipenv-setup
         additional_dependencies: [".[black]"]
-        args: [--dev, --pipfile]
