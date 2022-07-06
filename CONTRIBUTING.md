@@ -6,7 +6,7 @@ is all you need
 
 > about python interpreter: this project doesn't have "requires python_version==x.x" in Pipfile.
 > It means you have freedom using any version of python you want.
-> say: pipenv install --dev --python 3.7
+> say: pipenv install --dev --python 3.10
 >
 > This could result in an ever changing Lockfile as people develop in different python versions, and
 > different version may result in different dependencies.
@@ -26,7 +26,7 @@ This means you have the responsibility to specify markers
 e.g. you can do a `$ pipenv install "advanced_tech~=x.x; python_versions>='3.6'"` and write python version dependent code for
 lower python versions. (or you can do a simple `$ pipenv install advanced_tech`, edit markers in Pipfile, and do a `pipenv install` again)
 
-An example in our project:
+An example in our project (the example is outdated, we don't support python version <= 3.6 any more, but gets the point across):
 
 When we update user's `setup.py`, `black` is used to format the file. However `black` does not support python versions below
 3.6. So we have `autopep8` as an alternative
@@ -60,28 +60,30 @@ def format_file(file):
 
 # Pull Request
 
-Upon pull request, travis will run tox tests on python 2.7/3.5/3.6/3.7/3.8 across 3 Operating Systems.
-(yep, at most 15 tests in total, some of them may be disabled now and then because of configuration issues)
+Upon pull request, CI will run tox tests on python 3.7/3.8/3.9/3.10 across 3 Operating Systems.
+(yep, 12 tests in total)
 
 Tox also tests packaging from `setup.py`. Before any pull request, be sure to sync changed dependencies to `setup.py`.
 
-A caveat is that when you have changed dependencies, command entry `$ pipenv-setup sync` may not be able to start,
+You will want to use `$ pipenv-setup sync --pipfile --dev` to do the syncing, a caveat is that when you have changed dependencies, command entry `$ pipenv-setup sync` may not be able to start,
 as the shortcut command is provided by `setup.py` and `setup.py` detects mismatched dependencies and throw up.
 
 Please use package entry instead: `python3 -m pipenv_setup sync --dev --pipfile`. Or use the shortcut in Pipfile:
-`$ pipenv run sync-deps`
+`$ pipenv run sync-deps`. Alternatively, run `pre-commit install`, which will install the latest released `pipenv-setup`
+before `git commit` and ensure the `setup.py` is up to date.
+
 
 # Tests
 
 `$ pytest` runs tests with your python version
 
-Optionally, if you have some of python 2.7/3.5/3.6/3.7/3.8 installed
+Optionally, if you have some or all of python 3.7/3.8/3.9/3.10 installed
 
-`$ tox` will run tests on at most 6 python versions depending how many versions you installed on your machine
+`$ tox` will run tests on at most 12 python versions depending how many versions you installed on your machine
 
-Specify `$ tox -e pyXX` to run tests with specific python version. It's worth noting `py37` is the major test environment
+Specify `$ tox -e pyXX` to run tests with specific python version. It's worth noting `py310` is the major test environment
 and has extra `mypy` tests for static type checking (if type hints are used in code). For lightweight tests, it's a good
-choice is to at least have python3.7 and use `$ tox -e py37` instead of `$ pytest`
+choice is to at least have python310 and use `$ tox -e py310` instead of `$ pytest`
 
 In this project, dev dependencies in Pipfile should be synced to `setup.py` in `extras_require`, as tox installs
 `pipenv-setup[dev]` before running tests.

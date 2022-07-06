@@ -3,17 +3,12 @@ import codecs
 import tokenize
 from io import BytesIO
 from tokenize import OP
-from types import ModuleType
-from typing import TYPE_CHECKING, Any, List, Optional, Tuple, no_type_check
+from typing import Any, List, Tuple
 
-from vistir.compat import Path
+from pathlib import Path
 
 from pipenv_setup import setup_parser
 from pipenv_setup.setup_parser import get_kw_list_node, get_setup_call_node
-
-if TYPE_CHECKING:  # this is used for IDEs later on
-    import autopep8  # pragma: no cover
-    import black  # pragma: no cover
 
 
 def update_setup(
@@ -143,60 +138,27 @@ def update_setup(
     format_file(Path("setup.py"))
 
 
-def _get_formatting_module():  # type: () -> Optional[ModuleType]
+def format_file(file):  # type: (Path) -> None
     """
-    retrieve the correct formatting module if one is installed
+    use black to format python file
 
-    :return: formatting module (`black` or `autopep8`) if installed; otherwise `None`
+    if black is not installed, do nothing
     """
     try:
         import black
-    except:
-
-        try:
-            import autopep8
-        except ImportError:
-            return None
-        return autopep8
-
-    return black
-
-
-@no_type_check  # IDK how to get mypy to play nicely with the `mod` variable
-def format_file(file):  # type: (Path) -> None
-    """
-    use black or autopep8 to format python file
-
-    if neither is installed, do nothing
-    """
-    mod = _get_formatting_module()
-    if not mod:
-        return
-
-    if mod.__name__ == "black":
-        if TYPE_CHECKING:  # for IDEs
-            mod = black  # pragma: no cover
-
-        mode = mod.FileMode(
+        mode = black.FileMode(
             target_versions=set(),
-            line_length=mod.DEFAULT_LINE_LENGTH,
+            line_length=black.DEFAULT_LINE_LENGTH,
             is_pyi=False,
             string_normalization=True,
         )
-        write_back = mod.WriteBack.from_configuration(check=False, diff=False)
-        report = mod.Report(check=False, quiet=False, verbose=False)
+        write_back = black.WriteBack.from_configuration(check=False, diff=False)
+        report = black.Report(check=False, quiet=False, verbose=False)
 
-        mod.reformat_one(
+        black.reformat_one(
             src=file, fast=False, write_back=write_back, mode=mode, report=report
         )
-        return
-
-    if mod.__name__ == "autopep8":
-        if TYPE_CHECKING:  # for IDEs
-            mod = autopep8  # pragma: no cover
-        raw = file.read_text()
-        formatted = mod.fix_code(raw)
-        file.write_text(formatted)
+    except ImportError:
         return
 
 

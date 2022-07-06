@@ -1,7 +1,5 @@
 import ast
-
 import pytest
-
 from pipenv_setup import setup_parser
 from .conftest import data
 

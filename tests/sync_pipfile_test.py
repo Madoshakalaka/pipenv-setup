@@ -1,9 +1,9 @@
 from .conftest import data
-from .main_test import copy_file, compare_list_of_string_kw_arg
+from .main_test import compare_list_of_string_kw_arg
 from pipenv_setup.main import cmd
 
 import pytest
-from vistir.compat import Path
+from pathlib import Path
 
 
 @pytest.mark.parametrize(
@@ -11,17 +11,13 @@ from vistir.compat import Path
     [("nasty_0", 23), ("no_original_kws_0", 23)],
 )
 def test_sync_pipfile_no_original(
-    capsys, tmp_path, shared_datadir, source_pipfile_dirname, update_count
+    capsys, tmp_path, source_pipfile_dirname, update_count
 ):
     """
     sync --pipfile should reference Pipfile (not Pipfile.lock) when printing results
     """
-    pipfile_dir = shared_datadir / source_pipfile_dirname
-    for filename in ("Pipfile", "Pipfile.lock", "setup.py"):
-        copy_file(pipfile_dir / filename, tmp_path)
-
-    with data(str(pipfile_dir), tmp_path) as path:
-        setup_file = path / "setup.py"  # type: Path
+    with data(source_pipfile_dirname, tmp_path) as cwd:
+        setup_file: Path = cwd / "setup.py"
         cmd(["", "sync", "--pipfile"])
         text = setup_file.read_text()
         generated_setup = Path("setup.py")
@@ -68,4 +64,3 @@ def test_sync_underscore_or_dash(shared_datadir):
     with data("dash_or_underscore_0", shared_datadir / "dash_or_underscore_0"):
         cmd(["", "sync", "--pipfile"])
         cmd(["", "check"])
-

@@ -1,22 +1,9 @@
-from __future__ import print_function
-
 import argparse
 import sys
 from sys import stderr
-from typing import List, Union, Iterable, Text
-
-try:
-    # Seems like NoReturn is not backported properly in python 3.5
-    # build failure
-    # https://travis-ci.org/Madoshakalaka/pipenv-setup/jobs/613058915?utm_medium=notification&utm_source=github_status
-    from typing import NoReturn
-except ImportError:
-    pass
-
-from six import string_types
-
+from typing import List, Union, Iterable, Text, NoReturn
 from colorama import Fore, init
-from vistir.compat import Path
+from pathlib import Path
 from pipenv_setup import (
     lockfile_parser,
     setup_filler,
@@ -34,7 +21,10 @@ from .setup_updater import format_file
 # should report empty requirement as an asterisk
 
 
-def cmd(argv=sys.argv):
+def cmd(argv=None):
+    if argv is None:
+        argv = sys.argv
+
     init()
     parser = argparse.ArgumentParser(
         description="sync Pipfile.lock with setup.py",
@@ -108,8 +98,8 @@ def congratulate(msg):  # type: (Union[Text, Iterable[Text]]) -> None
 
     :raise TypeError: if `msg` is of wrong type
     """
-    msgs = []  # type: List[str]
-    if isinstance(msg, string_types):
+    msgs: List[str] = []
+    if isinstance(msg, str):
         msgs = [msg]
     elif hasattr(msg, "__iter__"):
         for m in msg:
@@ -126,7 +116,7 @@ def fatal_error(msg):  # type: (Union[Text, List[Text]]) -> NoReturn
 
     :raise TypeError: if msg is of wrong type
     """
-    if isinstance(msg, string_types):
+    if isinstance(msg, str):
         print(msg, file=stderr)
     elif isinstance(msg, list):
         for m in msg:

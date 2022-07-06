@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="test data" pattern="file[pipenv-setup]:tests/data//*" />
+</component>

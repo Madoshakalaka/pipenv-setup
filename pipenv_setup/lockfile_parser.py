@@ -1,7 +1,7 @@
 from typing import Tuple, Dict
 
 from requirementslib import Lockfile, Requirement
-from vistir.compat import Path
+from pathlib import Path
 
 from pipenv_setup.constants import LockConfig
 

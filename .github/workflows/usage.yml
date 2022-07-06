@@ -48,7 +48,7 @@ jobs:
         extras: ["", "dev", "black", "autopep8"]
         manager: [pip, pipenv]
         os: [ubuntu-latest, windows-latest, macos-latest]
-        py: [3.7, 3.8]
+        py: [3.7, 3.8, 3.9, 3.10]
 
     steps:
       - uses: actions/setup-python@v2

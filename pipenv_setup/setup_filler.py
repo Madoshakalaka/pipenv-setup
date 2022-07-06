@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from os import path
 from os.path import dirname
 from sys import stderr

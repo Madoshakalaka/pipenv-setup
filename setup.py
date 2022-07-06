@@ -42,7 +42,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="3.1.4",  # Required
+    version="4.0.0a1",  # Required
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
@@ -97,11 +97,10 @@ setup(
         # that you indicate whether you support Python 2, Python 3 or both.
         # These classifiers are *not* checked by 'pip install'. See instead
         # 'python_requires' below.
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ],
     # This field adds keywords for your project which will appear on the
     # project page. What does your project relate to?
@@ -136,16 +135,14 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     extras_require={
         "dev": [
-            "black==19.10b0; python_version >= '3.6'",
-            "pytest~=5.2; python_version >= '3.6'",
-            "pytest-mypy>=0.8; python_version >= '3.5'",
-            "pytest-cov~=2.7",
+            "black~=22.6",
+            "pytest~=7.1",
+            "pytest-mypy~=0.8",
+            "pytest-cov~=3.0",
             "pytest-datadir~=1.3",
-            "pytest-xdist~=1.29",
+            "pytest-xdist~=2.0",
             "tox~=3.24",
-            "pre-commit~=2.17; python_version >= '3.7'",
-            "autopep8~=1.4",
-            "types-six",
+            "pre-commit~=2.17",
         ],
         "black": ["black"],
         "autopep8": ["autopep8"],
@@ -153,13 +150,9 @@ setup(
     install_requires=[
         "pipfile~=0.0",
         "colorama~=0.4",
-        "packaging~=20.0",
+        "packaging~=21.0",
         "requirementslib~=1.5",
-        "vistir~=0.4",
-        "six~=1.12",
-        "typing~=3.7; python_version < '3.7'",
-        "chardet>=3.0.0,<=5.0.0",
-        "pyparsing!=3.0.5",
+        "typing~=3.7",
     ],  # Optional
     entry_points={
         "console_scripts": ["pipenv-setup=pipenv_setup.main:cmd"]

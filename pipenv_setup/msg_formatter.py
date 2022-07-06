@@ -3,7 +3,7 @@ All kinds of messages pipenv-setup prints to console
 """
 
 from colorama import Fore
-from vistir.compat import Path
+from pathlib import Path
 
 
 def colorful_help():

@@ -2,9 +2,8 @@ from typing import Tuple, Dict
 
 import pipfile
 from requirementslib import Requirement
-from vistir.compat import Path
-from six import string_types
 from pipenv_setup.constants import PipfileConfig, vcs_list
+from pathlib import Path
 
 
 def format_remote_package(
@@ -78,9 +77,9 @@ def is_vcs_package(config):  # type: (PipfileConfig) -> bool
     return False
 
 
-def is_pypi_package(config):  # type: (PipfileConfig) -> bool
+def is_pypi_package(config: PipfileConfig) -> bool:
     # fixme: uh.. I guess there are special cases
-    if isinstance(config, string_types):
+    if isinstance(config, str):
         return True
     elif (
         isinstance(config, dict)
@@ -95,7 +94,7 @@ def is_pypi_package(config):  # type: (PipfileConfig) -> bool
 def is_remote_package(config):  # type: (PipfileConfig) -> bool
     if isinstance(config, dict) and "path" not in config:
         return True
-    if isinstance(config, string_types):
+    if isinstance(config, str):
         return True
     return False
 

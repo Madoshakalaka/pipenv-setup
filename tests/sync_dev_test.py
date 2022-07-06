@@ -1,4 +1,4 @@
-from vistir.compat import Path
+from pathlib import Path
 from .conftest import data
 from pipenv_setup.main import cmd
 
@@ -8,7 +8,7 @@ def test_sync_dev_no_original(tmp_path):
     sync --dev should add extras_require: {"dev": [blah]} in the absence of a extras_require keyword
     """
     with data("generic_nice_1", tmp_path) as path:
-        setup_file = path / "setup.py"  # type: Path
+        setup_file: Path = path / "setup.py"
         cmd(["", "sync", "--dev"])
         text = setup_file.read_text()
         assert "gitdir==1.1.3" in text
