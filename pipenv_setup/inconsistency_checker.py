@@ -201,7 +201,11 @@ class _VersionReqs:
 
 class InconsistencyChecker:
     def __init__(
-        self, install_requires, dependency_links, pipfile_packages, strict,
+        self,
+        install_requires,
+        dependency_links,
+        pipfile_packages,
+        strict,
     ):  # type: (List[str], List[str], Dict[str, PipfileConfig], bool) -> None
         """
         :param strict: whether to report compatible but not identical version requirements.

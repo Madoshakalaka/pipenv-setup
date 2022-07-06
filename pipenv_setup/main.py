@@ -65,7 +65,7 @@ def cmd(argv=sys.argv):
     sync_parser.add_argument(
         "--use-dependency-links",
         action="store_true",
-        help="write vcs dependencies to deprecated dependency_links field instead of install_requires"
+        help="write vcs dependencies to deprecated dependency_links field instead of install_requires",
     )
 
     check_parser = subparsers.add_parser(

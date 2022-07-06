@@ -75,7 +75,9 @@ def format_remote_package(
                 link += "#egg=" + package_name
                 return "dependency_links", link
             else:
-                link = "{package_name} @ {link}".format(package_name=package_name, link=link)
+                link = "{package_name} @ {link}".format(
+                    package_name=package_name, link=link
+                )
                 return "install_requires", link
 
 

@@ -22,6 +22,7 @@ setup(
             "m",
             "n",
             "o",
-        ], "test": [],
+        ],
+        "test": [],
     },  # Optional
 )
