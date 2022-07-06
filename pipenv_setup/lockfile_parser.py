@@ -1,6 +1,14 @@
 from typing import Tuple, Dict
 
-from requirementslib import Lockfile, Requirement
+try:
+    from requirementslib import Lockfile
+except AssertionError:
+    import os
+
+    os.environ["SETUPTOOLS_USE_DISTUTILS"] = "stdlib"
+    from requirementslib import Lockfile
+
+from requirementslib import Requirement
 from pathlib import Path
 
 from pipenv_setup.constants import LockConfig
@@ -18,8 +26,8 @@ def is_remote_package(config):  # type: (LockConfig) -> bool
 
 
 def format_remote_package(
-    package_name, config, dev=False, use_dependency_links=False
-):  # type: (str, LockConfig, bool, bool) -> Tuple[str, str]
+    package_name: str, config: LockConfig, dev=False, use_dependency_links=False
+)-> Tuple[str, str]:
     """
     format and return a string that can be put into either install_requires or dependency_links or extras_require
 
