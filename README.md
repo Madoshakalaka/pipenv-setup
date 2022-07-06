@@ -25,21 +25,11 @@ package in `Pipfile`:
 pipenv install --dev pipenv-setup
 ```
 
-Additionally, starting with the
-[`3.2.0`](https://github.com/Madoshakalaka/pipenv-setup/releases/tag/v3.2.0) release,
-[`black`](https://github.com/psf/black) and [`autopep8`](https://github.com/hhatto/autopep8) can be
-included as package extras:
+Additionally, [`black`](https://github.com/psf/black) can be included as package extras:
 
 ```bash
-pipenv install --dev "pipenv-setup[black]"  # alternatively: pipenv-setup[autopep8]
+pipenv install --dev "pipenv-setup[black]"  
 ```
-
-### Note
-
-`pipenv-setup<3.2` includes pinned versions of `black` and `autopep8` as dependencies. However, most
-projects manage `black` requirements independently from `pipenv-setup`; accordingly, `black` is no
-longer a requirement of `pipenv-setup` after `3.2.0` (instead, include it as an extra as shown
-above).
 
 ## Features
 
