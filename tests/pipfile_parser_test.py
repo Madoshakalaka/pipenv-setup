@@ -1,16 +1,8 @@
-from pipenv_setup import lockfile_parser
-from tests.conftest import data
+from pipenv_setup import pipfile_parser
 
 
-def test_get_dev_dependencies(shared_datadir, tmp_path):
-    with data("generic_nice_0", tmp_path) as cwd:
-        local, remote = lockfile_parser.get_dev_packages(cwd / "Pipfile.lock")
-        assert "generic-package" in local
-        assert "gitdir" in remote
-
-
-def test_use_dependency_links_vcs_disabled():
-    destination_kw, value = lockfile_parser.format_remote_package(
+def test_use_dependency_links_vcs_disabled(shared_datadir):
+    destination_kw, value = pipfile_parser.format_remote_package(
         "django",
         {"git": "https://github.com/django/django.git"},
     )
@@ -18,8 +10,8 @@ def test_use_dependency_links_vcs_disabled():
     assert value == "django @ git+https://github.com/django/django.git"
 
 
-def test_use_dependency_links_vcs_enabled():
-    destination_kw, value = lockfile_parser.format_remote_package(
+def test_use_dependency_links_vcs_enabled(shared_datadir):
+    destination_kw, value = pipfile_parser.format_remote_package(
         "django",
         {"git": "https://github.com/django/django.git"},
         use_dependency_links=True,
@@ -28,8 +20,8 @@ def test_use_dependency_links_vcs_enabled():
     assert value == "git+https://github.com/django/django.git#egg=django"
 
 
-def test_use_dependency_links_file_disabled():
-    destination_kw, value = lockfile_parser.format_remote_package(
+def test_use_dependency_links_file_disabled(shared_datadir):
+    destination_kw, value = pipfile_parser.format_remote_package(
         "e682b37",
         {"file": "https://github.com/divio/django-cms/archive/release/3.4.x.zip"},
     )
@@ -37,8 +29,8 @@ def test_use_dependency_links_file_disabled():
     assert value == "https://github.com/divio/django-cms/archive/release/3.4.x.zip"
 
 
-def test_use_dependency_links_file_enabled():
-    destination_kw, value = lockfile_parser.format_remote_package(
+def test_use_dependency_links_file_enabled(shared_datadir):
+    destination_kw, value = pipfile_parser.format_remote_package(
         "e682b37",
         {"file": "https://github.com/divio/django-cms/archive/release/3.4.x.zip"},
         use_dependency_links=True,

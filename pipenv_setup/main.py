@@ -52,6 +52,12 @@ def cmd(argv=None):
         help="provide this flag to also sync development packages to extras [dev] in setup.py",
     )
 
+    sync_parser.add_argument(
+        "--use-dependency-links",
+        action="store_true",
+        help="write vcs dependencies to deprecated dependency_links field instead of install_requires",
+    )
+
     check_parser = subparsers.add_parser(
         "check",
         help="check whether Pipfile is consistent with setup.py.\n"
@@ -233,7 +239,9 @@ def sync(argv):
         for remote_package_name, remote_package_config in remote_packages.items():
             try:
                 destination_kw, value = parser.format_remote_package(
-                    remote_package_name, remote_package_config
+                    remote_package_name,
+                    remote_package_config,
+                    use_dependency_links=argv.use_dependency_links,
                 )
             except ValueError as e:
                 fatal_error(
@@ -256,7 +264,10 @@ def sync(argv):
             ) in dev_remote_packages.items():
 
                 destination_kw, value = parser.format_remote_package(
-                    remote_package_name, remote_package_config, dev=True
+                    remote_package_name,
+                    remote_package_config,
+                    dev=True,
+                    use_dependency_links=argv.use_dependency_links,
                 )
                 dev_package_success_count += 1
                 dependency_arguments[destination_kw].append(value)

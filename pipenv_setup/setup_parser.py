@@ -3,13 +3,10 @@ from typing import List, Optional, Tuple
 
 
 def get_kw_list_of_string_arg(setup_text, kw_name):  # type: (str, str) -> List[str]
-    """
-    :raise TypeError ValueError: when failed to get a list of strings
-    """
     root_node = ast.parse(setup_text)
     kw_list_node = get_kw_list_node(root_node, kw_name)
     if kw_list_node is None:
-        raise ValueError("keyword argument %s not found" % kw_name)
+        return None
     return parse_list_of_string(kw_list_node)
 
 

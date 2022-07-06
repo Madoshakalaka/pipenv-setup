@@ -153,9 +153,7 @@ setup(
     # will find and install the package correctly.
     # see https://python-packaging.readthedocs.io/en/latest/dependencies.html#packages-not-on-pypi
     #
-    dependency_links=[
-
-    ],
+    dependency_links=[],
     # If using Python 2.6 or earlier, then these have to be included in
     # MANIFEST.in as well.
     # package_data={"sample": ["package_data.dat"]},  # Optional
