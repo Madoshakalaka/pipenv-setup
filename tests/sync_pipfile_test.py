@@ -64,3 +64,23 @@ def test_sync_underscore_or_dash(shared_datadir):
     with data("dash_or_underscore_0", shared_datadir / "dash_or_underscore_0"):
         cmd(["", "sync", "--pipfile"])
         cmd(["", "check"])
+
+
+def test_import_style_module(shared_datadir):
+    """
+    sync and check should work for varying import styles.
+
+    No need to run any assertions; we are testing that no error is
+    raised.
+
+    Asserts fix for https://github.com/Madoshakalaka/pipenv-setup/issues/92.
+    """
+    with data("import_style_0", shared_datadir / "import_style_0"):
+        # prior to this commit this would raise:
+        #   No setup() call found in setup.py
+        #   can not perform sync
+        cmd(["", "sync", "--pipfile"])
+        # prior to this commit if (somehow) ran after the above
+        # succeeded this would raise:
+        #   Can not find keyword argument install_requires
+        cmd(["", "check"])
