@@ -215,12 +215,12 @@ started, add this configuration to your `.pre-commit-config.yaml`:
 
 ```yaml
 - repo: https://github.com/Madoshakalaka/pipenv-setup
-  rev: "3.2.0" # pick a git hash / tag to point to
+  rev: "4.0.0a1" # pick a git hash / tag to point to
   hooks:
     - id: pipenv-setup
 ```
 
-This configuration will will execute `pipenv-setup sync --pipfile` on changes to `Pipfile`,
+This configuration will execute `pipenv-setup sync --pipfile` on changes to `Pipfile`,
 `Pipfile.lock`, and `setup.py`.
 
 You can also customize the default args (`"--pipfile"`). For example, to synchronize `--dev` extras:
@@ -232,8 +232,8 @@ You can also customize the default args (`"--pipfile"`). For example, to synchro
       args: [--dev, --pipfile]
 ```
 
-If using the hook during CI (or in another environment separate from a `black` / `autopep8`
-installation), you can include the appropriate auto-formatter with the hook:
+If using the hook during CI (or in another environment separate from a `black` installation),
+you can include the appropriate auto-formatter with the hook:
 
 ```yaml
 - repo: # ...

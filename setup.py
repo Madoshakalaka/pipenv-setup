@@ -145,7 +145,6 @@ setup(
             "pre-commit~=2.17",
         ],
         "black": ["black"],
-        "autopep8": ["autopep8"],
     },
     install_requires=[
         "pipfile~=0.0",
