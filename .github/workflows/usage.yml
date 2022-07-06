@@ -45,7 +45,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        extras: ["", "dev", "black", "autopep8"]
+        extras: ["", "dev", "black"]
         manager: [pip, pipenv]
         os: [ubuntu-latest, windows-latest, macos-latest]
         py: [3.7, 3.8, 3.9, '3.10']
