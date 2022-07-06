@@ -2,7 +2,7 @@ import ast
 from typing import List, Optional, Tuple
 
 
-def get_kw_list_of_string_arg(setup_text, kw_name):  # type: (str, str) -> List[str]
+def get_kw_list_of_string_arg(setup_text: str, kw_name: str) -> Optional[List[str]]:
     root_node = ast.parse(setup_text)
     kw_list_node = get_kw_list_node(root_node, kw_name)
     if kw_list_node is None:

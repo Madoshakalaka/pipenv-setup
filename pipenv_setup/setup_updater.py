@@ -146,6 +146,7 @@ def format_file(file):  # type: (Path) -> None
     """
     try:
         import black
+
         mode = black.FileMode(
             target_versions=set(),
             line_length=black.DEFAULT_LINE_LENGTH,
