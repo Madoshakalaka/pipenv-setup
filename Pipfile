@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 black = {version = "~=22.6" }
 pipenv-setup = { editable = true, path = "." }
-pytest = {version = "~=7.1" }
+pytest = {version = "~=7.2" }
 pytest-mypy = {version = "~=0.8" }
 pytest-cov = "~=3.0"
 pytest-datadir = "~=1.3"
