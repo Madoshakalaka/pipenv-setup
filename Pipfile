@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-black = {version = "~=22.6" }
+black = {version = "~=22.12" }
 pipenv-setup = { editable = true, path = "." }
 pytest = {version = "~=7.1" }
 pytest-mypy = {version = "~=0.8" }
