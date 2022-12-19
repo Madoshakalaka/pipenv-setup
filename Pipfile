@@ -18,7 +18,7 @@ pre-commit = {version = "~=2.17"}
 pipfile = "~=0.0"
 colorama = "~=0.4"
 packaging = "~=21.0"
-requirementslib = "~=1.5"
+requirementslib = "~=2.2"
 typing = {version = "~=3.7"}
 
 [scripts]
