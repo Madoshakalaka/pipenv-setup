@@ -20,6 +20,8 @@ colorama = "~=0.4"
 packaging = "~=21.0"
 requirementslib = "~=1.5"
 typing = {version = "~=3.7"}
+vistir = "< 0.7.0"
+plette = "< 1.0.0"
 
 [scripts]
 # use this to sync this pipfile to setup.py, explained in CONTRIBUTING.md

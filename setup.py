@@ -152,6 +152,8 @@ setup(
         "packaging~=21.0",
         "requirementslib~=1.5",
         "typing~=3.7",
+        "vistir<0.7.0",
+        "plette<1.0.0",
     ],  # Optional
     entry_points={
         "console_scripts": ["pipenv-setup=pipenv_setup.main:cmd"]
